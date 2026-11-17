@@ -27,6 +27,7 @@ A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event 
 | Design system | Done | Hallmark Sport theme, token-driven, responsive to 360px |
 | Colour modes | Done | light and dark from one token system; switch in the masthead, follows the OS until someone chooses |
 | Mobile nav | Done | JS enhanced; falls back to a wrapped row without JS |
+| Questions page | **Disabled** | still linked from the nav and footer, but shows a not-available notice and carries `noindex` |
 | Individual form | Built, **not connected** | `register.html`, needs a Formspree ID |
 | Team form | Built, **not connected** | `register-team.html`, needs a Formspree ID |
 | Form fields | Done | see the two field tables below |
@@ -81,7 +82,7 @@ aquil/
 |-- schedule.html     Day one and day two sheets, on-the-day facts
 |-- register.html     Individual form, with the chooser above it
 |-- register-team.html Team form: event, captain, squad list
-|-- faq.html          Fifteen questions as native details elements
+|-- faq.html          Disabled placeholder; 15 questions kept in git history
 |-- 404.html          Not-found page
 |-- css/style.css     The whole design system. Hallmark stamp on line 1, tokens next
 |-- js/site.js        Mobile nav, ?event= preselect on both forms, form guards, footer year
@@ -182,7 +183,6 @@ grep -rn "TBC" *.html
 | Venue and city | hero facts, schedule venue columns | TBC |
 | Entry deadline | hero facts on index, both forms, FAQ | TBC |
 | Match times and draw | `schedule.html` sheets | provisional |
-| Contact email | footer, `events.html`, `faq.html` | hello@example.com |
 | Social link | footer | `href="#"` |
 | Organiser name | footer | Organiser TBC |
 | Course list | both forms, `<select id="course">` | B.Com, BCA, BBA, BA, B.Sc, Psychology, Other |
@@ -305,11 +305,12 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 - **Light and dark mode.** Every colour was re-derived per the Hallmark dark recipe rather than inverted: paper L 15%, elevation stepping lighter, ink 94%, accent chroma down and lightness up, hues held. All pairings were checked numerically in both modes. The switch is in the masthead, the choice persists in `localStorage`, the OS preference is honoured until overridden, and an inline script in the head sets the mode before first paint so there is no flash. `color-scheme` follows the mode so native controls and scrollbars match.
 - **Height and weight are no longer required from everyone.** They are asked for only when a physical event is ticked; chess alone makes them optional and says so in the hint. The rule lives in the markup (`data-body="required"`), not in the script, so changing which events need body data is an attribute edit.
 
-### 2026-11-17, Entry includes removed
+### 2026-11-17, contact details, footer credit, questions disabled
 
-- The "Entry includes" block on `index.html` is gone: officials, equipment, facilities and the "every entrant gets one match" line are no longer shown.
-- The section it shared with "How to enter" was a two-column `.entry` grid, so it now uses the existing `.entry-single` modifier. "How to enter" keeps the full width instead of sitting in a half-empty row.
-- `.included` stays in the stylesheet: `register-team.html` and `schedule.html` still use it.
+- **The placeholder email is gone.** Every `hello@example.com` reference was removed: the footer on all seven pages, the "not listed" note on `events.html`, and the two answers that told people to write in. The contact details are still unconfirmed, so the site no longer offers an address that does not work.
+- **Footer credit.** The colophon on every page reads "made with <3 by unni for SHC". The "No cookies, no analytics" line was removed.
+- **The questions page is disabled, not deleted.** `faq.html` keeps its place in the nav and footer, but the body is now a short not-available notice, it carries `<meta name="robots" content="noindex">`, and its title and description were updated to match. The fifteen questions remain in git history and can be restored by reverting this commit.
+- **"Read the rules" now points at the rules.** `events.html` gained `id="rules"` on "How entries work"; the buttons on `events.html` and `schedule.html`, and the agreement links on both forms, point there instead of at the disabled page.
 
 ## Next steps
 
