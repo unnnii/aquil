@@ -3,13 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Schedule, Aquil Open</title>
-<meta name="description" content="Provisional two-day timetable for Aquil Open: group stages in the morning, knockouts in the afternoon.">
-<meta property="og:title" content="Schedule, Aquil Open">
-<meta property="og:description" content="Provisional two-day timetable for Aquil Open: group stages in the morning, knockouts in the afternoon.">
+<title>Programme, Aquil Open</title>
+<meta name="description" content="The two-day Aquil Open programme: group stages in the morning, knockouts and finals in the afternoon.">
+<meta property="og:title" content="Programme, Aquil Open">
+<meta property="og:description" content="The two-day Aquil Open programme: group stages in the morning, knockouts and finals in the afternoon.">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#ffffff">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2314161a'/%3E%3Ctext x='16' y='23' font-family='Helvetica,Arial' font-size='18' font-weight='bold' fill='%23fff' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#f7f8fa">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230d1220'/%3E%3Ctext x='16' y='24' font-family='Arial Narrow,Helvetica,Arial' font-size='20' font-weight='700' fill='%23f7f8fa' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500&family=JetBrains+Mono:wght@500&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script>document.documentElement.className += ' js';</script>
 </head>
@@ -17,150 +20,127 @@
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<header class="site-header">
-  <div class="wrap header-inner">
-    <a class="brand" href="index.html">Aquil <span>Open</span></a>
+<header class="mast">
+  <div class="wrap mast-inner">
+    <a class="wordmark" href="index.html">Aquil</a>
     <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav">Menu</button>
     <nav class="nav" id="site-nav" data-nav>
       <a href="events.html">Competitions</a>
-      <a href="schedule.html" aria-current="page">Schedule</a>
-      <a href="faq.html">Rules &amp; FAQ</a>
-      <a class="nav-cta" href="register.html">Register</a>
+      <a href="schedule.html" aria-current="page">Programme</a>
+      <a href="faq.html">Questions</a>
+      <a class="btn btn-volt" href="register.html">Enter a team</a>
     </nav>
   </div>
 </header>
 
 <main id="main">
 
-  <section class="page-head">
+  <section class="hero">
     <div class="wrap">
-      <p class="eyebrow">Schedule</p>
-      <h1>Two days, provisional draw.</h1>
-      <p class="lede">Group stages run in the morning, knockouts in the afternoon. The shape of the weekend is fixed, the exact slots are confirmed once entries close.</p>
+      <h1>Programme</h1>
+      <p class="hero-line">Group stages in the morning, knockouts and finals after lunch.</p>
+      <dl class="facts">
+        <div><dt>Day one</dt><dd>TBC</dd></div><!-- TODO: day one date -->
+        <div><dt>Day two</dt><dd>TBC</dd></div><!-- TODO: day two date -->
+        <div><dt>Check-in</dt><dd>30 min</dd></div>
+      </dl>
+      <div class="actions">
+        <a class="btn btn-volt" href="register.html">Enter a team</a>
+      </div>
     </div>
   </section>
 
-  <section class="section section-flush">
+  <section class="section">
     <div class="wrap">
-
       <div class="day">
         <div class="day-head">
-          <h2>Day 1</h2>
-          <span class="hint">TBC date</span><!-- TODO: Day 1 date -->
+          <h2>Day one</h2>
+          <span class="label">Provisional</span>
         </div>
-        <div class="table-wrap">
-          <table>
-            <caption class="hint caption">Provisional. Court and pitch assignments TBC.</caption>
-            <thead>
-              <tr><th scope="col">Time</th><th scope="col">Sport</th><th scope="col">Stage</th><th scope="col">Court / pitch</th></tr>
-            </thead>
-            <tbody>
-            <tr><td>09:00</td><td>Football 5-a-side</td><td>Group stage</td><td>Pitch TBC</td></tr>
-            <tr><td>09:00</td><td>Table tennis singles</td><td>Round of 32</td><td>Hall TBC</td></tr>
-            <tr><td>11:30</td><td>Basketball 3x3</td><td>Group stage</td><td>Court TBC</td></tr>
-            <tr><td>13:00</td><td>Badminton doubles</td><td>Round of 16</td><td>Hall TBC</td></tr>
-            <tr><td>15:00</td><td>Football 5-a-side</td><td>Quarter-finals</td><td>Pitch TBC</td></tr>
-            <tr><td>17:00</td><td>Table tennis singles</td><td>Semi-finals</td><td>Hall TBC</td></tr>
-            </tbody>
-          </table>
-        </div>
+        <table class="sheet">
+          <caption>Court and pitch assignments to be confirmed.</caption>
+          <thead>
+            <tr><th scope="col">Time</th><th scope="col">Sport</th><th scope="col">Stage</th><th scope="col">Court</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>09:00</td><td>Football 5-a-side</td><td class="stage">Group stage</td><td>Pitch TBC</td></tr>
+            <tr><td>09:00</td><td>Table tennis singles</td><td class="stage">Round of 32</td><td>Hall TBC</td></tr>
+            <tr><td>11:30</td><td>Basketball 3x3</td><td class="stage">Group stage</td><td>Court TBC</td></tr>
+            <tr><td>13:00</td><td>Badminton doubles</td><td class="stage">Round of 16</td><td>Hall TBC</td></tr>
+            <tr><td>15:00</td><td>Football 5-a-side</td><td class="stage">Quarter-finals</td><td>Pitch TBC</td></tr>
+            <tr><td>17:00</td><td>Table tennis singles</td><td class="stage">Semi-finals</td><td>Hall TBC</td></tr>
+          </tbody>
+        </table>
       </div>
 
       <div class="day">
         <div class="day-head">
-          <h2>Day 2</h2>
-          <span class="hint">TBC date</span><!-- TODO: Day 2 date -->
+          <h2>Day two</h2>
+          <span class="label">Provisional</span>
         </div>
-        <div class="table-wrap">
-          <table>
-            <caption class="hint caption">Provisional. Finals schedule follows the semi-final results.</caption>
-            <thead>
-              <tr><th scope="col">Time</th><th scope="col">Sport</th><th scope="col">Stage</th><th scope="col">Court / pitch</th></tr>
-            </thead>
-            <tbody>
-            <tr><td>09:00</td><td>Volleyball</td><td>Group stage</td><td>Court TBC</td></tr>
-            <tr><td>10:30</td><td>100m sprint</td><td>Heats</td><td>Track TBC</td></tr>
-            <tr><td>11:30</td><td>Badminton doubles</td><td>Semi-finals</td><td>Hall TBC</td></tr>
-            <tr><td>13:00</td><td>Basketball 3x3</td><td>Semi-finals</td><td>Court TBC</td></tr>
-            <tr><td>14:30</td><td>Football 5-a-side</td><td>Semi-finals</td><td>Pitch TBC</td></tr>
-            <tr><td>16:00</td><td>All sports</td><td>Finals and presentations</td><td>Main arena TBC</td></tr>
-            </tbody>
-          </table>
-        </div>
+        <table class="sheet">
+          <caption>Finals follow the semi-final results.</caption>
+          <thead>
+            <tr><th scope="col">Time</th><th scope="col">Sport</th><th scope="col">Stage</th><th scope="col">Court</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>09:00</td><td>Volleyball</td><td class="stage">Group stage</td><td>Court TBC</td></tr>
+            <tr><td>10:30</td><td>100m sprint</td><td class="stage">Heats</td><td>Track TBC</td></tr>
+            <tr><td>11:30</td><td>Badminton doubles</td><td class="stage">Semi-finals</td><td>Hall TBC</td></tr>
+            <tr><td>13:00</td><td>Basketball 3x3</td><td class="stage">Semi-finals</td><td>Court TBC</td></tr>
+            <tr><td>14:30</td><td>Football 5-a-side</td><td class="stage">Semi-finals</td><td>Pitch TBC</td></tr>
+            <tr><td>16:00</td><td>All sports</td><td class="stage">Finals and presentations</td><td>Main arena TBC</td></tr>
+          </tbody>
+        </table>
       </div>
-
-      <div class="notice note-neutral">
-        <strong>Check-in.</strong> Report to the desk 30 minutes before your first match with photo ID and your full squad. Teams that miss check-in forfeit their first slot.
-      </div>
-
-      <div class="section-head section-head-tight">
-        <p class="eyebrow">On the day</p>
-        <h2>What to expect.</h2>
-      </div>
-      <div class="steps">
-        <div class="step">
-          <h3>Arrive early</h3>
-          <p>Parking and the check-in desk open 45 minutes before the first whistle. Changing rooms are shared.</p>
-        </div>
-        <div class="step">
-          <h3>Bring your kit</h3>
-          <p>Shin pads for football, non-marking shoes for indoor courts. Balls and nets are provided.</p>
-        </div>
-        <div class="step">
-          <h3>Stay for the final</h3>
-          <p>Presentation is straight after the last final on Day 2. Trophies for winners, runners-up medals for the rest.</p>
-        </div>
-      </div>
-
     </div>
   </section>
 
-  <section class="cta-band">
-    <div class="wrap cta-inner">
+  <section class="section section-well">
+    <div class="wrap entry">
       <div>
-        <h2>Still time to enter.</h2>
-        <p>Entries close TBC.</p><!-- TODO: entry deadline -->
+        <h2>On the day</h2>
+        <dl class="included mt-lg">
+          <div><dt>Check-in</dt><dd>Thirty minutes before your first match, at the main entrance.</dd></div>
+          <div><dt>Bring</dt><dd>Photo ID, your full squad, shin pads for football, indoor shoes for the hall.</dd></div>
+          <div><dt>Provided</dt><dd>Balls, nets, bibs and water. Changing rooms are shared.</dd></div>
+          <div><dt>Late teams</dt><dd>Forfeit the first slot. Tell us in advance and we will try to move you.</dd></div>
+        </dl>
       </div>
-      <div class="actions actions-flush">
-        <a class="btn btn-solid" href="register.html">Register a team</a>
-        <a class="btn btn-ghost" href="events.html">Competitions</a>
+      <div>
+        <h2>Draw and results</h2>
+        <p class="lede mt-lg">The draw goes up the evening before and is posted at check-in. Results are written up after each round on the board by the main arena.</p>
+        <div class="actions">
+          <a class="btn btn-line" href="faq.html">Read the rules</a>
+        </div>
       </div>
     </div>
   </section>
 
 </main>
 
-<footer class="site-footer">
+<footer class="foot">
   <div class="wrap">
-    <div class="footer-grid">
+    <div class="foot-grid">
       <div>
-        <h4>Aquil Open</h4>
-        <p class="hint footer-note">A multi-sport tournament. Dates and venue TBC.</p>
+        <h2>Aquil Open</h2>
+        <p>A two-day multi-sport tournament. Dates and venue to be confirmed.</p>
       </div>
-      <div>
-        <h4>Site</h4>
-        <div class="stack">
-          <a href="events.html">Competitions</a>
-          <a href="schedule.html">Schedule</a>
-          <a href="register.html">Register</a>
-          <a href="faq.html">Rules &amp; FAQ</a>
-        </div>
+      <div class="col">
+        <a href="events.html">Competitions</a>
+        <a href="schedule.html">Programme</a>
+        <a href="register.html">Enter a team</a>
+        <a href="faq.html">Questions</a>
       </div>
-      <div>
-        <h4>Contact</h4>
-        <div class="stack">
-          <a href="mailto:hello@example.com">hello@example.com</a><!-- TODO: real contact email -->
-          <a href="#">Instagram</a><!-- TODO: real social link -->
-        </div>
-      </div>
-      <div>
-        <h4>Organiser</h4>
-        <p class="hint footer-note">TODO, organising club or committee.</p>
+      <div class="col">
+        <a href="mailto:hello@example.com">hello@example.com</a><!-- TODO: real contact email -->
+        <a href="#">Instagram</a><!-- TODO: real social link -->
+        <span class="hint">Organiser TBC</span><!-- TODO: organiser name -->
       </div>
     </div>
-    <div class="footer-bottom">
+    <div class="colophon">
       <span>&copy; <span data-year>2026</span> Aquil Open</span>
-      <span>Static site, no cookies, no tracking</span>
+      <span>No cookies, no analytics.</span>
     </div>
   </div>
 </footer>
