@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Enter a team, Heartian Hustle 3.0</title>
-<meta name="description" content="Enter a team for Heartian Hustle 3.0: pick a competition, add your captain and squad details.">
-<meta property="og:title" content="Enter a team, Heartian Hustle 3.0">
-<meta property="og:description" content="Enter a team for Heartian Hustle 3.0: pick a competition, add your captain and squad details.">
+<title>Register, Heartian Hustle 3.0</title>
+<meta name="description" content="Register for Heartian Hustle 3.0: one form per participant, tick every event you are entering. No email needed, we contact you on the number you give.">
+<meta property="og:title" content="Register, Heartian Hustle 3.0">
+<meta property="og:description" content="Register for Heartian Hustle 3.0: one form per participant, tick every event you are entering. No email needed, we contact you on the number you give.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#f7f8fa">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230d1220'/%3E%3Ctext x='16' y='24' font-family='Arial Narrow,Helvetica,Arial' font-size='20' font-weight='700' fill='%23f7f8fa' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230d1220'/%3E%3Ctext x='16' y='24' font-family='Arial Narrow,Helvetica,Arial' font-size='20' font-weight='700' fill='%23f7f8fa' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500&family=JetBrains+Mono:wght@500&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
@@ -28,7 +28,7 @@
       <a href="events.html">Competitions</a>
       <a href="schedule.html">Programme</a>
       <a href="faq.html">Questions</a>
-      <a class="btn btn-volt" href="register.html" aria-current="page">Enter a team</a>
+      <a class="btn btn-volt" href="register.html" aria-current="page">Register</a>
     </nav>
   </div>
 </header>
@@ -37,8 +37,8 @@
 
   <section class="hero">
     <div class="wrap">
-      <h1>Enter a team</h1>
-      <p class="hero-line">One form per team, per competition. No account needed.</p>
+      <h1>Register</h1>
+      <p class="hero-line">One form per person, and one tick for every event you are entering.</p>
       <dl class="facts">
         <div><dt>Entries close</dt><dd>TBC</dd></div><!-- TODO: deadline -->
         <div><dt>Fee</dt><dd>TBC</dd></div><!-- TODO: entry fee -->
@@ -58,63 +58,95 @@
         <form method="POST" action="https://formspree.io/f/REPLACE_ME" data-register-form>
           <div class="form-grid">
 
-            <div class="field field-full">
-              <label for="competition">Competition</label>
-              <select id="competition" name="competition" required data-event-select>
-                <option value="">Choose a sport</option>
-                <option value="football-5s">Football 5-a-side</option>
-                <option value="basketball-3x3">Basketball 3x3</option>
-                <option value="volleyball">Volleyball</option>
-                <option value="badminton-doubles">Badminton doubles</option>
-                <option value="table-tennis-singles">Table tennis singles</option>
-                <option value="100m-sprint">100m sprint</option>
-                <option value="other">Other, or suggest a sport</option>
+            <div class="field">
+              <label for="full_name">Full name</label>
+              <input id="full_name" name="full_name" type="text" autocomplete="name" required>
+            </div>
+
+            <div class="field">
+              <label for="roll_number">Roll number</label>
+              <input id="roll_number" name="roll_number" type="text" required>
+              <span class="hint">As printed on your college ID.</span>
+            </div>
+
+            <div class="field">
+              <label for="course">Course</label>
+              <select id="course" name="course" required>
+                <option value="">Choose a course</option>
+                <option value="bcom">B.Com</option>
+                <option value="bca">BCA</option>
+                <option value="bba">BBA</option>
+                <option value="ba">BA</option>
+                <option value="bsc">B.Sc</option>
+                <option value="btech">B.Tech</option>
+                <option value="other">Other</option>
               </select>
-              <span class="hint">Arriving from a competition? This is already chosen.</span>
             </div>
 
             <div class="field">
-              <label for="team">Team name</label>
-              <input id="team" name="team" type="text" autocomplete="organization" required placeholder="Riverside FC">
+              <label for="specialisation">Specialisation</label>
+              <select id="specialisation" name="specialisation">
+                <option value="none">None</option>
+                <option value="ca">CA</option>
+                <option value="ba">BA</option>
+                <option value="other">Other</option>
+              </select>
+              <span class="hint">None if your course has no specialisation.</span>
             </div>
 
             <div class="field">
-              <label for="captain">Captain</label>
-              <input id="captain" name="captain" type="text" autocomplete="name" required>
+              <label for="year">Year</label>
+              <select id="year" name="year" required>
+                <option value="">Choose a year</option>
+                <option value="1">1st year</option>
+                <option value="2">2nd year</option>
+                <option value="3">3rd year</option>
+              </select>
             </div>
 
             <div class="field">
-              <label for="email">Email</label>
-              <input id="email" name="email" type="email" autocomplete="email" required>
-            </div>
-
-            <div class="field">
-              <label for="phone">Phone or WhatsApp</label>
+              <label for="phone">Contact number</label>
               <input id="phone" name="phone" type="tel" autocomplete="tel" required>
+              <span class="hint">Where we confirm your slot. WhatsApp is fine.</span>
             </div>
 
             <div class="field">
-              <label for="size">Squad size</label>
-              <input id="size" name="squad_size" type="number" min="1" max="20" step="1" value="5">
+              <label for="height">Height (cm)</label>
+              <input id="height" name="height_cm" type="number" inputmode="numeric" min="100" max="250" step="1" required>
             </div>
 
             <div class="field">
-              <label for="level">Level</label>
-              <select id="level" name="level">
-                <option value="social">Social</option>
-                <option value="competitive">Competitive</option>
-              </select>
+              <label for="weight">Weight (kg)</label>
+              <input id="weight" name="weight_kg" type="number" inputmode="decimal" min="25" max="200" step="0.5" required>
+              <span class="hint">Sets your arm wrestling bracket.</span>
+            </div>
+
+            <div class="field field-full" role="group" aria-labelledby="events-label">
+              <span id="events-label" class="field-label">Events you are entering</span>
+              <div class="checks">
+          <label class="check"><input type="checkbox" name="events" value="table-tennis" data-event-box> Table Tennis</label>
+          <label class="check"><input type="checkbox" name="events" value="carroms" data-event-box> Carroms</label>
+          <label class="check"><input type="checkbox" name="events" value="chess" data-event-box> Chess</label>
+          <label class="check"><input type="checkbox" name="events" value="arm-wrestling" data-event-box> Arm Wrestling</label>
+          <label class="check"><input type="checkbox" name="events" value="penalty-shootout" data-event-box> Penalty Shootout</label>
+          <label class="check"><input type="checkbox" name="events" value="throw-in-girls" data-event-box> Throw In (Girls)</label>
+          <label class="check"><input type="checkbox" name="events" value="badminton" data-event-box> Badminton</label>
+          <label class="check"><input type="checkbox" name="events" value="football-7s" data-event-box> Football 7-a-side</label>
+          <label class="check"><input type="checkbox" name="events" value="basketball-3s" data-event-box> Basketball 3x3</label>
+              </div>
+              <span class="field-error" data-events-error hidden>Pick at least one event.</span>
+              <span class="hint">Totting up: tick everything you want to play. One entry per event.</span>
             </div>
 
             <div class="field field-full">
               <label for="notes">Anything else</label>
-              <textarea id="notes" name="notes" placeholder="Time preferences, a second competition, accessibility needs, spare players."></textarea>
+              <textarea id="notes" name="notes" placeholder="Team name for football or basketball, time preferences, accessibility needs."></textarea>
             </div>
 
             <div class="field field-full">
               <label class="check" for="agree">
                 <input id="agree" name="agree_rules" type="checkbox" value="yes" required>
-                <span>We have read the <a href="faq.html">rules</a> and everyone on this squad is eligible.</span>
+                <span>I have read the <a href="faq.html">rules</a> and the details above are correct.</span>
               </label>
             </div>
 
@@ -133,12 +165,13 @@
       <div>
         <h2>What happens next</h2>
         <dl class="included mt-lg">
-          <div><dt>Immediately</dt><dd>An email confirmation from the form service.</dd></div>
-          <div><dt>Within two days</dt><dd>We check squad size and eligibility and confirm your slot.</dd></div>
-          <div><dt>Week before</dt><dd>Your draw, court and check-in time.</dd></div>
+          <div><dt>Immediately</dt><dd>A confirmation on the screen, once the form is connected.</dd></div>
+          <div><dt>Within two days</dt><dd>We check your roll number and events and confirm your slots on the number you gave.</dd></div>
+          <div><dt>Week before</dt><dd>Your draws, venues and check-in times.</dd></div>
           <div><dt>On the day</dt><dd>Check in thirty minutes early, pay the fee at the desk.</dd></div>
         </dl>
-        <p class="lede mt-lg">Entering two sports? Submit once per competition and say so in the notes, so we can keep your slots apart.</p>
+        <p class="lede mt-lg">Entering several events? One form, several ticks, as long as the times do not clash.</p>
+        <p class="lede">No email address is needed anywhere on this form.</p>
         <p class="lede">Stuck? Write to <a href="mailto:hello@example.com">hello@example.com</a><!-- TODO: real contact email --></p>
       </div>
 
@@ -157,7 +190,7 @@
       <div class="col">
         <a href="events.html">Competitions</a>
         <a href="schedule.html">Programme</a>
-        <a href="register.html">Enter a team</a>
+        <a href="register.html">Register</a>
         <a href="faq.html">Questions</a>
       </div>
       <div class="col">
