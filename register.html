@@ -15,6 +15,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500&family=JetBrains+Mono:wght@500&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script>document.documentElement.className += ' js';</script>
+<script>
+/* Resolve light or dark before first paint so the page never flashes. */
+(function () {
+  try {
+    var saved = localStorage.getItem('mode');
+    var dark = saved === 'dark' || (saved !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.setAttribute('data-mode', dark ? 'dark' : 'light');
+  } catch (e) {}
+})();
+</script>
 </head>
 
 <body>
@@ -23,7 +33,10 @@
 <header class="mast">
   <div class="wrap mast-inner">
     <a class="wordmark" href="index.html">Heartian Hustle</a>
-    <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <div class="mast-tools">
+      <button class="mode-toggle" type="button" data-mode-toggle aria-label="Switch to dark mode"><span data-mode-label>Dark</span></button>
+      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav">Menu</button>
+    </div>
     <nav class="nav" id="site-nav" data-nav>
       <a href="events.html">Competitions</a>
       <a href="schedule.html">Programme</a>
@@ -130,23 +143,23 @@
 
             <div class="field">
               <label for="height">Height (cm)</label>
-              <input id="height" name="height_cm" type="number" inputmode="numeric" min="100" max="250" step="1" required>
+              <input id="height" name="height_cm" type="number" inputmode="numeric" min="100" max="250" step="1" data-body-field>
             </div>
 
             <div class="field">
               <label for="weight">Weight (kg)</label>
-              <input id="weight" name="weight_kg" type="number" inputmode="decimal" min="25" max="200" step="0.5" required>
-              <span class="hint">Sets your arm wrestling bracket.</span>
+              <input id="weight" name="weight_kg" type="number" inputmode="decimal" min="25" max="200" step="0.5" data-body-field>
+              <span class="hint" data-body-hint>Needed for arm wrestling and the other physical events.</span>
             </div>
 
             <div class="field field-full" role="group" aria-labelledby="events-label">
               <span id="events-label" class="field-label">Events you are entering</span>
               <div class="checks">
-          <label class="check"><input type="checkbox" name="events" value="table-tennis" data-event-box> Table Tennis</label>
+          <label class="check"><input type="checkbox" name="events" value="table-tennis" data-event-box data-body="required"> Table Tennis</label>
           <label class="check"><input type="checkbox" name="events" value="chess" data-event-box> Chess</label>
-          <label class="check"><input type="checkbox" name="events" value="arm-wrestling" data-event-box> Arm Wrestling</label>
-          <label class="check"><input type="checkbox" name="events" value="penalty-shootout" data-event-box> Penalty Shootout</label>
-          <label class="check"><input type="checkbox" name="events" value="throw-in-girls" data-event-box> Throw In (Girls)</label>
+          <label class="check"><input type="checkbox" name="events" value="arm-wrestling" data-event-box data-body="required"> Arm Wrestling</label>
+          <label class="check"><input type="checkbox" name="events" value="penalty-shootout" data-event-box data-body="required"> Penalty Shootout</label>
+          <label class="check"><input type="checkbox" name="events" value="throw-in-girls" data-event-box data-body="required"> Throw In (Girls)</label>
               </div>
               <span class="field-error" data-events-error hidden>Pick at least one event.</span>
               <span class="hint">Tick everything you want to play. One entry per event.</span>

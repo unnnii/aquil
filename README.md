@@ -25,6 +25,7 @@ A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event 
 | Page structure | Done | 7 pages plus a 404 |
 | Event list | Done | 9 competitions, 5 individual and 4 team |
 | Design system | Done | Hallmark Sport theme, token-driven, responsive to 360px |
+| Colour modes | Done | light and dark from one token system; switch in the masthead, follows the OS until someone chooses |
 | Mobile nav | Done | JS enhanced; falls back to a wrapped row without JS |
 | Individual form | Built, **not connected** | `register.html`, needs a Formspree ID |
 | Team form | Built, **not connected** | `register-team.html`, needs a Formspree ID |
@@ -100,8 +101,8 @@ No `package.json`, no lockfile, no build output. The repository is the site.
 | Specialisation | `specialisation` | select | no | None, CA, BA, Other |
 | Year | `year` | select | yes | 1, 2, 3 |
 | Contact number | `phone` | tel, autocomplete tel | yes | WhatsApp accepted; this replaces email |
-| Height | `height_cm` | number, 100 to 250 | yes | arm wrestling brackets |
-| Weight | `weight_kg` | number, 25 to 200, 0.5 steps | yes | arm wrestling brackets |
+| Height | `height_cm` | number, 100 to 250 | physical events | arm wrestling brackets |
+| Weight | `weight_kg` | number, 25 to 200, 0.5 steps | physical events | arm wrestling brackets |
 | Events | `events` | checkbox group, five individual events | at least one | enforced by `js/site.js` |
 | Rules | `agree_rules` | checkbox | yes | |
 | hidden | `_subject`, `_gotcha` | | | Formspree subject and honeypot |
@@ -122,6 +123,8 @@ No `package.json`, no lockfile, no build output. The repository is the site.
 | Rules | `agree_rules` | checkbox | yes | |
 | hidden | `_subject`, `_gotcha` | | | Formspree subject and honeypot |
 
+**"Physical events" means every individual event except chess:** table tennis, arm wrestling, penalty shootout and throw in. Tick chess alone and height and weight stop being required, and the hint says why. `js/site.js` moves the `required` attribute as the boxes change; without JavaScript both fields are simply optional.
+
 **There is no email field on either form, on purpose.** Participants are contacted on the phone number. Formspree still emails the *organiser* address each form was created with, so submissions are not lost.
 
 The course and year option lists now exist **twice**, once per form. Anything added to one must be added to the other.
@@ -135,17 +138,17 @@ Built with the **Hallmark** skill, version 2.0.0 (https://github.com/nutlope/hal
 - **Surfaces:** two rule weights, no boxed cards, no shadows. Rows and tables are separated by hairlines; a 2px bar rule opens and closes a table.
 - **Labels:** body face, one step smaller, sentence case, untracked. No eyebrows, no tracked capitals anywhere.
 - **Motion:** state only. A row lifts one paper step on hover, a link grows a deep-volt underline. No reveals, no parallax, nothing looping.
+- **Modes:** light and dark from the same tokens, never inverted. Dark re-derives each colour per the Hallmark recipe: paper at L 15% (never black), elevation stepping lighter, ink at 94% (never white), accent chroma down and lightness up, and both hues held at 250 and 120. `[data-mode]` on `html` wins; a `prefers-color-scheme` block covers scripting-off visitors. Body text drops to weight 350 in dark. The switch sits in the masthead and remembers the choice in `localStorage`.
 
 The skill's floor is binding: tokens for every colour and font, `overflow-x: clip` on html and body, `:focus-visible` on every control, reduced-motion fallback, no invented metrics or quotes. The stamp on line 1 of the stylesheet records the theme, the deal, the critique line and any waivers. Keep it there.
 
-**sloplint was not run.** It is a Node script and the build machine has no Node. On a machine with Node:
+**sloplint: clean.** Run on 2026-11-17 on a machine with Node, after the spacing, state, contrast and column-gap fixes:
 
 ```bash
-npx skills add nutlope/hallmark -g
-node ~/.claude/skills/hallmark/scripts/sloplint.mjs css/style.css --genre editorial --render
+node ~/.agents/skills/hallmark/scripts/sloplint.mjs css/style.css --genre editorial
 ```
 
-Fix every FAIL and waive or fix every REFLEX, recording waivers under the stamp.
+Result: **0 FAIL, 0 REFLEX, 0 WARN.** The render tier needs `puppeteer-core`, which was not installed, so the sweep also included a hand check in a real browser in both modes. Re-run this after any change to `css/style.css` and record the result in the stamp on line 1.
 
 ## Decisions, and why
 
@@ -159,6 +162,10 @@ Fix every FAIL and waive or fix every REFLEX, recording waivers under the stamp.
 8. **A ruled index, not cards.** The Sport theme refuses boxed cards: a competition is one row with its name and an enter link.
 9. **The programme is a sheet.** Times in mono, hairline rows, a bar rule top and bottom, and a horizontal scroller on narrow screens.
 10. **No photography.** The repo stays text-only so every change is diffable. If photos arrive, put them in `assets/`, follow the theme's duotone treatment, and credit them in the footer.
+
+11. **Two modes from one token system.** Dark is a second rendering, not an inversion: every colour is re-derived per the Hallmark recipe and every pairing was checked numerically in both modes (ink on paper 16.50:1, muted on paper-2 7.05:1, accent ink on volt 15.88:1). The switch is one button in the masthead, the choice is remembered, and the OS preference is honoured until someone overrides it. There is no flash: an inline script in the head sets the mode before first paint.
+
+12. **Height and weight only where they are used.** They exist for arm wrestling brackets, so chess alone no longer asks for them. The rule is data-driven: a tick-box carries `data-body="required"` when it is a physical event, and `js/site.js` moves the `required` attribute to match. Adding a physical event later is one attribute, not a code change.
 
 ## Placeholders to replace
 
@@ -292,6 +299,12 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 - **Fees removed from the copy entirely.** No price, and no "free" either. The FAQ question about cost was deleted, and the spectator answer no longer says "free".
 - The footer now links both forms.
 
+### 2026-11-17, modes, conditional body data, sloplint
+
+- **sloplint run for the first time** on a machine with Node: 0 FAIL, 0 REFLEX, 0 WARN. It found 8 REFLEX and 3 WARN, all fixed: six off-scale values now sit on the 4px scale, `:active` states were added everywhere, `.btn-volt:hover` went from 3.89:1 to 4.74:1 by switching to ink on the deep accent, the three column gaps collapsed into `--col-gap`, and the scrollbar is themed. The stamp on line 1 now records the pass instead of claiming Node was missing.
+- **Light and dark mode.** Every colour was re-derived per the Hallmark dark recipe rather than inverted: paper L 15%, elevation stepping lighter, ink 94%, accent chroma down and lightness up, hues held. All pairings were checked numerically in both modes. The switch is in the masthead, the choice persists in `localStorage`, the OS preference is honoured until overridden, and an inline script in the head sets the mode before first paint so there is no flash. `color-scheme` follows the mode so native controls and scrollbars match.
+- **Height and weight are no longer required from everyone.** They are asked for only when a physical event is ticked; chess alone makes them optional and says so in the hint. The rule lives in the markup (`data-body="required"`), not in the script, so changing which events need body data is an attribute edit.
+
 ## Next steps
 
 1. **Connect Formspree**, replacing `REPLACE_ME` in `register.html` and `register-team.html`.
@@ -301,7 +314,8 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 5. **Write the "what happens next" panel** on `register.html`; only a TODO comment remains.
 6. **Settle the fee question privately**, if there is one, and decide whether it ever appears on the site.
 7. **Publish the draw** in `schedule.html` once entries close.
-8. On a machine with Node: run `sloplint` on `css/style.css` and record the result in the stamp.
+
+**Done since this list was written:** `sloplint` has been run and is clean; the site ships light and dark; height and weight are conditional. See the session log above.
 
 ## Cleanup checklist, build machine
 
