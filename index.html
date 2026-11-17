@@ -3,13 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aquil Open, multi-sport tournament</title>
-<meta name="description" content="Aquil Open is a two-day multi-sport tournament. Six competitions, one venue. Register your team.">
-<meta property="og:title" content="Aquil Open, multi-sport tournament">
-<meta property="og:description" content="Aquil Open is a two-day multi-sport tournament. Six competitions, one venue. Register your team.">
+<title>Aquil Open, two-day multi-sport tournament</title>
+<meta name="description" content="Aquil Open is a two-day multi-sport tournament with six competitions at one venue. Enter a team for football, basketball, volleyball, badminton, table tennis or the 100m.">
+<meta property="og:title" content="Aquil Open, two-day multi-sport tournament">
+<meta property="og:description" content="Aquil Open is a two-day multi-sport tournament with six competitions at one venue. Enter a team for football, basketball, volleyball, badminton, table tennis or the 100m.">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#ffffff">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2314161a'/%3E%3Ctext x='16' y='23' font-family='Helvetica,Arial' font-size='18' font-weight='bold' fill='%23fff' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#f7f8fa">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230d1220'/%3E%3Ctext x='16' y='24' font-family='Arial Narrow,Helvetica,Arial' font-size='20' font-weight='700' fill='%23f7f8fa' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500&family=JetBrains+Mono:wght@500&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script>document.documentElement.className += ' js';</script>
 </head>
@@ -17,15 +20,15 @@
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<header class="site-header">
-  <div class="wrap header-inner">
-    <a class="brand" href="index.html">Aquil <span>Open</span></a>
+<header class="mast">
+  <div class="wrap mast-inner">
+    <a class="wordmark" href="index.html">Aquil</a>
     <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav">Menu</button>
     <nav class="nav" id="site-nav" data-nav>
       <a href="events.html">Competitions</a>
-      <a href="schedule.html">Schedule</a>
-      <a href="faq.html">Rules &amp; FAQ</a>
-      <a class="nav-cta" href="register.html">Register</a>
+      <a href="schedule.html">Programme</a>
+      <a href="faq.html">Questions</a>
+      <a class="btn btn-volt" href="register.html">Enter a team</a>
     </nav>
   </div>
 </header>
@@ -34,89 +37,16 @@
 
   <section class="hero">
     <div class="wrap">
-      <p class="eyebrow">Multi-sport tournament<!-- TODO: event type/positioning line --></p>
-      <h1>Aquil Open</h1><!-- TODO: event name -->
-      <p class="lede">Six competitions, two days, one venue. Bring a team, or come and watch.<!-- TODO: one-line pitch --></p>
-      <ul class="meta">
-        <li>Dates TBC</li><!-- TODO: dates -->
-        <li>Venue TBC</li><!-- TODO: venue + city -->
-        <li>6 competitions</li>
-      </ul>
+      <h1>Aquil Open</h1>
+      <p class="hero-line">A two-day multi-sport tournament, six competitions, one venue.</p>
+      <dl class="facts">
+        <div><dt>Dates</dt><dd>TBC</dd></div><!-- TODO: dates -->
+        <div><dt>Venue</dt><dd>TBC</dd></div><!-- TODO: venue and city -->
+        <div><dt>Entries close</dt><dd>TBC</dd></div><!-- TODO: deadline -->
+      </dl>
       <div class="actions">
-        <a class="btn btn-solid" href="register.html">Register a team</a>
-        <a class="btn btn-ghost" href="events.html">See competitions</a>
-      </div>
-    </div>
-  </section>
-
-  <div class="wrap">
-    <div class="stats">
-      <div class="stat"><span class="stat-num">6</span><span class="stat-label">Competitions</span></div>
-      <div class="stat"><span class="stat-num">TBC</span><span class="stat-label">Teams per sport</span></div><!-- TODO: capacity -->
-      <div class="stat"><span class="stat-num">2</span><span class="stat-label">Days of play</span></div>
-      <div class="stat"><span class="stat-num">TBC</span><span class="stat-label">Prize pool</span></div><!-- TODO: prize pool -->
-    </div>
-  </div>
-
-  <section class="section">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">Competitions</p>
-        <h2>Pick a sport. Bring a squad.</h2>
-        <p>Six brackets across two days. Some are team events, some you can enter alone. Every competition lists its format and squad size before you commit.</p>
-      </div>
-      <div class="grid">
-        <article class="card">
-          <div class="card-top"><h3>Football 5-a-side</h3><span class="tag">Team</span></div>
-          <dl class="spec">
-            <div><dt>Format</dt><dd>Groups + knockout</dd></div>
-            <div><dt>Squad</dt><dd>5 to 8</dd></div>
-            <div><dt>Entry</dt><dd>TBC</dd></div>
-          </dl>
-          <a class="card-link" href="register.html?event=football-5s">Register</a>
-        </article>
-        <article class="card">
-          <div class="card-top"><h3>Basketball 3x3</h3><span class="tag">Team</span></div>
-          <dl class="spec">
-            <div><dt>Format</dt><dd>Straight knockout</dd></div>
-            <div><dt>Squad</dt><dd>3 to 4</dd></div>
-            <div><dt>Entry</dt><dd>TBC</dd></div>
-          </dl>
-          <a class="card-link" href="register.html?event=basketball-3x3">Register</a>
-        </article>
-        <article class="card">
-          <div class="card-top"><h3>Volleyball</h3><span class="tag">Team</span></div>
-          <dl class="spec">
-            <div><dt>Format</dt><dd>Groups + knockout</dd></div>
-            <div><dt>Squad</dt><dd>6 to 10</dd></div>
-            <div><dt>Entry</dt><dd>TBC</dd></div>
-          </dl>
-          <a class="card-link" href="register.html?event=volleyball">Register</a>
-        </article>
-      </div>
-      <div class="section-foot"><a class="btn btn-ghost" href="events.html">All six competitions</a></div>
-    </div>
-  </section>
-
-  <section class="section section--wash">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">How it works</p>
-        <h2>Three steps from sign-up to first whistle.</h2>
-      </div>
-      <div class="steps">
-        <div class="step">
-          <h3>Choose your competition</h3>
-          <p>Each sport has its own bracket, squad size and entry fee. Single-entry events are marked on the competitions page.</p>
-        </div>
-        <div class="step">
-          <h3>Register your team</h3>
-          <p>One form per team, no account needed. You get an email confirmation, then we send the draw and check-in details.</p>
-        </div>
-        <div class="step">
-          <h3>Check in on the day</h3>
-          <p>Arrive 30 minutes before your first match with your full squad. Draws go up the evening before.</p>
-        </div>
+        <a class="btn btn-volt" href="register.html">Enter a team</a>
+        <a class="btn btn-line" href="events.html">See the competitions</a>
       </div>
     </div>
   </section>
@@ -124,75 +54,131 @@
   <section class="section">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow">Schedule</p>
-        <h2>Two days, back-to-back brackets.</h2>
-        <p>Group stages run in the morning, knockouts in the afternoon. The timetable is provisional until entries close.</p>
+        <h2>Six competitions</h2>
+        <p class="lede">Each sport runs its own draw. Enter one or several, as long as nobody plays twice in the same bracket.</p>
       </div>
-      <div class="table-wrap">
-        <table>
-          <caption class="hint caption">Provisional timetable. Final draw published after entries close.</caption>
-          <thead>
-            <tr><th scope="col">When</th><th scope="col">Sport</th><th scope="col">Stage</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Day 1, 09:00</td><td>Football 5-a-side</td><td>Group stage</td></tr>
-            <tr><td>Day 1, 11:30</td><td>Basketball 3x3</td><td>Group stage</td></tr>
-            <tr><td>Day 1, 14:00</td><td>Badminton doubles</td><td>Round of 16</td></tr>
-            <tr><td>Day 2, 09:00</td><td>Volleyball</td><td>Group stage</td></tr>
-            <tr><td>Day 2, 13:00</td><td>All sports</td><td>Finals</td></tr>
-          </tbody>
-        </table>
+      <div class="index">
+        <a class="index-row" href="register.html?event=football-5s">
+          <h3>Football 5-a-side</h3>
+          <span class="meta">Groups then knockout, squads of 5 to 8</span>
+          <span class="fee">Fee TBC</span>
+          <span class="enter">Enter</span>
+        </a>
+        <a class="index-row" href="register.html?event=basketball-3x3">
+          <h3>Basketball 3x3</h3>
+          <span class="meta">Straight knockout, squads of 3 to 4</span>
+          <span class="fee">Fee TBC</span>
+          <span class="enter">Enter</span>
+        </a>
+        <a class="index-row" href="register.html?event=volleyball">
+          <h3>Volleyball</h3>
+          <span class="meta">Groups then knockout, squads of 6 to 10</span>
+          <span class="fee">Fee TBC</span>
+          <span class="enter">Enter</span>
+        </a>
+        <a class="index-row" href="register.html?event=badminton-doubles">
+          <h3>Badminton doubles</h3>
+          <span class="meta">Knockout, pairs</span>
+          <span class="fee">Fee TBC</span>
+          <span class="enter">Enter</span>
+        </a>
+        <a class="index-row" href="register.html?event=table-tennis-singles">
+          <h3>Table tennis singles</h3>
+          <span class="meta">Knockout, singles</span>
+          <span class="fee">Fee TBC</span>
+          <span class="enter">Enter</span>
+        </a>
+        <a class="index-row" href="register.html?event=100m-sprint">
+          <h3>100m sprint</h3>
+          <span class="meta">Heats then final</span>
+          <span class="fee">Fee TBC</span>
+          <span class="enter">Enter</span>
+        </a>
       </div>
-      <div class="section-foot"><a class="btn btn-ghost" href="schedule.html">Full schedule</a></div>
     </div>
   </section>
 
-  <section class="cta-band">
-    <div class="wrap cta-inner">
+  <section class="section section-well">
+    <div class="wrap">
+      <div class="day-head">
+        <h2>The programme</h2>
+        <span class="label">Provisional</span>
+      </div>
+      <table class="sheet">
+        <caption>Group stages in the morning, finals on the second afternoon.</caption>
+        <thead>
+          <tr><th scope="col">Time</th><th scope="col">Sport</th><th scope="col">Stage</th><th scope="col">Court</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>09:00</td><td>Football 5-a-side</td><td class="stage">Group stage</td><td>Pitch TBC</td></tr>
+          <tr><td>11:30</td><td>Basketball 3x3</td><td class="stage">Group stage</td><td>Court TBC</td></tr>
+          <tr><td>14:00</td><td>Badminton doubles</td><td class="stage">Round of 16</td><td>Hall TBC</td></tr>
+          <tr><td>16:00</td><td>Table tennis singles</td><td class="stage">Semi-finals</td><td>Hall TBC</td></tr>
+        </tbody>
+      </table>
+      <div class="actions">
+        <a class="btn btn-line" href="schedule.html">The full programme</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap entry">
       <div>
-        <h2>Entries close TBC.</h2><!-- TODO: entry deadline -->
-        <p>One form per team. No account needed.</p>
+        <h2>Entry includes</h2>
+        <dl class="included mt-lg">
+          <div><dt>Officials</dt><dd>A referee or umpire on every match.</dd></div>
+          <div><dt>Equipment</dt><dd>Balls, nets and match kit provided.</dd></div>
+          <div><dt>Facilities</dt><dd>Changing rooms, water and a physio desk.</dd></div>
+          <div><dt>Format</dt><dd>Minimum two matches per team, every competition.</dd></div>
+        </dl>
       </div>
-      <div class="actions actions-flush">
-        <a class="btn btn-solid" href="register.html">Register a team</a>
-        <a class="btn btn-ghost" href="faq.html">Read the rules</a>
+      <div>
+        <h2>How to enter</h2>
+        <p class="lede mt-lg">One form per team, per competition. You get an email confirmation immediately, then we confirm your slot within two days and send the draw the week before.</p>
+        <div class="actions">
+          <a class="btn btn-volt" href="register.html">Enter a team</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-well">
+    <div class="wrap">
+      <h2>Questions</h2>
+      <div class="asks mt-lg">
+        <a href="faq.html">Who can enter, and how many players per squad?</a>
+        <a href="faq.html">What does it cost, and can we get a refund?</a>
+        <a href="faq.html">What happens if it rains?</a>
+        <a href="faq.html">Can spectators come?</a>
       </div>
     </div>
   </section>
 
 </main>
 
-<footer class="site-footer">
+<footer class="foot">
   <div class="wrap">
-    <div class="footer-grid">
+    <div class="foot-grid">
       <div>
-        <h4>Aquil Open</h4>
-        <p class="hint footer-note">A multi-sport tournament. Dates and venue TBC.</p>
+        <h2>Aquil Open</h2>
+        <p>A two-day multi-sport tournament. Dates and venue to be confirmed.</p>
       </div>
-      <div>
-        <h4>Site</h4>
-        <div class="stack">
-          <a href="events.html">Competitions</a>
-          <a href="schedule.html">Schedule</a>
-          <a href="register.html">Register</a>
-          <a href="faq.html">Rules &amp; FAQ</a>
-        </div>
+      <div class="col">
+        <a href="events.html">Competitions</a>
+        <a href="schedule.html">Programme</a>
+        <a href="register.html">Enter a team</a>
+        <a href="faq.html">Questions</a>
       </div>
-      <div>
-        <h4>Contact</h4>
-        <div class="stack">
-          <a href="mailto:hello@example.com">hello@example.com</a><!-- TODO: real contact email -->
-          <a href="#">Instagram</a><!-- TODO: real social link -->
-        </div>
-      </div>
-      <div>
-        <h4>Organiser</h4>
-        <p class="hint footer-note">TODO, organising club or committee.</p>
+      <div class="col">
+        <a href="mailto:hello@example.com">hello@example.com</a><!-- TODO: real contact email -->
+        <a href="#">Instagram</a><!-- TODO: real social link -->
+        <span class="hint">Organiser TBC</span><!-- TODO: organiser name -->
       </div>
     </div>
-    <div class="footer-bottom">
+    <div class="colophon">
       <span>&copy; <span data-year>2026</span> Aquil Open</span>
-      <span>Static site, no cookies, no tracking</span>
+      <span>No cookies, no analytics.</span>
     </div>
   </div>
 </footer>
