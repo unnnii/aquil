@@ -1,11 +1,11 @@
-# Aquil Open, event website
+# Heartian Hustle 3.0, event website
 
 > **If you are an AI agent opening this repository: read this whole file before you change anything.**
 > It is the single source of truth for what exists, what was decided and what is left to do.
 > If your context window is nearly full, read this file to the end and continue from "Next steps".
 > Do not redesign from scratch and do not introduce a framework.
 
-A static, multi-page website for **Aquil Open**, a two-day, six-competition multi-sport tournament.
+A static, multi-page website for **Heartian Hustle 3.0**, a two-day, six-competition multi-sport tournament.
 
 | | |
 | --- | --- |
@@ -88,7 +88,7 @@ grep -rn "TBC" *.html
 
 | What | Where | Currently |
 | --- | --- | --- |
-| Event name | `<title>`, wordmark, hero `h1`, footer, all pages | Aquil Open |
+| Event name | set across all pages | Heartian Hustle 3.0 (confirm the "3.0" styling) |
 | Dates | hero facts on index, schedule hero, footer | TBC |
 | Venue and city | hero facts, schedule court columns | TBC |
 | Entry deadline | hero facts on index and register, FAQ | TBC |
@@ -182,6 +182,10 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 - Built from a shared Windows machine with **no git, no gh CLI and no Node**, so every file went in through the GitHub REST API: seed `PUT /contents/index.html` (GitHub refuses to create a tree in an empty repo, 409), then `POST /git/trees` with inline content, `POST /git/commits`, `PATCH /git/refs/heads/main`. No clone, no local files, nothing installed.
 - Pages enabled on `main` at the root.
 
+### 2026-11-17, event named
+
+- Event name set to **Heartian Hustle 3.0**. The GitHub repository slug stays ~~unnnii/aquil~~ so the live URL does not change; rename the repo later only if you accept the URL move.
+
 ### 2026-11-17, Hallmark pass
 
 - Pulled the Hallmark skill from GitHub instead of `npx skills add`, because there is no npm or npx here. Read `SKILL.md`, `anatomy.md`, the editorial genre, `themes/sport.md` and gates sections 1 to 3.
@@ -211,7 +215,7 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 ## Resuming in a new session
 
 ```text
-I am continuing work on the Aquil Open event site: https://github.com/unnnii/aquil
+I am continuing work on the Heartian Hustle 3.0 event site: https://github.com/unnnii/aquil
 
 Read README.md first. It covers the structure, the Hallmark design system in use,
 the placeholders and the next steps. Do not redesign from scratch.
