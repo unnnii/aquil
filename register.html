@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Register, Aquil Open</title>
+<meta name="description" content="Register your team for Aquil Open. One form per team and competition: pick your sport, add your captain and squad details.">
+<meta property="og:title" content="Register, Aquil Open">
+<meta property="og:description" content="Register your team for Aquil Open. One form per team and competition: pick your sport, add your captain and squad details.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2314161a'/%3E%3Ctext x='16' y='23' font-family='Helvetica,Arial' font-size='18' font-weight='bold' fill='%23fff' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+<script>document.documentElement.className += ' js';</script>
+</head>
+
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html">Aquil <span>Open</span></a>
+    <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav class="nav" id="site-nav" data-nav>
+      <a href="events.html">Competitions</a>
+      <a href="schedule.html">Schedule</a>
+      <a href="faq.html">Rules &amp; FAQ</a>
+      <a class="nav-cta" href="register.html" aria-current="page">Register</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="page-head">
+    <div class="wrap">
+      <p class="eyebrow">Registration</p>
+      <h1>Enter your team.</h1>
+      <p class="lede">One form per team, per competition. Entries close TBC. You get an email confirmation the moment you submit.</p>
+    </div>
+  </section>
+
+  <section class="section section-flush">
+    <div class="wrap split">
+
+      <div class="form-col">
+
+        <div class="notice" data-form-notice hidden>
+          <strong>This form is not connected yet.</strong> The action still points at <code>REPLACE_ME</code>. Create a form at formspree.io, then swap the ID in <code>register.html</code>. Details are in the repository README.
+        </div>
+
+        <form class="form" method="POST" action="https://formspree.io/f/REPLACE_ME" data-register-form>
+          <div class="form-grid">
+
+            <div class="field field-full">
+              <label for="competition">Competition</label>
+              <select id="competition" name="competition" required data-event-select>
+                <option value="">Choose a sport</option>
+                <option value="football-5s">Football 5-a-side</option>
+                <option value="basketball-3x3">Basketball 3x3</option>
+                <option value="volleyball">Volleyball</option>
+                <option value="badminton-doubles">Badminton doubles</option>
+                <option value="table-tennis-singles">Table tennis singles</option>
+                <option value="100m-sprint">100m sprint</option>
+                <option value="other">Other, or suggest a sport</option>
+              </select>
+              <span class="hint">Coming from the competitions page? This is already filled in.</span>
+            </div>
+
+            <div class="field">
+              <label for="team">Team name</label>
+              <input id="team" name="team" type="text" autocomplete="organization" required placeholder="Riverside FC">
+            </div>
+
+            <div class="field">
+              <label for="captain">Captain name</label>
+              <input id="captain" name="captain" type="text" autocomplete="name" required>
+            </div>
+
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required>
+            </div>
+
+            <div class="field">
+              <label for="phone">Phone or WhatsApp</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" required>
+            </div>
+
+            <div class="field">
+              <label for="size">Squad size</label>
+              <input id="size" name="squad_size" type="number" min="1" max="20" step="1" value="5">
+            </div>
+
+            <div class="field">
+              <label for="level">Level</label>
+              <select id="level" name="level">
+                <option value="social">Social / casual</option>
+                <option value="competitive">Competitive</option>
+              </select>
+            </div>
+
+            <div class="field field-full">
+              <label for="notes">Anything we should know?</label>
+              <textarea id="notes" name="notes" placeholder="Preferred time slot, second competition, accessibility needs, spare players..."></textarea>
+            </div>
+
+            <div class="field field-full">
+              <label class="check" for="agree">
+                <input id="agree" name="agree_rules" type="checkbox" value="yes" required>
+                <span>I have read the <a href="faq.html">rules and FAQ</a> and confirm everyone on this squad is eligible.</span>
+              </label>
+            </div>
+
+            <div class="field field-full">
+              <button class="btn btn-solid btn-block" type="submit">Submit entry</button>
+              <span class="hint">No payment is taken here. Entry fees are collected at check-in.</span>
+            </div>
+
+          </div>
+
+          <input type="hidden" name="_subject" value="Aquil Open registration">
+          <input type="hidden" name="_gotcha" value="">
+        </form>
+
+      </div>
+
+      <aside class="aside">
+        <div class="aside-block">
+          <h3>What happens next</h3>
+          <ol class="numbered">
+            <li>You get an email confirmation straight away.</li>
+            <li>We check squad size and eligibility within two days.</li>
+            <li>The draw and your check-in time arrive the week before.</li>
+            <li>Entry fee is settled at check-in.</li>
+          </ol>
+        </div>
+        <div class="aside-block">
+          <h3>Entry fees</h3>
+          <p class="hint">TBC per competition. Solo events are cheaper than team events. Full list on the <a href="events.html">competitions page</a>.</p>
+        </div>
+        <div class="aside-block">
+          <h3>Entering two sports?</h3>
+          <p class="hint">Submit the form twice, once per competition, and mention it in the notes field. We will avoid clashing your time slots.</p>
+        </div>
+        <div class="aside-block">
+          <h3>Need help?</h3>
+          <p class="hint">Email <a href="mailto:hello@example.com">hello@example.com</a><!-- TODO: real contact email --> and we will reply within a day.</p>
+        </div>
+      </aside>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h4>Aquil Open</h4>
+        <p class="hint footer-note">A multi-sport tournament. Dates and venue TBC.</p>
+      </div>
+      <div>
+        <h4>Site</h4>
+        <div class="stack">
+          <a href="events.html">Competitions</a>
+          <a href="schedule.html">Schedule</a>
+          <a href="register.html">Register</a>
+          <a href="faq.html">Rules &amp; FAQ</a>
+        </div>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <div class="stack">
+          <a href="mailto:hello@example.com">hello@example.com</a><!-- TODO: real contact email -->
+          <a href="#">Instagram</a><!-- TODO: real social link -->
+        </div>
+      </div>
+      <div>
+        <h4>Organiser</h4>
+        <p class="hint footer-note">TODO, organising club or committee.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Aquil Open</span>
+      <span>Static site, no cookies, no tracking</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/site.js" defer></script>
+</body>
+</html>
