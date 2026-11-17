@@ -5,62 +5,109 @@
 > If your context window is nearly full, read this file to the end and continue from "Next steps".
 > Do not redesign from scratch and do not introduce a framework.
 
-A static, multi-page website for **Heartian Hustle 3.0**, a two-day, six-competition multi-sport tournament.
+A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event multi-sport tournament.
 
 | | |
 | --- | --- |
 | Live site | https://unnnii.github.io/aquil/ |
 | Repository | https://github.com/unnnii/aquil |
-| Owner | https://github.com/unnnii |
 | Stack | plain HTML, CSS, JavaScript. No framework, no build step, no bundler |
 | Fonts | Saira Condensed 800, Albert Sans 400/500, JetBrains Mono 500, served by Google Fonts |
 | Hosting | GitHub Pages, branch `main`, folder `/` |
 | Design system | Hallmark v2.0.0, theme "sport", genre editorial |
+| Registration | **one form per participant**, several events per entry, no email address |
 
 ## Status at a glance
 
 | Area | State | Notes |
 | --- | --- | --- |
 | Page structure | Done | 6 pages plus a 404 |
+| Event list | Done | 9 competitions, defined in three places (see below) |
 | Design system | Done | Hallmark Sport theme, token-driven, responsive to 360px |
 | Mobile nav | Done | JS enhanced; falls back to a wrapped row without JS |
 | Registration form | Built, **not connected** | needs a Formspree form ID, currently `REPLACE_ME` |
+| Form fields | Done | 8 required details plus an event tick-list; no email field |
 | Event content | **Placeholder** | every `TBC` and TODO comment must be replaced |
 | Hosting | Done | Pages enabled on `main`, repo root |
-| Custom domain | Not set | optional, Settings then Pages |
 | Analytics | None | deliberately. No cookies, nothing loaded from third parties except the font files |
+
+## The nine competitions
+
+Defined once in the build script and written into three files. Slugs are what `?event=` links and the form use.
+
+| Event | Slug | Format | Entry |
+| --- | --- | --- | --- |
+| Table Tennis | `table-tennis` | Singles knockout, best of five games to 11 | Singles |
+| Carroms | `carroms` | Knockout, two boards side by side | Singles or pairs |
+| Chess | `chess` | Knockout, 10 minutes each side | Singles |
+| Arm Wrestling | `arm-wrestling` | Weight-category knockout, best of three pulls | Singles |
+| Penalty Shootout | `penalty-shootout` | Five kicks each, sudden death if level | Singles |
+| Throw In (Girls) | `throw-in-girls` | Football throw-in for distance | Girls only |
+| Badminton | `badminton` | Singles and doubles knockout, best of three | Singles or pairs |
+| Football 7-a-side | `football-7s` | Groups then knockout, squads of 7 to 10 | Team |
+| Basketball 3x3 | `basketball-3s` | Groups then knockout, squads of 3 to 4 | Team |
+
+**Open question, recorded here so it is not lost:** the original brief listed "carroms" **twice**. It was treated as a typo and listed once. If carroms is really two events (singles and doubles, or junior and senior), split it into two rows, two slugs and two tick-boxes.
+
+The list lives in **three** places and must stay in sync:
+
+1. `index.html`, the nine index rows
+2. `events.html`, the same nine rows plus format text
+3. `register.html`, the tick-boxes; values are the slugs above. Links of the shape `register.html?event=table-tennis` tick that box on arrival (see `js/site.js`).
 
 ## File map
 
 ```
 aquil/
-|-- index.html        Hero, six-competition index, programme teaser, entry, questions
-|-- events.html       All six competitions as a ruled index, roster rules
+|-- index.html        Hero, nine-competition index, programme teaser, entry, questions
+|-- events.html       All nine competitions as a ruled index, entry rules, height and weight
 |-- schedule.html     Day one and day two sheets, on-the-day facts
-|-- register.html     Formspree form, competition selector, what-happens-next
-|-- faq.html          Ten questions as native details elements
+|-- register.html     Per-participant form with an event tick-list
+|-- faq.html          Fifteen questions as native details elements
 |-- 404.html          Not-found page
 |-- css/style.css     The whole design system. Hallmark stamp on line 1, tokens next
-|-- js/site.js        Mobile nav, ?event= preselect, form guard, footer year
+|-- js/site.js        Mobile nav, ?event= tick, form guard, footer year
 |-- .nojekyll         Stops GitHub Pages running Jekyll
 |-- README.md         This file
 ```
 
 No `package.json`, no lockfile, no build output. The repository is the site.
 
+## The registration form
+
+One submission per person. Fields, in page order:
+
+| Field | `name` | Control | Required | Notes |
+| --- | --- | --- | --- | --- |
+| Full name | `full_name` | text, autocomplete name | yes | |
+| Roll number | `roll_number` | text | yes | checked at the desk on the day |
+| Course | `course` | select | yes | B.Com, BCA, BBA, BA, B.Sc, B.Tech, Other |
+| Specialisation | `specialisation` | select | no | None, CA, BA, Other |
+| Year | `year` | select | yes | 1, 2, 3 |
+| Contact number | `phone` | tel, autocomplete tel | yes | WhatsApp accepted; this replaces email |
+| Height | `height_cm` | number, 100 to 250 | yes | arm wrestling brackets |
+| Weight | `weight_kg` | number, 25 to 200, 0.5 steps | yes | arm wrestling brackets |
+| Events | `events` | checkbox group, one per event | at least one | enforced by `js/site.js` |
+| Rules | `agree_rules` | checkbox | yes | |
+| hidden | `_subject`, `_gotcha` | | | Formspree email subject and honeypot |
+
+**There is no email field, on purpose.** Participants are contacted on the phone number. Formspree still emails the *organiser* address the form was created with, so submissions are not lost.
+
+The course, specialisation and year option lists are the obvious things to extend: they are plain `<option>` elements in `register.html`. Anything added there also needs a matching row in this README, nothing else.
+
 ## The design system
 
 Built with the **Hallmark** skill, version 2.0.0 (https://github.com/nutlope/hallmark). Read `skills/hallmark/SKILL.md` before changing the visual layer, and `references/themes/sport.md` for this theme's rules.
 
 - **Theme:** sport, chosen by hand from `references/themes/index.json` because Node was not available for `theme.mjs deal`. The stamp records `deal: manual`.
-- **Material:** cool concrete paper (`oklch(98% 0.005 250)`), blue-black ink, Saira Condensed 800 in capitals for display, Albert Sans for body, JetBrains Mono for times and fees. Volt `oklch(88% 0.2 120)` is the only accent and it is always a **fill** with ink on top, never type.
+- **Material:** cool concrete paper (`oklch(98% 0.005 250)`), blue-black ink, Saira Condensed 800 in capitals for display, Albert Sans for body, JetBrains Mono times and fees. Volt `oklch(88% 0.2 120)` is the only accent and always a **fill** with ink on top, never type.
 - **Surfaces:** two rule weights, no boxed cards, no shadows. Rows and tables are separated by hairlines; a 2px bar rule opens and closes a table.
 - **Labels:** body face, one step smaller, sentence case, untracked. No eyebrows, no tracked capitals anywhere.
 - **Motion:** state only. A row lifts one paper step on hover, a link grows a deep-volt underline. No reveals, no parallax, nothing looping.
 
-The skill's floor is binding: tokens for every colour and font, `overflow-x: clip` on html and body, `:focus-visible` on every control, reduced-motion fallback, no invented metrics or quotes. The stamp on line 1 of the stylesheet must stay there; it records the theme, the deal, the critique line and any waivers.
+The skill's floor is binding: tokens for every colour and font, `overflow-x: clip` on html and body, `:focus-visible` on every control, reduced-motion fallback, no invented metrics or quotes. The stamp on line 1 of the stylesheet records the theme, the deal, the critique line and any waivers. Keep it there.
 
-**sloplint was not run.** It is a Node script and this machine has no Node. On a machine with Node, do:
+**sloplint was not run.** It is a Node script and the build machine has no Node. On a machine with Node:
 
 ```bash
 npx skills add nutlope/hallmark -g
@@ -72,10 +119,12 @@ Fix every FAIL and waive or fix every REFLEX, recording waivers under the stamp.
 ## Decisions, and why
 
 1. **Static HTML instead of a framework.** Six pages of content. A build step would add Node and a deploy pipeline for no benefit and would make the site uneditable from a phone.
-2. **A ruled index, not cards.** The Sport theme refuses boxed cards: a competition is one row with name, format, fee and an enter link. It reads like a start list.
-3. **The programme is a sheet.** Times in mono, hairline rows, a bar rule top and bottom. That is the theme's signature and the page's most useful furniture.
-4. **Registration without a backend.** Formspree handles submissions and confirmations, so there is no server, no database and no credential to leak. Competitions link to `register.html?event=slug`, JavaScript preselects the sport, and the submission carries it as a field.
-5. **No photography.** The repo stays text-only so every change is diffable. If photos arrive, put them in `assets/`, follow the theme's duotone treatment, and credit them in the footer.
+2. **Registration is per person, not per team.** The form collects a roll number, course, year, height and weight, all of which belong to one individual. Team events therefore take the team name in the notes field rather than a squad table.
+3. **Events are tick-boxes, not a dropdown.** People commonly enter several events at once, and a single `<select>` can only carry one. `?event=slug` still pre-ticks the box.
+4. **No email anywhere.** A college event confirms on WhatsApp or a phone call. Removing the field also removes a whole class of "email never arrived" support.
+5. **A ruled index, not cards.** The Sport theme refuses boxed cards: a competition is one row with name, format, fee and an enter link.
+6. **The programme is a sheet.** Times in mono, hairline rows, a bar rule top and bottom, and a horizontal scroller on narrow screens.
+7. **No photography.** The repo stays text-only so every change is diffable. If photos arrive, put them in `assets/`, follow the theme's duotone treatment, and credit them in the footer.
 
 ## Placeholders to replace
 
@@ -88,39 +137,33 @@ grep -rn "TBC" *.html
 
 | What | Where | Currently |
 | --- | --- | --- |
-| Event name | set across all pages | Heartian Hustle 3.0 (confirm the "3.0" styling) |
-| Dates | hero facts on index, schedule hero, footer | TBC |
-| Venue and city | hero facts, schedule court columns | TBC |
+| Dates | hero facts on index and schedule, footer | TBC |
+| Venue and city | hero facts, schedule venue columns | TBC |
 | Entry deadline | hero facts on index and register, FAQ | TBC |
 | Entry fee | `events.html` rows, `faq.html`, register facts | TBC |
-| Team and solo counts | `events.html` hero facts | 3 and 3 |
 | Match times and draw | `schedule.html` sheets | provisional |
 | Contact email | footer, `events.html`, `register.html`, `faq.html` | hello@example.com |
 | Social link | footer | `href="#"` |
 | Organiser name | footer | Organiser TBC |
-| Eligibility, refunds, weather, spectators | `faq.html` | answers written, TBC where unresolved |
+| Course list | `register.html` `<select id="course">` | B.Com, BCA, BBA, BA, B.Sc, B.Tech, Other |
+| Specialisation list | `register.html` `<select id="specialisation">` | None, CA, BA, Other |
+| Arm wrestling weight classes | `events.html`, `schedule.html`, `faq.html` | not stated |
+| Whether other colleges may enter | `faq.html`, "Who can enter?" | TBC |
+| Refunds, weather, spectators | `faq.html` | written, TBC where unresolved |
 | Formspree form ID | `register.html` form action | `REPLACE_ME` |
-
-The competition list lives in **three** places and must stay in sync:
-
-1. `index.html`, the six index rows
-2. `events.html`, the full index
-3. `register.html`, the `<select>` options; values are the slugs used in `?event=` links
-
-Slugs: `football-5s`, `basketball-3x3`, `volleyball`, `badminton-doubles`, `table-tennis-singles`, `100m-sprint`, plus `other`.
 
 ## Registration setup
 
-The form is committed **switched off**: `js/site.js` finds `REPLACE_ME` in the action, shows the notice and disables the submit button.
+The form is committed **switched off**: `js/site.js` finds `REPLACE_ME` in the action, shows the notice, disables the button, and blocks any stray submit.
 
 1. Create a form at https://formspree.io (free tier: 50 submissions a month).
 2. Copy the endpoint, shaped like `https://formspree.io/f/abcdwxyz`.
 3. In `register.html`, replace the action URL.
 4. Commit. The notice hides and the button re-enables on its own.
 
-Fields: `competition`, `team`, `captain`, `email`, `phone`, `squad_size`, `level`, `notes`, `agree_rules`, plus hidden `_subject` and `_gotcha`.
+Because there is no email field, **tick "Reply-to" off or leave it empty** in Formspree, or set the reply address in the dashboard rather than from a form field.
 
-Optional: a hidden `_next` field with an absolute URL for a thank-you page, or swap the whole `<form>` for a Tally embed at https://tally.so (you lose the `?event=` preselect).
+Optional: a hidden `_next` field with an absolute URL for a thank-you page, or swap the whole `<form>` for a Tally embed at https://tally.so.
 
 ## Deploying
 
@@ -182,32 +225,40 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 - Built from a shared Windows machine with **no git, no gh CLI and no Node**, so every file went in through the GitHub REST API: seed `PUT /contents/index.html` (GitHub refuses to create a tree in an empty repo, 409), then `POST /git/trees` with inline content, `POST /git/commits`, `PATCH /git/refs/heads/main`. No clone, no local files, nothing installed.
 - Pages enabled on `main` at the root.
 
-### 2026-11-17, event named
-
-- Event name set to **Heartian Hustle 3.0**. The GitHub repository slug stays ~~unnnii/aquil~~ so the live URL does not change; rename the repo later only if you accept the URL move.
-
 ### 2026-11-17, Hallmark pass
 
-- Pulled the Hallmark skill from GitHub instead of `npx skills add`, because there is no npm or npx here. Read `SKILL.md`, `anatomy.md`, the editorial genre, `themes/sport.md` and gates sections 1 to 3.
-- Dealt the **sport** theme by hand (`deal: manual`) and rebuilt the visual layer to its rules: condensed caps, concrete paper, volt as fill, two rule weights, no boxed cards, no shadows.
-- Removed everything the skill's floor bans: every eyebrow, every tracked-capital label, the arrow gluing itself to link text, the slash-joined meta string, the literal colours that were sitting outside the token block.
-- Added the stamp and critique line to line 1 of `css/style.css`, `overflow-x: clip`, `:focus-visible` on all controls, and a reduced-motion fallback.
-- `sloplint` was not run: it needs Node. Results in the stamp say so rather than claiming a pass.
+- Pulled the Hallmark skill from GitHub instead of `npx skills add`, because there is no npm or npx on that machine. Read `SKILL.md`, `anatomy.md`, the editorial genre, `themes/sport.md` and gates sections 1 to 3.
+- Dealt the **sport** theme by hand (`deal: manual`) and rebuilt the visual layer to its rules.
+- Removed everything the skill's floor bans: every eyebrow, every tracked-capital label, the arrow glued to link text, the slash-joined meta string, the literal colours outside the token block.
+- `sloplint` was not run: it needs Node. The stamp says so rather than claiming a pass.
+
+### 2026-11-17, event named
+
+- Event name set to **Heartian Hustle 3.0**. The repository slug stays `unnnii/aquil` so the live URL does not change.
+
+### 2026-11-17, individual registration and the nine-event list
+
+- Registration rewritten from "enter a team" to **one form per participant**: full name, roll number, course, specialisation, year, contact number, height, weight, and a tick-box per event.
+- **Email removed everywhere** in the form. Confirmation now happens on the phone number.
+- Event list replaced: table tennis, carroms, chess, arm wrestling, penalty shootout, throw in (girls), badminton, football 7-a-side, basketball 3x3. Volleyball and the 100m sprint are gone.
+- Old per-team machinery deleted: team name, captain, squad size, level. Team events take a team name in the notes.
+- New CSS for the tick-box grid (`.checks`, `.field-label`, `.field-error`), one column on narrow screens.
+- `js/site.js` now ticks a checkbox from `?event=`, requires at least one event, and blocks submits while `REPLACE_ME` is still in the action.
 
 ## Next steps
 
-1. **Replace the placeholders**, starting with name, dates, venue and deadline, since they appear on every page.
-2. **Create the Formspree form** and swap `REPLACE_ME`.
-3. **Set the contact email and social link** in the footer of all six pages.
-4. **Confirm fees** and put them in the `events.html` rows and the FAQ.
-5. **Publish the draw** in `schedule.html` once entries close.
-6. Optional: `thanks.html` and a `_next` redirect on the form.
-7. Optional: an OG image at `assets/og.png` plus an `og:image` tag.
+1. **Connect Formspree**, replacing `REPLACE_ME` in `register.html`. Everything else on the form works already.
+2. **Confirm the event list**, especially the duplicate "carroms" in the brief, and set arm wrestling weight classes.
+3. **Replace the placeholders**: dates, venue, deadline, fees, contact email, social link, organiser name.
+4. **Extend the course, specialisation and year option lists** if the college has more.
+5. **Decide whether other colleges may enter**, and answer it in the FAQ.
+6. **Publish the draw** in `schedule.html` once entries close.
+7. Optional: a `thanks.html` page and a `_next` redirect on the form.
 8. On a machine with Node: run `sloplint` on `css/style.css` and record the result in the stamp.
 
-## Cleanup checklist, original machine
+## Cleanup checklist, build machine
 
-- [ ] Token `opencode-event-site` revoked at https://github.com/settings/tokens?type=beta
+- [ ] GitHub token used during the build revoked at https://github.com/settings/tokens?type=beta
 - [ ] GitHub signed out in the browser
 - [ ] Chat session deleted
 - [ ] Nothing was written to that machine's disk: no clone, no temp files
@@ -218,11 +269,15 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 I am continuing work on the Heartian Hustle 3.0 event site: https://github.com/unnnii/aquil
 
 Read README.md first. It covers the structure, the Hallmark design system in use,
-the placeholders and the next steps. Do not redesign from scratch.
+the nine events and their slugs, the registration fields, the placeholders and
+the next steps. Do not redesign from scratch.
 
 Stack: plain HTML, CSS and JS. No framework, no build step, GitHub Pages from main.
 Design system: Hallmark v2.0.0, theme "sport". Keep the stamp on line 1 of css/style.css
 and keep every colour and font behind a token.
+
+Registration is one form per participant, not per team, and there is no email field.
+The event list lives in three files: index.html, events.html, register.html.
 
 Before editing: grep -rn "TODO" *.html
 
