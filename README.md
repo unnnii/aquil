@@ -5,7 +5,7 @@
 > If your context window is nearly full, read this file to the end and continue from "Next steps".
 > Do not redesign from scratch and do not introduce a framework.
 
-A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event multi-sport tournament.
+A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event inter-college multi-sport tournament.
 
 | | |
 | --- | --- |
@@ -15,69 +15,81 @@ A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event 
 | Fonts | Saira Condensed 800, Albert Sans 400/500, JetBrains Mono 500, served by Google Fonts |
 | Hosting | GitHub Pages, branch `main`, folder `/` |
 | Design system | Hallmark v2.0.0, theme "sport", genre editorial |
-| Registration | **one form per participant**, several events per entry, no email address |
-| Entry fee | **None** | free entry, no payment step anywhere |
-| Eligibility | Inter-college | students of any college, roll number plus college ID |
+| Registration | **two forms**: individual, and team |
+| Fees | **not mentioned anywhere.** The site says nothing about a price, and nothing about being free |
 
 ## Status at a glance
 
 | Area | State | Notes |
 | --- | --- | --- |
-| Page structure | Done | 6 pages plus a 404 |
-| Event list | Done | 9 competitions, defined in three places (see below) |
+| Page structure | Done | 7 pages plus a 404 |
+| Event list | Done | 9 competitions, 5 individual and 4 team |
 | Design system | Done | Hallmark Sport theme, token-driven, responsive to 360px |
 | Mobile nav | Done | JS enhanced; falls back to a wrapped row without JS |
-| Registration form | Built, **not connected** | needs a Formspree form ID, currently `REPLACE_ME` |
-| Form fields | Done | 8 required details plus an event tick-list; no email field |
+| Individual form | Built, **not connected** | `register.html`, needs a Formspree ID |
+| Team form | Built, **not connected** | `register-team.html`, needs a Formspree ID |
+| Form fields | Done | see the two field tables below |
 | Event content | **Placeholder** | every `TBC` and TODO comment must be replaced |
 | Hosting | Done | Pages enabled on `main`, repo root |
 | Analytics | None | deliberately. No cookies, nothing loaded from third parties except the font files |
 
 ## The nine competitions
 
-Defined once in the build script and written into three files. Slugs are what `?event=` links and the form use.
-
-| Event | Slug | Format | Entry |
+| Event | Slug | Format | Form |
 | --- | --- | --- | --- |
-| Table Tennis | `table-tennis` | Singles knockout, best of five games to 11 | Singles |
-| Carroms | `carroms` | Knockout, two boards side by side | Singles or pairs |
-| Chess | `chess` | Knockout, 10 minutes each side | Singles |
-| Arm Wrestling | `arm-wrestling` | Weight-category knockout, best of three pulls | Singles |
-| Penalty Shootout | `penalty-shootout` | Five kicks each, sudden death if level | Singles |
-| Throw In (Girls) | `throw-in-girls` | Football throw-in for distance | Girls only |
-| Badminton | `badminton` | Singles and doubles knockout, best of three | Singles or pairs |
+| Table Tennis | `table-tennis` | Singles knockout, best of five games to 11 | Individual |
+| Chess | `chess` | Knockout, 10 minutes each side | Individual |
+| Arm Wrestling | `arm-wrestling` | Weight-category knockout, best of three pulls | Individual |
+| Penalty Shootout | `penalty-shootout` | Five kicks each, sudden death if level | Individual |
+| Throw In (Girls) | `throw-in-girls` | Football throw-in for distance, girls only | Individual |
+| Carroms | `carroms` | Knockout, two boards side by side | Team, pairs |
+| Badminton | `badminton` | Doubles knockout, best of three | Team, pairs |
 | Football 7-a-side | `football-7s` | Groups then knockout, squads of 7 to 10 | Team |
 | Basketball 3x3 | `basketball-3s` | Groups then knockout, squads of 3 to 4 | Team |
 
-**Open question, recorded here so it is not lost:** the original brief listed "carroms" **twice**. It was treated as a typo and listed once. If carroms is really two events (singles and doubles, or junior and senior), split it into two rows, two slugs and two tick-boxes.
+**Open question, recorded here so it is not lost:** the original brief listed "carroms" **twice**. It was treated as a typo and listed once. If carroms is really two events, split it into two rows, two slugs and two tick-boxes.
 
-The list lives in **three** places and must stay in sync:
+The list lives in **four** places and must stay in sync:
 
 1. `index.html`, the nine index rows
-2. `events.html`, the same nine rows plus format text
-3. `register.html`, the tick-boxes; values are the slugs above. Links of the shape `register.html?event=table-tennis` tick that box on arrival (see `js/site.js`).
+2. `events.html`, the same nine rows
+3. `register.html`, the individual tick-boxes (five events)
+4. `register-team.html`, the team event `<select>` (four events)
+
+Links of the shape `register.html?event=chess` tick the box, and `register-team.html?event=football-7s` picks the event in the select (see `js/site.js`).
+
+## The two forms
+
+| | Individual | Team |
+| --- | --- | --- |
+| Page | `register.html` | `register-team.html` |
+| Covers | Chess, table tennis, arm wrestling, penalty shootout, throw in | Carroms, badminton, football 7-a-side, basketball 3x3 |
+| Submissions | one per person, several events per submission | one per team |
+| Reached by | the nav "Register" button, and any individual row | the chooser at the top of `register.html`, and any team row |
+| Extra data | height and weight | captain's roll, course, year; squad list |
+
+`register.html` opens with a two-row chooser ("Individual events — this page" / "Team events — team form") before the form, so anyone who lands on Register can pick the right one. The nav deliberately does not have two buttons; the chooser does the routing.
 
 ## File map
 
 ```
 aquil/
 |-- index.html        Hero, nine-competition index, programme teaser, entry, questions
-|-- events.html       All nine competitions as a ruled index, entry rules, height and weight
+|-- events.html       All nine competitions, entry rules, height and weight
 |-- schedule.html     Day one and day two sheets, on-the-day facts
-|-- register.html     Per-participant form with an event tick-list
+|-- register.html     Individual form, with the chooser above it
+|-- register-team.html Team form: event, captain, squad list
 |-- faq.html          Fifteen questions as native details elements
 |-- 404.html          Not-found page
 |-- css/style.css     The whole design system. Hallmark stamp on line 1, tokens next
-|-- js/site.js        Mobile nav, ?event= tick, form guard, footer year
+|-- js/site.js        Mobile nav, ?event= preselect on both forms, form guards, footer year
 |-- .nojekyll         Stops GitHub Pages running Jekyll
 |-- README.md         This file
 ```
 
 No `package.json`, no lockfile, no build output. The repository is the site.
 
-## The registration form
-
-One submission per person. Fields, in page order:
+## The individual form fields
 
 | Field | `name` | Control | Required | Notes |
 | --- | --- | --- | --- | --- |
@@ -89,13 +101,29 @@ One submission per person. Fields, in page order:
 | Contact number | `phone` | tel, autocomplete tel | yes | WhatsApp accepted; this replaces email |
 | Height | `height_cm` | number, 100 to 250 | yes | arm wrestling brackets |
 | Weight | `weight_kg` | number, 25 to 200, 0.5 steps | yes | arm wrestling brackets |
-| Events | `events` | checkbox group, one per event | at least one | enforced by `js/site.js` |
+| Events | `events` | checkbox group, five individual events | at least one | enforced by `js/site.js` |
 | Rules | `agree_rules` | checkbox | yes | |
-| hidden | `_subject`, `_gotcha` | | | Formspree email subject and honeypot |
+| hidden | `_subject`, `_gotcha` | | | Formspree subject and honeypot |
 
-**There is no email field, on purpose.** Participants are contacted on the phone number. Formspree still emails the *organiser* address the form was created with, so submissions are not lost.
+## The team form fields
 
-The course, specialisation and year option lists are the obvious things to extend: they are plain `<option>` elements in `register.html`. Anything added there also needs a matching row in this README, nothing else.
+| Field | `name` | Control | Required | Notes |
+| --- | --- | --- | --- | --- |
+| Event | `event` | select, four team events | yes | preset by `?event=` |
+| Team name | `team` | text | yes | |
+| Captain | `captain` | text | yes | |
+| Captain roll number | `captain_roll` | text | yes | |
+| Captain course | `captain_course` | select | yes | same course list as the individual form |
+| Captain year | `captain_year` | select | yes | 1, 2, 3 |
+| Contact number | `phone` | tel | yes | |
+| Squad | `squad` | textarea | yes | one player per line: full name, roll number |
+| Notes | `notes` | textarea | no | |
+| Rules | `agree_rules` | checkbox | yes | |
+| hidden | `_subject`, `_gotcha` | | | Formspree subject and honeypot |
+
+**There is no email field on either form, on purpose.** Participants are contacted on the phone number. Formspree still emails the *organiser* address each form was created with, so submissions are not lost.
+
+The course and year option lists now exist **twice**, once per form. Anything added to one must be added to the other.
 
 ## The design system
 
@@ -120,15 +148,16 @@ Fix every FAIL and waive or fix every REFLEX, recording waivers under the stamp.
 
 ## Decisions, and why
 
-1. **Static HTML instead of a framework.** Six pages of content. A build step would add Node and a deploy pipeline for no benefit and would make the site uneditable from a phone.
-2. **Registration is per person, not per team.** The form collects a roll number, course, year, height and weight, all of which belong to one individual. Team events therefore take the team name in the notes field rather than a squad table.
-3. **Events are tick-boxes, not a dropdown.** People commonly enter several events at once, and a single `<select>` can only carry one. `?event=slug` still pre-ticks the box.
-4. **No email anywhere.** A college event confirms on WhatsApp or a phone call. Removing the field also removes a whole class of "email never arrived" support.
-5. **A ruled index, not cards.** The Sport theme refuses boxed cards: a competition is one row with name, format and an enter link.
-6. **The programme is a sheet.** Times in mono, hairline rows, a bar rule top and bottom, and a horizontal scroller on narrow screens.
-7. **No photography.** The repo stays text-only so every change is diffable. If photos arrive, put them in `assets/`, follow the theme's duotone treatment, and credit them in the footer.
-8. **Free entry, and open to other colleges.** With no fee there is no payment step, no refunds policy and no cash at the desk. Roll number plus college ID is the whole eligibility check, which also covers visiting colleges.
-9. **The what-happens-next panel is deliberately blank.** No confirmation timing has been agreed, so `register.html` promises nothing beyond a screen message once the form is live. Put the panel back when the process is settled.
+1. **Static HTML instead of a framework.** Seven pages of content. A build step would add Node and a deploy pipeline for no benefit and would make the site uneditable from a phone.
+2. **Two forms, split by event type.** The individual events need one person's details and several ticks; the team events need a captain and a roster. One form doing both would be heavy for a chess entrant and thin for a football squad.
+3. **The chooser lives on the Register page.** The nav has one Register button, not two, so the first thing a visitor sees is the choice, not a guess at which button is theirs.
+4. **Solid and paired events are team events.** Carroms and badminton are pairs, which the brief groups with football and basketball, and they register like teams: one submission with a partner named.
+5. **Events are tick-boxes on the individual form.** People commonly enter several at once, and a single `<select>` can only carry one.
+6. **No email anywhere.** Both forms confirm on WhatsApp or a phone call, which also removes a whole class of "email never arrived" support.
+7. **No fee in the copy.** The site does not advertise a price and does not advertise free entry either, because neither has been settled. When it is, it needs a decision and a place on the page.
+8. **A ruled index, not cards.** The Sport theme refuses boxed cards: a competition is one row with name, format and an enter link.
+9. **The programme is a sheet.** Times in mono, hairline rows, a bar rule top and bottom, and a horizontal scroller on narrow screens.
+10. **No photography.** The repo stays text-only so every change is diffable. If photos arrive, put them in `assets/`, follow the theme's duotone treatment, and credit them in the footer.
 
 ## Placeholders to replace
 
@@ -143,26 +172,28 @@ grep -rn "TBC" *.html
 | --- | --- | --- |
 | Dates | hero facts on index and schedule, footer | TBC |
 | Venue and city | hero facts, schedule venue columns | TBC |
-| Entry deadline | hero facts on index and register, FAQ | TBC |
+| Entry deadline | hero facts on index, both forms, FAQ | TBC |
 | Match times and draw | `schedule.html` sheets | provisional |
-| Contact email | footer, `events.html`, `register.html`, `faq.html` | hello@example.com |
+| Contact email | footer, `events.html`, `faq.html` | hello@example.com |
 | Social link | footer | `href="#"` |
 | Organiser name | footer | Organiser TBC |
-| What happens next panel | `register.html`, deliberately blank | TODO comment in the markup, nothing promises a timeline |
-| Course list | `register.html` `<select id="course">` | B.Com, BCA, BBA, BA, B.Sc, Psychology, Other |
-| Specialisation list | `register.html` `<select id="specialisation">` | None, CA, BA, Other |
+| Course list | both forms, `<select id="course">` | B.Com, BCA, BBA, BA, B.Sc, Psychology, Other |
+| Specialisation list | `register.html` | None, CA, BA, Other |
 | Arm wrestling weight classes | `events.html`, `schedule.html`, `faq.html` | not stated |
-| Refunds, weather, spectators | `faq.html` | written, TBC where unresolved |
-| Formspree form ID | `register.html` form action | `REPLACE_ME` |
+| Refunds, weather | `faq.html` | written, TBC where unresolved |
+| What happens next panel | `register.html`, deliberately blank | TODO comment, nothing promises a timeline |
+| Formspree form IDs | both forms, action URLs | `REPLACE_ME` |
 
 ## Registration setup
 
-The form is committed **switched off**: `js/site.js` finds `REPLACE_ME` in the action, shows the notice, disables the button, and blocks any stray submit.
+Both forms are committed **switched off**: `js/site.js` finds `REPLACE_ME` in the action, shows the notice, disables the button, and blocks any stray submit. Each form is handled separately, so they can stay off or come on independently.
 
-1. Create a form at https://formspree.io (free tier: 50 submissions a month).
+1. Create the form at https://formspree.io (free tier: 50 submissions a month each).
 2. Copy the endpoint, shaped like `https://formspree.io/f/abcdwxyz`.
-3. In `register.html`, replace the action URL.
-4. Commit. The notice hides and the button re-enables on its own.
+3. Replace the action URL in `register.html` and / or `register-team.html`.
+4. Commit. The notice hides and the button re-enables on that page.
+
+Two endpoints are recommended, so individual and team entries land in separate inboxes. One endpoint also works, since the two `_subject` values differ: `Heartian Hustle 3.0 individual entry` and `Heartian Hustle 3.0 team entry`.
 
 Because there is no email field, **tick "Reply-to" off or leave it empty** in Formspree, or set the reply address in the dashboard rather than from a form field.
 
@@ -241,30 +272,34 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 
 ### 2026-11-17, individual registration and the nine-event list
 
-- Registration rewritten from "enter a team" to **one form per participant**: full name, roll number, course, specialisation, year, contact number, height, weight, and a tick-box per event.
-- **Email removed everywhere** in the form. Confirmation now happens on the phone number.
+- Registration rewritten from "enter a team" to one form per participant: full name, roll number, course, specialisation, year, contact number, height, weight, plus a tick-box per event.
+- **Email removed** from the form. Confirmation happens on the phone number.
 - Event list replaced: table tennis, carroms, chess, arm wrestling, penalty shootout, throw in (girls), badminton, football 7-a-side, basketball 3x3. Volleyball and the 100m sprint are gone.
-- Old per-team machinery deleted: team name, captain, squad size, level. Team events take a team name in the notes.
-- New CSS for the tick-box grid (`.checks`, `.field-label`, `.field-error`), one column on narrow screens.
-- `js/site.js` now ticks a checkbox from `?event=`, requires at least one event, and blocks submits while `REPLACE_ME` is still in the action.
 
 ### 2026-11-17, free entry, inter-college, blank next steps
 
-- Every fee reference removed. The index lost its fee column (~~.index-row~~ is three columns now, not four), hero facts read Free, and the FAQ answers "Nothing".
-- Entry widened to **students of any college**. The roll number is still collected, now as the check-in key rather than a residency check.
-- The register page's "What happens next" panel was removed, replaced by a TODO comment. The page is single-column (~~.entry-single~~) until it returns.
-- Course list: **B.Tech replaced with Psychology**. Options are B.Com, BCA, BBA, BA, B.Sc, Psychology, Other.
-- "Can I get a refund?" became "Can I change my events after registering?", since free entry has nothing to refund.
+- Every fee reference removed, then **entry widened to students of any college**.
+- The register page's "What happens next" panel was removed, replaced by a TODO comment.
+- Course list: B.Tech replaced with Psychology.
+- "Can I get a refund?" became "Can I change my events after registering?".
+
+### 2026-11-17, two forms
+
+- Registration split by event type. `register.html` now covers the five individual events and opens with a chooser; the new `register-team.html` covers carroms, badminton, football 7-a-side and basketball 3x3, with the captain's details and a squad textarea.
+- Team rows on the home page and competitions page now link to `register-team.html?event=<slug>`.
+- `js/site.js` handles two forms: it preselects a checkbox or a select from `?event=`, guards both dead endpoints, and requires at least one event on the individual form.
+- **Fees removed from the copy entirely.** No price, and no "free" either. The FAQ question about cost was deleted, and the spectator answer no longer says "free".
+- The footer now links both forms.
 
 ## Next steps
 
-1. **Connect Formspree**, replacing `REPLACE_ME` in `register.html`. Everything else on the form works already.
-2. **Confirm the event list**, especially the duplicate "carroms" in the brief, and set arm wrestling weight classes.
+1. **Connect Formspree**, replacing `REPLACE_ME` in `register.html` and `register-team.html`.
+2. **Confirm the split**: five individual events, four team events, and the squad sizes on the team form.
 3. **Replace the placeholders**: dates, venue, deadline, contact email, social link, organiser name.
-4. **Extend the course, specialisation and year option lists** if the college has more.
-5. **Write the "what happens next" panel** on `register.html`: the four-step list was removed, only a TODO comment remains.
-6. **Publish the draw** in `schedule.html` once entries close.
-7. Optional: a `thanks.html` page and a `_next` redirect on the form.
+4. **Extend the course and year lists** on **both** forms if the college has more.
+5. **Write the "what happens next" panel** on `register.html`; only a TODO comment remains.
+6. **Settle the fee question privately**, if there is one, and decide whether it ever appears on the site.
+7. **Publish the draw** in `schedule.html` once entries close.
 8. On a machine with Node: run `sloplint` on `css/style.css` and record the result in the stamp.
 
 ## Cleanup checklist, build machine
@@ -280,15 +315,18 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 I am continuing work on the Heartian Hustle 3.0 event site: https://github.com/unnnii/aquil
 
 Read README.md first. It covers the structure, the Hallmark design system in use,
-the nine events and their slugs, the registration fields, the placeholders and
+the nine events and their slugs, the two registration forms, the placeholders and
 the next steps. Do not redesign from scratch.
 
 Stack: plain HTML, CSS and JS. No framework, no build step, GitHub Pages from main.
 Design system: Hallmark v2.0.0, theme "sport". Keep the stamp on line 1 of css/style.css
 and keep every colour and font behind a token.
 
-Registration is one form per participant, not per team, and there is no email field.
-The event list lives in three files: index.html, events.html, register.html.
+Registration is two forms: register.html for the five individual events (per person,
+several ticks) and register-team.html for carroms, badminton, football and basketball
+(one submission per team). Neither form has an email field and the site never mentions
+a fee. The event list lives in four files: index.html, events.html, register.html,
+register-team.html.
 
 Before editing: grep -rn "TODO" *.html
 
