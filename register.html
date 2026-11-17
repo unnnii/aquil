@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Register, Heartian Hustle 3.0</title>
-<meta name="description" content="Register for Heartian Hustle 3.0: free entry, open to students of any college. One form per participant, tick every event you are entering. No email needed, we contact you on the number you give.">
-<meta property="og:title" content="Register, Heartian Hustle 3.0">
-<meta property="og:description" content="Register for Heartian Hustle 3.0: free entry, open to students of any college. One form per participant, tick every event you are entering. No email needed, we contact you on the number you give.">
+<title>Individual entry, Heartian Hustle 3.0</title>
+<meta name="description" content="Individual entry for Heartian Hustle 3.0: chess, table tennis, arm wrestling, penalty shootout and throw in. One form per person, tick every event. Team events use the team form.">
+<meta property="og:title" content="Individual entry, Heartian Hustle 3.0">
+<meta property="og:description" content="Individual entry for Heartian Hustle 3.0: chess, table tennis, arm wrestling, penalty shootout and throw in. One form per person, tick every event. Team events use the team form.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#f7f8fa">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230d1220'/%3E%3Ctext x='16' y='24' font-family='Arial Narrow,Helvetica,Arial' font-size='20' font-weight='700' fill='%23f7f8fa' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
@@ -37,22 +37,40 @@
 
   <section class="hero">
     <div class="wrap">
-      <h1>Register</h1>
-      <p class="hero-line">One form per person, and one tick for every event you are entering.</p>
+      <h1>Individual entry</h1>
+      <p class="hero-line">Chess, table tennis, arm wrestling, penalty shootout and the throw in.</p>
       <dl class="facts">
         <div><dt>Entries close</dt><dd>TBC</dd></div><!-- TODO: deadline -->
-        <div><dt>Entry</dt><dd>Free</dd></div>
-        <div><dt>Events</dt><dd>Nine</dd></div>
+        <div><dt>Individual</dt><dd>Five</dd></div>
+        <div><dt>Team</dt><dd>Four</dd></div>
       </dl>
     </div>
   </section>
 
   <section class="section">
+    <div class="wrap">
+      <h2>Two forms</h2>
+      <div class="index mt-lg">
+        <a class="index-row" href="#entry-form">
+          <h3>Individual events</h3>
+          <span class="meta">Chess, table tennis, arm wrestling, penalty shootout, throw in</span>
+          <span class="enter">This page</span>
+        </a>
+        <a class="index-row" href="register-team.html">
+          <h3>Team events</h3>
+          <span class="meta">Carroms, badminton, football 7-a-side, basketball 3x3</span>
+          <span class="enter">Team form</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="entry-form">
     <div class="wrap entry entry-single">
 
       <div>
         <div class="notice" data-form-notice hidden>
-          <strong>This form is not connected yet.</strong> The action still reads <code>REPLACE_ME</code>. Create a form at formspree.io and swap the ID in <code>register.html</code>. The README has the steps.
+          <strong>This form is not connected yet.</strong> The action still reads <code>REPLACE_ME</code>. Create a form at formspree.io and swap the ID in the page. The README has the steps.
         </div>
 
         <form method="POST" action="https://formspree.io/f/REPLACE_ME" data-register-form>
@@ -125,14 +143,10 @@
               <span id="events-label" class="field-label">Events you are entering</span>
               <div class="checks">
           <label class="check"><input type="checkbox" name="events" value="table-tennis" data-event-box> Table Tennis</label>
-          <label class="check"><input type="checkbox" name="events" value="carroms" data-event-box> Carroms</label>
           <label class="check"><input type="checkbox" name="events" value="chess" data-event-box> Chess</label>
           <label class="check"><input type="checkbox" name="events" value="arm-wrestling" data-event-box> Arm Wrestling</label>
           <label class="check"><input type="checkbox" name="events" value="penalty-shootout" data-event-box> Penalty Shootout</label>
           <label class="check"><input type="checkbox" name="events" value="throw-in-girls" data-event-box> Throw In (Girls)</label>
-          <label class="check"><input type="checkbox" name="events" value="badminton" data-event-box> Badminton</label>
-          <label class="check"><input type="checkbox" name="events" value="football-7s" data-event-box> Football 7-a-side</label>
-          <label class="check"><input type="checkbox" name="events" value="basketball-3s" data-event-box> Basketball 3x3</label>
               </div>
               <span class="field-error" data-events-error hidden>Pick at least one event.</span>
               <span class="hint">Tick everything you want to play. One entry per event.</span>
@@ -140,7 +154,7 @@
 
             <div class="field field-full">
               <label for="notes">Anything else</label>
-              <textarea id="notes" name="notes" placeholder="Team name for football or basketball, time preferences, accessibility needs."></textarea>
+              <textarea id="notes" name="notes" placeholder="Time preferences, accessibility needs."></textarea>
             </div>
 
             <div class="field field-full">
@@ -152,12 +166,11 @@
 
             <div class="field field-full">
               <button class="btn btn-volt btn-block" type="submit">Submit entry</button>
-              <span class="hint">Entry is free. Nothing is paid anywhere on this form.</span>
             </div>
 
           </div>
 
-          <input type="hidden" name="_subject" value="Heartian Hustle 3.0 registration">
+          <input type="hidden" name="_subject" value="Heartian Hustle 3.0 individual entry">
           <input type="hidden" name="_gotcha" value="">
         </form>
       </div>
@@ -179,7 +192,8 @@
       <div class="col">
         <a href="events.html">Competitions</a>
         <a href="schedule.html">Programme</a>
-        <a href="register.html">Register</a>
+        <a href="register.html">Individual entry</a>
+        <a href="register-team.html">Team entry</a>
         <a href="faq.html">Questions</a>
       </div>
       <div class="col">
