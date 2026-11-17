@@ -150,11 +150,10 @@ code { font-family: var(--font-outlier); font-size: 0.92em; }
 
 /* Competition index ------------------------------------------------------- */
 .index { border-top: var(--rule-bar) solid var(--color-rule-2); }
-.index-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 0.7fr) auto; gap: var(--space-md); align-items: baseline; padding: var(--space-md) 0; border-bottom: var(--rule-hair) solid var(--color-rule); color: inherit; text-decoration: none; transition: background-color var(--dur-micro) var(--ease-out); }
+.index-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto; gap: var(--space-md); align-items: baseline; padding: var(--space-md) 0; border-bottom: var(--rule-hair) solid var(--color-rule); color: inherit; text-decoration: none; transition: background-color var(--dur-micro) var(--ease-out); }
 .index-row:hover { background: var(--color-paper-2); }
 .index-row h3 { font-size: var(--text-xl); }
 .index-row .meta { font-size: var(--text-sm); color: var(--color-ink-2); }
-.index-row .fee { font-family: var(--font-outlier); font-size: var(--text-sm); font-variant-numeric: tabular-nums; color: var(--color-muted); }
 .index-row .enter { font-family: var(--font-display); font-weight: var(--display-weight); font-size: var(--text-md); text-transform: uppercase; color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-accent); text-decoration-thickness: var(--rule-bar); text-underline-offset: 5px; }
 .index-row:hover .enter { text-decoration-color: var(--color-accent-deep); }
 
@@ -172,6 +171,7 @@ code { font-family: var(--font-outlier); font-size: 0.92em; }
 
 /* Entry band -------------------------------------------------------------- */
 .entry { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: var(--space-2xl); align-items: start; }
+.entry-single { grid-template-columns: minmax(0, 1fr); max-width: 760px; }
 .included { border-top: var(--rule-bar) solid var(--color-rule-2); }
 .included > div { display: grid; grid-template-columns: minmax(0, 0.55fr) minmax(0, 1fr); gap: var(--space-md); padding: var(--space-sm) 0; border-bottom: var(--rule-hair) solid var(--color-rule); }
 .included dt { font-size: var(--text-sm); font-weight: 500; color: var(--color-muted); }
