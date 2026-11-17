@@ -16,6 +16,8 @@ A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event 
 | Hosting | GitHub Pages, branch `main`, folder `/` |
 | Design system | Hallmark v2.0.0, theme "sport", genre editorial |
 | Registration | **one form per participant**, several events per entry, no email address |
+| Entry fee | **None** | free entry, no payment step anywhere |
+| Eligibility | Inter-college | students of any college, roll number plus college ID |
 
 ## Status at a glance
 
@@ -81,7 +83,7 @@ One submission per person. Fields, in page order:
 | --- | --- | --- | --- | --- |
 | Full name | `full_name` | text, autocomplete name | yes | |
 | Roll number | `roll_number` | text | yes | checked at the desk on the day |
-| Course | `course` | select | yes | B.Com, BCA, BBA, BA, B.Sc, B.Tech, Other |
+| Course | `course` | select | yes | B.Com, BCA, BBA, BA, B.Sc, Psychology, Other |
 | Specialisation | `specialisation` | select | no | None, CA, BA, Other |
 | Year | `year` | select | yes | 1, 2, 3 |
 | Contact number | `phone` | tel, autocomplete tel | yes | WhatsApp accepted; this replaces email |
@@ -122,9 +124,11 @@ Fix every FAIL and waive or fix every REFLEX, recording waivers under the stamp.
 2. **Registration is per person, not per team.** The form collects a roll number, course, year, height and weight, all of which belong to one individual. Team events therefore take the team name in the notes field rather than a squad table.
 3. **Events are tick-boxes, not a dropdown.** People commonly enter several events at once, and a single `<select>` can only carry one. `?event=slug` still pre-ticks the box.
 4. **No email anywhere.** A college event confirms on WhatsApp or a phone call. Removing the field also removes a whole class of "email never arrived" support.
-5. **A ruled index, not cards.** The Sport theme refuses boxed cards: a competition is one row with name, format, fee and an enter link.
+5. **A ruled index, not cards.** The Sport theme refuses boxed cards: a competition is one row with name, format and an enter link.
 6. **The programme is a sheet.** Times in mono, hairline rows, a bar rule top and bottom, and a horizontal scroller on narrow screens.
 7. **No photography.** The repo stays text-only so every change is diffable. If photos arrive, put them in `assets/`, follow the theme's duotone treatment, and credit them in the footer.
+8. **Free entry, and open to other colleges.** With no fee there is no payment step, no refunds policy and no cash at the desk. Roll number plus college ID is the whole eligibility check, which also covers visiting colleges.
+9. **The what-happens-next panel is deliberately blank.** No confirmation timing has been agreed, so `register.html` promises nothing beyond a screen message once the form is live. Put the panel back when the process is settled.
 
 ## Placeholders to replace
 
@@ -140,15 +144,14 @@ grep -rn "TBC" *.html
 | Dates | hero facts on index and schedule, footer | TBC |
 | Venue and city | hero facts, schedule venue columns | TBC |
 | Entry deadline | hero facts on index and register, FAQ | TBC |
-| Entry fee | `events.html` rows, `faq.html`, register facts | TBC |
 | Match times and draw | `schedule.html` sheets | provisional |
 | Contact email | footer, `events.html`, `register.html`, `faq.html` | hello@example.com |
 | Social link | footer | `href="#"` |
 | Organiser name | footer | Organiser TBC |
-| Course list | `register.html` `<select id="course">` | B.Com, BCA, BBA, BA, B.Sc, B.Tech, Other |
+| What happens next panel | `register.html`, deliberately blank | TODO comment in the markup, nothing promises a timeline |
+| Course list | `register.html` `<select id="course">` | B.Com, BCA, BBA, BA, B.Sc, Psychology, Other |
 | Specialisation list | `register.html` `<select id="specialisation">` | None, CA, BA, Other |
 | Arm wrestling weight classes | `events.html`, `schedule.html`, `faq.html` | not stated |
-| Whether other colleges may enter | `faq.html`, "Who can enter?" | TBC |
 | Refunds, weather, spectators | `faq.html` | written, TBC where unresolved |
 | Formspree form ID | `register.html` form action | `REPLACE_ME` |
 
@@ -213,7 +216,7 @@ Declared once at `:root` in `css/style.css`. No literal colour or font-family ap
 | `--color-focus` | `oklch(58% 0.145 125)` | focus rings |
 | `--font-display` | Saira Condensed 800 | heads, wordmark, buttons, figures |
 | `--font-body` | Albert Sans 400/500 | body, labels, nav |
-| `--font-outlier` | JetBrains Mono 500 | times, fees |
+| `--font-outlier` | JetBrains Mono 500 | times |
 
 Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the hero headline, sentence and actions fit 1280 x 800.
 
@@ -245,13 +248,21 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 - New CSS for the tick-box grid (`.checks`, `.field-label`, `.field-error`), one column on narrow screens.
 - `js/site.js` now ticks a checkbox from `?event=`, requires at least one event, and blocks submits while `REPLACE_ME` is still in the action.
 
+### 2026-11-17, free entry, inter-college, blank next steps
+
+- Every fee reference removed. The index lost its fee column (~~.index-row~~ is three columns now, not four), hero facts read Free, and the FAQ answers "Nothing".
+- Entry widened to **students of any college**. The roll number is still collected, now as the check-in key rather than a residency check.
+- The register page's "What happens next" panel was removed, replaced by a TODO comment. The page is single-column (~~.entry-single~~) until it returns.
+- Course list: **B.Tech replaced with Psychology**. Options are B.Com, BCA, BBA, BA, B.Sc, Psychology, Other.
+- "Can I get a refund?" became "Can I change my events after registering?", since free entry has nothing to refund.
+
 ## Next steps
 
 1. **Connect Formspree**, replacing `REPLACE_ME` in `register.html`. Everything else on the form works already.
 2. **Confirm the event list**, especially the duplicate "carroms" in the brief, and set arm wrestling weight classes.
-3. **Replace the placeholders**: dates, venue, deadline, fees, contact email, social link, organiser name.
+3. **Replace the placeholders**: dates, venue, deadline, contact email, social link, organiser name.
 4. **Extend the course, specialisation and year option lists** if the college has more.
-5. **Decide whether other colleges may enter**, and answer it in the FAQ.
+5. **Write the "what happens next" panel** on `register.html`: the four-step list was removed, only a TODO comment remains.
 6. **Publish the draw** in `schedule.html` once entries close.
 7. Optional: a `thanks.html` page and a `_next` redirect on the form.
 8. On a machine with Node: run `sloplint` on `css/style.css` and record the result in the stamp.
