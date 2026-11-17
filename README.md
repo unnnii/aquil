@@ -155,7 +155,7 @@ Fix every FAIL and waive or fix every REFLEX, recording waivers under the stamp.
 5. **Events are tick-boxes on the individual form.** People commonly enter several at once, and a single `<select>` can only carry one.
 6. **No email anywhere.** Both forms confirm on WhatsApp or a phone call, which also removes a whole class of "email never arrived" support.
 7. **No fee in the copy.** The site does not advertise a price and does not advertise free entry either, because neither has been settled. When it is, it needs a decision and a place on the page.
-8. **A ruled index, not cards.** The Sport theme refuses boxed cards: a competition is one row with name, format and an enter link.
+8. **A ruled index, not cards.** The Sport theme refuses boxed cards: a competition is one row with its name and an enter link.
 9. **The programme is a sheet.** Times in mono, hairline rows, a bar rule top and bottom, and a horizontal scroller on narrow screens.
 10. **No photography.** The repo stays text-only so every change is diffable. If photos arrive, put them in `assets/`, follow the theme's duotone treatment, and credit them in the footer.
 
