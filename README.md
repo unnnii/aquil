@@ -5,7 +5,7 @@
 > If your context window is nearly full, read this file to the end and continue from "Next steps".
 > Do not redesign from scratch and do not introduce a framework.
 
-A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event inter-college multi-sport tournament.
+A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event intra-college multi-sport tournament.
 
 | | |
 | --- | --- |
@@ -30,6 +30,7 @@ A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event 
 | Team form | Built, **not connected** | `register-team.html`, needs a Formspree ID |
 | Form fields | Done | see the two field tables below |
 | Event content | **Placeholder** | every `TBC` and TODO comment must be replaced |
+| Eligibility | Intra-college | students of the host college only, checked by roll number and ID |
 | Hosting | Done | Pages enabled on `main`, repo root |
 | Analytics | None | deliberately. No cookies, nothing loaded from third parties except the font files |
 
@@ -276,9 +277,9 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 - **Email removed** from the form. Confirmation happens on the phone number.
 - Event list replaced: table tennis, carroms, chess, arm wrestling, penalty shootout, throw in (girls), badminton, football 7-a-side, basketball 3x3. Volleyball and the 100m sprint are gone.
 
-### 2026-11-17, free entry, inter-college, blank next steps
+### 2026-11-17, free entry, eligibility, blank next steps
 
-- Every fee reference removed, then **entry widened to students of any college**.
+- Every fee reference removed. Eligibility is **intra-college**: students of this college only, verified by roll number at check-in.
 - The register page's "What happens next" panel was removed, replaced by a TODO comment.
 - Course list: B.Tech replaced with Psychology.
 - "Can I get a refund?" became "Can I change my events after registering?".
