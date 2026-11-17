@@ -28,8 +28,9 @@ A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event 
 | Colour modes | Done | light and dark from one token system; switch in the masthead, follows the OS until someone chooses |
 | Mobile nav | Done | JS enhanced; falls back to a wrapped row without JS |
 | Questions page | **Disabled** | still linked from the nav and footer, but shows a not-available notice and carries `noindex` |
-| Individual form | Built, **not connected** | `register.html`, needs a Formspree ID |
-| Team form | Built, **not connected** | `register-team.html`, needs a Formspree ID |
+| Individual form | Built, **not connected** | `register.html`, needs the Apps Script URL |
+| Team form | Built, **not connected** | `register-team.html`, needs the Apps Script URL |
+| Entry storage | Script written, **not deployed** | `apps-script/Code.gs`, appends to a Google Sheet |
 | Form fields | Done | see the two field tables below |
 | Event content | **Placeholder** | every `TBC` and TODO comment must be replaced |
 | Eligibility | Intra-college | students of the host college only, checked by roll number and ID |
@@ -86,6 +87,7 @@ aquil/
 |-- 404.html          Not-found page
 |-- css/style.css     The whole design system. Hallmark stamp on line 1, tokens next
 |-- js/site.js        Mobile nav, ?event= preselect on both forms, form guards, footer year
+|-- apps-script/Code.gs  Registration receiver: form POST in, Sheet row out
 |-- .nojekyll         Stops GitHub Pages running Jekyll
 |-- README.md         This file
 ```
@@ -106,7 +108,7 @@ No `package.json`, no lockfile, no build output. The repository is the site.
 | Weight | `weight_kg` | number, 25 to 200, 0.5 steps | physical events | arm wrestling brackets |
 | Events | `events` | checkbox group, five individual events | at least one | enforced by `js/site.js` |
 | Rules | `agree_rules` | checkbox | yes | |
-| hidden | `_subject`, `_gotcha` | | | Formspree subject and honeypot |
+| hidden | `_subject`, `_gotcha` | | | routes the entry, and traps bots |
 
 ## The team form fields
 
@@ -122,11 +124,11 @@ No `package.json`, no lockfile, no build output. The repository is the site.
 | Squad | `squad` | textarea | yes | one player per line: full name, roll number |
 | Notes | `notes` | textarea | no | |
 | Rules | `agree_rules` | checkbox | yes | |
-| hidden | `_subject`, `_gotcha` | | | Formspree subject and honeypot |
+| hidden | `_subject`, `_gotcha` | | | routes the entry, and traps bots |
 
 **"Physical events" means every individual event except chess:** table tennis, arm wrestling, penalty shootout and throw in. Tick chess alone and height and weight stop being required, and the hint says why. `js/site.js` moves the `required` attribute as the boxes change; without JavaScript both fields are simply optional.
 
-**There is no email field on either form, on purpose.** Participants are contacted on the phone number. Formspree still emails the *organiser* address each form was created with, so submissions are not lost.
+**There is no email field on either form, on purpose.** Participants are contacted on the phone number, and the confirmation page tells them no email is coming. Every submission is a row in a Google Sheet, so nothing depends on an inbox.
 
 The course and year option lists now exist **twice**, once per form. Anything added to one must be added to the other.
 
@@ -190,22 +192,68 @@ grep -rn "TBC" *.html
 | Arm wrestling weight classes | `events.html`, `schedule.html`, `faq.html` | not stated |
 | Refunds, weather | `faq.html` | written, TBC where unresolved |
 | What happens next panel | `register.html`, deliberately blank | TODO comment, nothing promises a timeline |
-| Formspree form IDs | both forms, action URLs | `REPLACE_ME` |
+| Registration endpoint | both forms, action URLs | `REPLACE_ME` |
 
-## Registration setup
+## Registration endpoint
 
-Both forms are committed **switched off**: `js/site.js` finds `REPLACE_ME` in the action, shows the notice, disables the button, and blocks any stray submit. Each form is handled separately, so they can stay off or come on independently.
+Both forms post to a **Google Apps Script web app** (`apps-script/Code.gs`). It appends each submission as a row in a Google Sheet and returns a small confirmation page. No third party sits in the middle, there is no monthly cap, and the entries land somewhere organisers can filter and sort when seeding draws and weight brackets.
 
-1. Create the form at https://formspree.io (free tier: 50 submissions a month each).
-2. Copy the endpoint, shaped like `https://formspree.io/f/abcdwxyz`.
-3. Replace the action URL in `register.html` and / or `register-team.html`.
-4. Commit. The notice hides and the button re-enables on that page.
+The `REPLACE_ME` guard in `js/site.js` is the switch: while the action contains it, the notice shows and the submit button is disabled. Put a real `/exec` URL in place and the form turns itself on.
 
-Two endpoints are recommended, so individual and team entries land in separate inboxes. One endpoint also works, since the two `_subject` values differ: `Heartian Hustle 3.0 individual entry` and `Heartian Hustle 3.0 team entry`.
+### One-time setup
 
-Because there is no email field, **tick "Reply-to" off or leave it empty** in Formspree, or set the reply address in the dashboard rather than from a form field.
+1. Create a Google Sheet, for example "Heartian Hustle 3.0 entries".
+2. In that sheet: **Extensions → Apps Script**, and delete the `myFunction` stub.
+3. Paste all of `apps-script/Code.gs` in, then save.
+4. **Deploy → New deployment → Web app.**
+   - Description: `Heartian Hustle entries`
+   - Execute as: **Me**
+   - Who has access: **Anyone** — not "Anyone with a Google account", entrants do not sign in.
+5. Authorise it. Google warns that the app is unverified because you are the developer; **Advanced → Go to … (unsafe)** is expected here, the script is your own.
+6. Copy the **Web app URL**, which ends in `/exec`.
+7. Put it in the `action` of **both** forms, replacing `https://formspree.io/f/REPLACE_ME`.
 
-Optional: a hidden `_next` field with an absolute URL for a thank-you page, or swap the whole `<form>` for a Tally embed at https://tally.so.
+One URL serves both forms. The script tells them apart by the hidden `_subject` field, so the two tabs stay separate without a second deployment.
+
+### What the sheet looks like
+
+Two tabs, created on the first submission, each with a frozen and styled header row:
+
+| Tab | Columns |
+| --- | --- |
+| **Individual entries** | received, full name, roll number, course, specialisation, year, contact, height, weight, events, anything else |
+| **Team entries** | received, event, team name, captain, captain roll, captain course, captain year, contact, squad, anything else |
+
+Ticked events are joined with commas, and slugs are turned into labels — `table-tennis, chess` is stored as `Table Tennis, Chess` — by the `LABELS` map at the top of the script. Roll numbers and phone numbers are written as plain text so leading zeros and long numbers survive.
+
+The script does three other things worth knowing:
+
+- It **locks** while appending, so two people submitting at the same moment cannot collide on a row.
+- It ignores `_gotcha` if that hidden field is filled, which is what a bot does, and stores nothing.
+- If a field the form requires arrives empty, it saves nothing and says so rather than writing a half row. The browser's own validation means this should never happen through the site.
+
+### Testing it
+
+1. Open the `/exec` URL directly. It should say the receiver is live. If it asks you to sign in, step 4 is wrong.
+2. Submit one real individual entry on the site. The row should appear within a second, and the browser should land on "Entry received".
+3. Submit one team entry. It should land in the other tab.
+4. Delete both test rows.
+
+### Changing things later
+
+The script reads fields by name, so a new optional field is ignored until it is added to the column list and redeployed.
+
+**Editing the script is not enough on its own.** The live `/exec` URL keeps serving the last deployed version, so after any change: **Deploy → Manage deployments → pencil → Version: New version → Deploy**. Keeping the URL, which is the point of "Manage deployments".
+
+If a submission fails, the visitor sees "Something went wrong, try again", and the reason is written to the Apps Script execution log (**Executions** in the editor sidebar).
+
+### Privacy
+
+The sheet holds roll numbers, phone numbers, heights and weights. Keep it **restricted to organiser accounts** — Share → General access → Restricted — and do not hand out the `/exec` URL as if it were a link to the entries. It only accepts POSTs, but there is no reason to advertise it.
+
+### If Apps Script does not work out
+
+The endpoint is one attribute in each form. Tally (free, unlimited) and Formspree (free for 50 a month per form) both slot into the same markup; only the URL, and the extra hidden fields, change.
 
 ## Deploying
 
@@ -232,7 +280,7 @@ The repository was never cloned on the machine that built it, so everything belo
 ```bash
 SHA=$(curl -s https://api.github.com/repos/unnnii/aquil/contents/register.html -H "Authorization: Bearer $GH_TOKEN" | python -c "import sys,json;print(json.load(sys.stdin)['sha'])")
 CONTENT=$(base64 -w0 register.html)
-curl -X PUT https://api.github.com/repos/unnnii/aquil/contents/register.html -H "Authorization: Bearer $GH_TOKEN" -H "Content-Type: application/json" -d "{\"message\":\"Connect Formspree\",\"content\":\"$CONTENT\",\"sha\":\"$SHA\"}"
+curl -X PUT https://api.github.com/repos/unnnii/aquil/contents/register.html -H "Authorization: Bearer $GH_TOKEN" -H "Content-Type: application/json" -d "{\"message\":\"Connect the registration endpoint\",\"content\":\"$CONTENT\",\"sha\":\"$SHA\"}"
 ```
 
 On a normal machine, `git clone https://github.com/unnnii/aquil.git` and work normally.
@@ -312,9 +360,18 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 - **The questions page is disabled, not deleted.** `faq.html` keeps its place in the nav and footer, but the body is now a short not-available notice, it carries `<meta name="robots" content="noindex">`, and its title and description were updated to match. The fifteen questions remain in git history and can be restored by reverting this commit.
 - **"Read the rules" now points at the rules.** `events.html` gained `id="rules"` on "How entries work"; the buttons on `events.html` and `schedule.html`, and the agreement links on both forms, point there instead of at the disabled page.
 
+### 2026-11-17, registration endpoint moved to Apps Script
+
+- Formspree's free tier is 50 submissions a month per form, and individual entries alone will pass that. A rejected submission is silent, which is the worst failure available for a registration form.
+- `apps-script/Code.gs` is the replacement: a web app that takes either form's POST, appends one row to a Google Sheet, and returns a confirmation page in the site's type and colour. Free, no cap, and the entries end up where organisers seed draws from.
+- One deployment serves both forms; the hidden `_subject` decides which tab the row goes to. Checkbox slugs are joined and expanded to labels, so the sheet reads "Table Tennis, Chess" rather than `table-tennis, chess`.
+- Rows are appended under a script lock, the `_gotcha` honeypot is honoured, and required fields are checked server-side. Roll numbers and phones are forced to plain text.
+- The script is committed here but **not deployed**, so both forms still carry `REPLACE_ME` and stay switched off. The `/exec` URL is the last missing piece.
+- The Formspree notes in this file were replaced rather than deleted: Formspree is still the fallback if Apps Script turns out to be a problem.
+
 ## Next steps
 
-1. **Connect Formspree**, replacing `REPLACE_ME` in `register.html` and `register-team.html`.
+1. **Deploy the registration receiver** and paste its `/exec` URL into both forms, replacing `REPLACE_ME`. Steps are under "Registration endpoint" above.
 2. **Confirm the split**: five individual events, four team events, and the squad sizes on the team form.
 3. **Replace the placeholders**: dates, venue, deadline, contact email, social link, organiser name.
 4. **Extend the course and year lists** on **both** forms if the college has more.
