@@ -305,6 +305,12 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 - **Light and dark mode.** Every colour was re-derived per the Hallmark dark recipe rather than inverted: paper L 15%, elevation stepping lighter, ink 94%, accent chroma down and lightness up, hues held. All pairings were checked numerically in both modes. The switch is in the masthead, the choice persists in `localStorage`, the OS preference is honoured until overridden, and an inline script in the head sets the mode before first paint so there is no flash. `color-scheme` follows the mode so native controls and scrollbars match.
 - **Height and weight are no longer required from everyone.** They are asked for only when a physical event is ticked; chess alone makes them optional and says so in the hint. The rule lives in the markup (`data-body="required"`), not in the script, so changing which events need body data is an attribute edit.
 
+### 2026-11-17, Entry includes removed
+
+- The "Entry includes" block on `index.html` is gone: officials, equipment, facilities and the "every entrant gets one match" line are no longer shown.
+- The section it shared with "How to enter" was a two-column `.entry` grid, so it now uses the existing `.entry-single` modifier. "How to enter" keeps the full width instead of sitting in a half-empty row.
+- `.included` stays in the stylesheet: `register-team.html` and `schedule.html` still use it.
+
 ## Next steps
 
 1. **Connect Formspree**, replacing `REPLACE_ME` in `register.html` and `register-team.html`.
