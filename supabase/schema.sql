@@ -12,10 +12,22 @@
 --
 -- What this creates:
 --   individual_entries  one row per person, several events allowed
---   team_entries        one row per team
+--   team_entries        one row per team, squad kept as jsonb
 --   admins              username + bcrypt password hash
 --   admin_sessions      server-side session tokens, 12 hour expiry
 --   login_attempts      lockout after 5 failures for 15 minutes
+--
+-- Team events:
+--   carroms, badminton-boys, badminton-girls, football-7s, basketball-3s.
+--   members is a jsonb array of objects with name, course, year and roll for
+--   everyone except the captain. team_entries_min_players enforces the event
+--   minimum on the captain plus those members.
+--
+-- Disabled events:
+--   arm-wrestling and throw-in-girls remain valid values in
+--   individual_entries.events. They are hidden by the disabled flag in
+--   js/config.js, not removed here, so switching them back on needs no
+--   migration.
 --
 -- Security model:
 --   anon (the publishable key in the browser) may INSERT entries and nothing
@@ -39,8 +51,6 @@ create table if not exists public.individual_entries (
   specialisation text check (char_length(specialisation) <= 40),
   year           smallint not null check (year between 1 and 5),
   phone          text not null check (phone ~ '^\+?[0-9][0-9 -]{6,17}$'),
-  height_cm      smallint check (height_cm between 100 and 250),
-  weight_kg      numeric(5,1) check (weight_kg between 25 and 200),
   events         text[] not null
                  check (cardinality(events) between 1 and 5)
                  check (events <@ array[
@@ -60,7 +70,8 @@ create table if not exists public.team_entries (
   id             uuid primary key default gen_random_uuid(),
   created_at     timestamptz not null default now(),
   event          text not null check (event in (
-                   'carroms', 'badminton', 'football-7s', 'basketball-3s'
+                   'carroms', 'badminton', 'badminton-boys', 'badminton-girls',
+                   'football-7s', 'basketball-3s'
                  )),
   team           text not null check (char_length(team) between 2 and 60),
   captain        text not null check (char_length(captain) between 2 and 80),
@@ -68,8 +79,21 @@ create table if not exists public.team_entries (
   captain_course text not null check (char_length(captain_course) between 2 and 40),
   captain_year   smallint not null check (captain_year between 1 and 5),
   phone          text not null check (phone ~ '^\+?[0-9][0-9 -]{6,17}$'),
-  squad          text not null check (char_length(squad) between 3 and 1200),
-  notes          text check (char_length(notes) <= 1000)
+  members        jsonb not null default '[]'::jsonb
+                 check (jsonb_typeof(members) = 'array'),
+  notes          text check (char_length(notes) <= 1000),
+  -- Minimums count the captain plus the listed members.
+  constraint team_entries_min_players check (
+    case event
+      when 'basketball-3s'   then jsonb_array_length(members) >= 2
+      when 'football-7s'     then jsonb_array_length(members) >= 9
+      when 'badminton-boys'  then jsonb_array_length(members) >= 1
+      when 'badminton-girls' then jsonb_array_length(members) >= 1
+      when 'badminton'       then jsonb_array_length(members) >= 1
+      when 'carroms'         then jsonb_array_length(members) >= 1
+      else true
+    end
+  )
 );
 
 create index if not exists team_entries_created_idx
