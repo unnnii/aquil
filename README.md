@@ -21,7 +21,7 @@ A static, multi-page website for **Heartian Hustle 3.0**, an intra-college multi
 
 | Area | State | Notes |
 | --- | --- | --- |
-| Page structure | Done | 7 pages plus a 404 and an unlisted admin console |
+| Page structure | Done | 8 pages plus a 404 and an unlisted admin console |
 | Event list | Done | nine events in the rulebook, eight entry routes because badminton enters as boys and girls. Arm wrestling and throw-in are disabled in `js/config.js` with their code kept; both register on the spot |
 | Points table | Done | all nine events on `index.html` and `events.html`, disabled ones included, as the fest's table does |
 | Design system | Done | Hallmark Sport theme, token-driven, responsive to 360px |
@@ -32,7 +32,7 @@ A static, multi-page website for **Heartian Hustle 3.0**, an intra-college multi
 | Team form | Done | `register-team.html`, posts to Supabase `team_entries` |
 | Entry storage | Live | Supabase project `rbmmhasdshbgxhjmshdk`; schema in `supabase/schema.sql` |
 | Admin console | Done, **unlisted** | `admin.html`, username and password, per-sport views, search, CSV |
-| Event content | Done | the 2026 rulebook is on `events.html`: general instructions, then each event's rules, date, time and venue |
+| Event content | Done | the 2026 rulebook is on `rules.html`: general instructions, then each event's rules, date, time and venue |
 | Eligibility | Intra-college | students of the host college only, checked by roll number and ID |
 | Analytics | None | deliberately. No cookies, nothing loaded from third parties except the font files |
 
@@ -61,7 +61,7 @@ The entry list lives in **three** places and must stay in sync:
 2. `register-team.html`, the team event select (five events)
 3. `supabase/schema.sql`, the same slugs in CHECK constraints
 
-The points table is a fourth copy, but it is content rather than an entry route: `index.html` and `events.html` print the same nine rows by hand, disabled events included, so an event change touches both tables too.
+The points table is a fourth copy, but it is content rather than an entry route: `index.html`, `events.html` and `rules.html` print the same nine rows by hand, disabled events included, so an event change touches all three tables too.
 
 The batch form has no event list in its markup: `js/register.js` builds each participant row's event select from `AQUIL_INDIVIDUAL_EVENTS`, which is `AQUIL_EVENTS` filtered to active individual events. That is why disabling an event needs no HTML edit.
 
@@ -86,7 +86,8 @@ Links of the shape `register.html?event=chess` preselect the event on the first 
 
     aquil/
     |-- index.html          Hero, points table, entry
-    |-- events.html         The rulebook: points table, general instructions, rules by event, contacts
+    |-- events.html         Points table, and the note that captains enter players
+    |-- rules.html          The 2026 rulebook: instructions, points, rules by event, contacts
     |-- schedule.html       Day one and day two sheets, on-the-day facts
     |-- register.html       Batch form: captain details, then one row per participant
     |-- register-team.html  Team form: event, captain, one row per member
@@ -234,7 +235,7 @@ If a page looks stale it is a cache, not a failed build; check the Pages build s
 
 ## History
 
-- **2026-11-18, the rulebook.** `events.html` now carries the fest's 2026 rulebook: the fourteen general instructions, the points table with the participation and no-show points, and a facts panel for each event with its rules, date, time and venue. Two faculty contacts close the page. The hero facts read nine events, five individual, four team. New CSS: `.rules`, `.rule-list`, `.event-meta`, `.points-note`.
+- **2026-11-18, the rulebook.** A new `rules.html` carries the fest's 2026 rulebook: the points table with the participation and no-show points, the fourteen general instructions, and a facts panel for each event with its rules, date, time and venue. Two faculty contacts close the page. It sits in the nav and footer of every page, the forms' "I have read the rules" link points at it, and `events.html` keeps just the points table. New CSS: `.rules`, `.rule-list`, `.event-meta`, `.points-note`.
 - **2026-11-18, team class and group.** The team form dropped the captain course select for a class typed in words, and now asks for the eleven-group picker the batch form uses. New column `team_group`; `captain_course` is kept but no longer required, so earlier entries keep their value.
 - **2026-11-18, the team captain is a contact.** The team form stopped counting the captain as a player: the member list tops up to `minPlayers` on its own and the error asks for that many players. `team_entries_min_players` now requires the same. The captain adds themselves as a member when they play. Existing entries are left alone by the `NOT VALID` constraint.
 - **2026-11-18, no notes field.** The Anything else textarea came off both forms and out of both payloads. The `notes` column stays in the database so entries collected earlier keep their text, and the console still prints it.
