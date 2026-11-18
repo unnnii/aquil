@@ -415,8 +415,7 @@
       captain_year: number(form, 'captain_year'),
       batch_group: text(form, 'batch_group'),
       phone: text(form, 'phone'),
-      participants: participantsFrom(form),
-      notes: text(form, 'notes') || null
+      participants: participantsFrom(form)
     };
   }
 
@@ -429,8 +428,7 @@
       captain_course: text(form, 'captain_course'),
       captain_year: number(form, 'captain_year'),
       phone: text(form, 'phone'),
-      members: membersFrom(form),
-      notes: text(form, 'notes') || null
+      members: membersFrom(form)
     };
   }
 

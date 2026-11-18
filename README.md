@@ -117,7 +117,6 @@ No `package.json`, no lockfile, no build output. The repository is the site.
 | Group | `batch_group` | select, eleven groups | yes | replaces specialisation; one group per batch |
 | Contact number | `phone` | tel, autocomplete tel | yes | one number per batch; WhatsApp accepted |
 | Participants | `participants` | generated rows, added and removed in the page | at least one | each row is name, year, roll, event |
-| Notes | `notes` | textarea | no | |
 | Rules | `agree_rules` | checkbox | yes | |
 | hidden | `_gotcha` | | | traps bots |
 
@@ -155,7 +154,6 @@ The list lives in two places: `AQUIL_GROUPS` in `js/config.js` and the `batch_gr
 | Captain year | `captain_year` | select | yes | 1, 2, 3 |
 | Captain's contact number | `phone` | tel | yes | one number per team |
 | Members | `members` | generated rows, added and removed in the page | yes | each row is name, course, year, roll; sent as a jsonb array |
-| Notes | `notes` | textarea | no | |
 | Rules | `agree_rules` | checkbox | yes | |
 | hidden | `_gotcha` | | | traps bots |
 
@@ -235,6 +233,7 @@ If a page looks stale it is a cache, not a failed build; check the Pages build s
 
 ## History
 
+- **2026-11-18, no notes field.** The Anything else textarea came off both forms and out of both payloads. The `notes` column stays in the database so entries collected earlier keep their text, and the console still prints it.
 - **2026-11-18, captain class and year.** The batch form now asks the captain for a class, typed in words, and a year. Participant rows call the column Year, which is what the select always stored, and send `year`; older rows keep `class`, which is still read everywhere.
 - **2026-11-18, points table.** The index rows came off `index.html` and `events.html`; both pages now print the fest's points distribution for all nine events, disabled ones included. Entry is through the two form buttons.
 - **2026-11-18, batch entry and light only.** Individual self-registration replaced by one form per batch: captain details, group, then a row per participant with name, class, roll and event. New `batch_entries` table with a jsonb participants array and a validator function; specialisation dropped. The admin console reads batch entries, counts participants per sport and prints one participant per line in the table and the CSV. The dark theme, its masthead switch, its token block and the pre-paint script were deleted; `color-scheme` is light.
