@@ -233,7 +233,8 @@
   }
 
   function participantsFrom(form) {
-    return Array.prototype.slice.call(form.querySelectorAll('[data-row]'))
+    var list = form.querySelector('[data-participants]') || form;
+    return Array.prototype.slice.call(list.querySelectorAll('[data-row]'))
       .map(function (row) {
         var value = function (name) {
           var field = row.querySelector('[name="' + name + '"]');
@@ -313,7 +314,8 @@
   }
 
   function membersFrom(form) {
-    return Array.prototype.slice.call(form.querySelectorAll('[data-row]'))
+    var list = form.querySelector('[data-members]') || form;
+    return Array.prototype.slice.call(list.querySelectorAll('[data-row]'))
       .map(function (row) {
         var value = function (name) {
           var field = row.querySelector('[name="' + name + '"]');
