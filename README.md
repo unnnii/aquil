@@ -75,7 +75,7 @@ Links of the shape `register.html?event=chess` preselect the event on the first 
 | Covers | Table tennis, chess, penalty shootout (arm wrestling and throw-in hidden) | Carroms, badminton boys, badminton girls, football 7-a-side, basketball 3x3 |
 | Who fills it in | one batch captain, on behalf of the batch | one team captain, on behalf of the team |
 | Submissions | one per batch, however many participants | one per team |
-| Extra data | the captain's group, then one row per participant with name, class, roll and event | the captain's course and year, then one row per member with name, course, year and roll |
+| Extra data | the captain's group, then one row per participant with name, year, roll and event | the captain's class, year and group, then one row per member with name, course, year and roll |
 | Cross-link | hero button to the team form | hero button to the batch form |
 
 **Why batch captains, not individuals.** The individual events were previously self-service, one row per person ticking up to five sports. That produced duplicate people, mismatched roll numbers and no single contact for a batch. Now one captain owns the list, which matches how the college actually collects names and makes the desk check one call instead of thirty.
@@ -150,7 +150,8 @@ The list lives in two places: `AQUIL_GROUPS` in `js/config.js` and the `batch_gr
 | Team name | `team` | text | yes | |
 | Captain | `captain` | text | yes | the team's contact; not counted as a player |
 | Captain roll number | `captain_roll` | text | yes | |
-| Captain course | `captain_course` | select | yes | same course list as the batch form |
+| Class | `captain_class` | text | yes | typed in words, e.g. `B.Com Tax A` |
+| Group | `team_group` | select, eleven groups | yes | the same combined groups as the batch form |
 | Captain year | `captain_year` | select | yes | 1, 2, 3 |
 | Captain's contact number | `phone` | tel | yes | one number per team |
 | Members | `members` | generated rows, added and removed in the page | yes | each row is name, course, year, roll; sent as a jsonb array |
@@ -194,7 +195,7 @@ Supabase project `rbmmhasdshbgxhjmshdk`. `supabase/schema.sql` creates:
 | Table | Holds |
 | --- | --- |
 | `batch_entries` | id, created_at, captain, captain_roll, batch_group, phone, participants jsonb, notes |
-| `team_entries` | id, created_at, event, team, captain, captain_roll, captain_course, captain_year, phone, members jsonb, notes |
+| `team_entries` | id, created_at, event, team, captain, captain_roll, captain_class, captain_year, team_group, phone, members jsonb, notes. `captain_course` stays for teams entered before 18 Nov 2026 |
 | `admins` | username, password_hash (bcrypt via pgcrypto) |
 | `admin_sessions` | token, username, created_at, expires_at (12 hours) |
 | `login_attempts` | username, failures, locked_until (5 failures, 15 minute lockout) |
@@ -233,6 +234,7 @@ If a page looks stale it is a cache, not a failed build; check the Pages build s
 
 ## History
 
+- **2026-11-18, team class and group.** The team form dropped the captain course select for a class typed in words, and now asks for the eleven-group picker the batch form uses. New column `team_group`; `captain_course` is kept but no longer required, so earlier entries keep their value.
 - **2026-11-18, the team captain is a contact.** The team form stopped counting the captain as a player: the member list tops up to `minPlayers` on its own and the error asks for that many players. `team_entries_min_players` now requires the same. The captain adds themselves as a member when they play. Existing entries are left alone by the `NOT VALID` constraint.
 - **2026-11-18, no notes field.** The Anything else textarea came off both forms and out of both payloads. The `notes` column stays in the database so entries collected earlier keep their text, and the console still prints it.
 - **2026-11-18, captain class and year.** The batch form now asks the captain for a class, typed in words, and a year. Participant rows call the column Year, which is what the select always stored, and send `year`; older rows keep `class`, which is still read everywhere.

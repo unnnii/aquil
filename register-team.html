@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500&family=JetBrains+Mono:wght@500&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20261118e">
+<link rel="stylesheet" href="css/style.css?v=20261118f">
 <script>document.documentElement.className += ' js';</script>
 </head>
 
@@ -89,17 +89,9 @@
             </div>
 
             <div class="field">
-              <label for="captain_course">Captain course</label>
-              <select id="captain_course" name="captain_course" required>
-                <option value="">Choose a course</option>
-                <option value="bcom">B.Com</option>
-                <option value="bca">BCA</option>
-                <option value="bba">BBA</option>
-                <option value="ba">BA</option>
-                <option value="bsc">B.Sc</option>
-                <option value="psychology">Psychology</option>
-                <option value="other">Other</option>
-              </select>
+              <label for="captain_class">Class</label>
+              <input id="captain_class" name="captain_class" type="text" placeholder="e.g. B.Com Tax A" required>
+              <span class="hint">Write it in words, as it appears on your ID.</span>
             </div>
 
             <div class="field">
@@ -110,6 +102,25 @@
                 <option value="2">2nd year</option>
                 <option value="3">3rd year</option>
               </select>
+            </div>
+
+            <div class="field">
+              <label for="team_group">Group</label>
+              <select id="team_group" name="team_group" required>
+                <option value="">Choose a group</option>
+                <option value="bcom-tax-a-mcom">B.Com Tax A &amp; M.Com</option>
+                <option value="bcom-tax-b">B.Com Tax B</option>
+                <option value="bcom-ca-msw">B.Com CA &amp; MSW</option>
+                <option value="bcom-fa-msc-evs">B.Com FA &amp; M.Sc EVS</option>
+                <option value="bcom-ba">B.Com BA</option>
+                <option value="bsc-msc-psy">B.Sc &amp; M.Sc Psy</option>
+                <option value="bba-im-bsw">BBA IM &amp; BSW</option>
+                <option value="bba-ba-lsm">BBA BA &amp; LSM</option>
+                <option value="bca-msc-ai">BCA + M.Sc AI</option>
+                <option value="bsc-ca-bcom-tt-gt">B.Sc CA, B.Com TT &amp; GT</option>
+                <option value="ba-ma-eng-bsc-eco">BA, MA Eng &amp; B.Sc Eco</option>
+              </select>
+              <span class="hint">The combined group your team is under.</span>
             </div>
 
             <div class="field field-full">
@@ -178,8 +189,8 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=20261118e" defer></script>
-<script src="js/site.js?v=20261118e" defer></script>
-<script src="js/register.js?v=20261118e" defer></script>
+<script src="js/config.js?v=20261118f" defer></script>
+<script src="js/site.js?v=20261118f" defer></script>
+<script src="js/register.js?v=20261118f" defer></script>
 </body>
 </html>

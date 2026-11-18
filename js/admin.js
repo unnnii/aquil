@@ -57,6 +57,9 @@
       { key: 'team', label: 'Team' },
       { key: 'captain', label: 'Captain' },
       { key: 'captain_roll', label: 'Roll' },
+      { key: 'captain_class', label: 'Class' },
+      { key: 'captain_year', label: 'Year' },
+      { key: 'team_group', label: 'Group' },
       { key: 'phone', label: 'Contact' },
       { key: 'members', label: 'Members' },
       { key: 'notes', label: 'Notes' }
@@ -275,7 +278,7 @@
 
     /* Also index what the table actually shows, so "Table Tennis", "BCA"
        and "2nd year" match a row that stores a slug or a code. */
-    ['captain_class', 'course', 'captain_course', 'batch_group', 'year', 'captain_year']
+    ['captain_class', 'course', 'captain_course', 'batch_group', 'team_group', 'year', 'captain_year']
       .forEach(function (key) {
         if (row[key] !== undefined) { parts.push(cellValue(row, key)); }
       });
@@ -344,7 +347,7 @@
     if (key === 'participants') {
       return participantText(row.participants).join('\n') || '—';
     }
-    if (key === 'batch_group') { return groupLabel(row.batch_group); }
+    if (key === 'batch_group' || key === 'team_group') { return groupLabel(row[key]); }
     var value = row[key];
     if (value === null || value === undefined || value === '') { return '—'; }
 

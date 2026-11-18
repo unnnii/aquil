@@ -136,8 +136,18 @@ create table if not exists public.team_entries (
   team           text not null check (char_length(team) between 2 and 60),
   captain        text not null check (char_length(captain) between 2 and 80),
   captain_roll   text not null check (captain_roll ~ '^[A-Za-z0-9 ./_-]{1,20}$'),
-  captain_course text not null check (char_length(captain_course) between 2 and 40),
+  -- The captain's own class, typed in words, and the combined group the team
+  -- is under. Nullable so entries written before 18 Nov 2026 stay valid.
+  captain_class  text check (captain_class is null or char_length(captain_class) between 2 and 60),
   captain_year   smallint not null check (captain_year between 1 and 5),
+  team_group     text check (team_group is null or team_group in (
+                   'bcom-tax-a-mcom', 'bcom-tax-b', 'bcom-ca-msw',
+                   'bcom-fa-msc-evs', 'bcom-ba', 'bsc-msc-psy',
+                   'bba-im-bsw', 'bba-ba-lsm', 'bca-msc-ai',
+                   'bsc-ca-bcom-tt-gt', 'ba-ma-eng-bsc-eco'
+                 )),
+  -- Legacy: the course select was replaced by the typed class on 18 Nov 2026.
+  captain_course text check (captain_course is null or char_length(captain_course) between 2 and 40),
   phone          text not null check (phone ~ '^\+?[0-9][0-9 -]{6,17}$'),
   members        jsonb not null default '[]'::jsonb
                  check (jsonb_typeof(members) = 'array'),
@@ -180,6 +190,21 @@ alter table public.team_entries
       else true
     end
   ) not valid;
+
+-- Projects created before 18 Nov 2026 asked for a course instead of a class
+-- and had no group on the team. The course column stays so those entries keep
+-- their value, but it is no longer required.
+alter table public.team_entries
+  add column if not exists captain_class text
+    check (captain_class is null or char_length(captain_class) between 2 and 60),
+  add column if not exists team_group text
+    check (team_group is null or team_group in (
+      'bcom-tax-a-mcom', 'bcom-tax-b', 'bcom-ca-msw', 'bcom-fa-msc-evs',
+      'bcom-ba', 'bsc-msc-psy', 'bba-im-bsw', 'bba-ba-lsm', 'bca-msc-ai',
+      'bsc-ca-bcom-tt-gt', 'ba-ma-eng-bsc-eco'
+    ));
+alter table public.team_entries
+  alter column captain_course drop not null;
 
 -- ---------------------------------------------------------------------------
 -- Admin accounts

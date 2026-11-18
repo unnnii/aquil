@@ -426,8 +426,9 @@
       team: text(form, 'team'),
       captain: text(form, 'captain'),
       captain_roll: text(form, 'captain_roll'),
-      captain_course: text(form, 'captain_course'),
+      captain_class: text(form, 'captain_class'),
       captain_year: number(form, 'captain_year'),
+      team_group: text(form, 'team_group'),
       phone: text(form, 'phone'),
       members: membersFrom(form)
     };
@@ -468,6 +469,12 @@
         if (!team.event) {
           showError(form, 'Choose an event.');
           form.elements['event'].focus();
+          return;
+        }
+
+        if (!team.team_group) {
+          showError(form, 'Choose your group.');
+          form.elements['team_group'].focus();
           return;
         }
 
