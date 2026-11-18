@@ -280,7 +280,7 @@ What it does:
 
 - **Totals** across the top: individual, team, total, and a count for each of the nine sports. "Table Tennis 6" counts rows where `events` contains `table-tennis`, so a person in three sports is counted in each and once in the individual total.
 - **Two tables**, Individual and Team, newest first. Pick a sport and the entry kind switches with it, since a sport only belongs to one kind.
-- **Search** runs across every column at once, including the label form of slugs, so "chess" and "Ananya" both work.
+- **Search** runs across every column at once, including the readable form the table shows, so "Ananya", "Table Tennis", "BCA" and "2nd year" all match a row that stores a name, a slug or a code.
 - **Sortable headers**. Click once for ascending, again for descending; the timestamp column defaults to newest first.
 - **Download CSV** exports what is currently filtered, not everything, with readable labels (`BCA`, `2nd year`, `Table Tennis`) rather than stored values.
 

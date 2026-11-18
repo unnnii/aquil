@@ -238,10 +238,21 @@
   /* Render -------------------------------------------------------------- */
 
   function haystack(row) {
-    return Object.keys(row).map(function (key) {
+    var parts = Object.keys(row).map(function (key) {
       var value = row[key];
-      return Array.isArray(value) ? value.join(' ') : String(value == null ? '' : value);
-    }).join(' ').toLowerCase();
+      if (Array.isArray(value)) { return value.map(label).join(' '); }
+      if (key === 'event') { return label(value); }
+      return String(value == null ? '' : value);
+    });
+
+    /* Also index what the table actually shows, so "Table Tennis", "BCA"
+       and "2nd year" match a row that stores a slug or a code. */
+    ['course', 'captain_course', 'specialisation', 'year', 'captain_year']
+      .forEach(function (key) {
+        if (row[key] !== undefined) { parts.push(cellValue(row, key)); }
+      });
+
+    return parts.join(' ').toLowerCase();
   }
 
   function compare(a, b) {
