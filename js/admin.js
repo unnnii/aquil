@@ -349,9 +349,6 @@
     if (key === 'course' || key === 'captain_course') {
       return (LABELS.course && LABELS.course[value]) || String(value);
     }
-    if (key === 'specialisation') {
-      return (LABELS.specialisation && LABELS.specialisation[value]) || String(value);
-    }
     if (key === 'year' || key === 'captain_year') {
       return (LABELS.year && LABELS.year[String(value)]) || String(value);
     }
