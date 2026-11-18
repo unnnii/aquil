@@ -44,7 +44,8 @@
       { key: 'created_at', label: 'Received' },
       { key: 'captain', label: 'Captain' },
       { key: 'captain_roll', label: 'Roll' },
-      { key: 'course', label: 'Course' },
+      { key: 'captain_class', label: 'Class' },
+      { key: 'captain_year', label: 'Year' },
       { key: 'batch_group', label: 'Group' },
       { key: 'phone', label: 'Contact' },
       { key: 'participants', label: 'Participants' },
@@ -76,7 +77,8 @@
     return (list || []).map(function (p) {
       var bits = [p && p.name];
       if (p && p.roll) { bits.push(p.roll); }
-      if (p && p.class) { bits.push((LABELS.year && LABELS.year[String(p.class)]) || ('Class ' + p.class)); }
+      var year = p && (p.year || p.class);
+      if (year) { bits.push((LABELS.year && LABELS.year[String(year)]) || ('Year ' + year)); }
       if (p && p.event) { bits.push(label(p.event)); }
       return bits.filter(Boolean).join(' · ');
     });
@@ -273,7 +275,7 @@
 
     /* Also index what the table actually shows, so "Table Tennis", "BCA"
        and "2nd year" match a row that stores a slug or a code. */
-    ['course', 'captain_course', 'batch_group', 'year', 'captain_year']
+    ['captain_class', 'course', 'captain_course', 'batch_group', 'year', 'captain_year']
       .forEach(function (key) {
         if (row[key] !== undefined) { parts.push(cellValue(row, key)); }
       });

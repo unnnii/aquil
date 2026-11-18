@@ -220,7 +220,7 @@
   function participantRow(presetEvent) {
     var parts = rowShell('');
     parts.grid.appendChild(field('Name', textInput('participant_name', 'Full name')));
-    parts.grid.appendChild(field('Class', selectBox('participant_class', years, 'Class')));
+    parts.grid.appendChild(field('Year', selectBox('participant_year', years, 'Year')));
     parts.grid.appendChild(field('Roll number', textInput('participant_roll', 'e.g. 21BCA045')));
     parts.grid.appendChild(field('Event', selectBox('participant_event', eventOptions, 'Event')));
 
@@ -242,13 +242,13 @@
         };
         return {
           name: value('participant_name'),
-          class: value('participant_class'),
+          year: value('participant_year'),
           roll: value('participant_roll'),
           event: value('participant_event')
         };
       })
       .filter(function (p) {
-        return p.name || p.class || p.roll || p.event;
+        return p.name || p.year || p.roll || p.event;
       });
   }
 
@@ -411,6 +411,8 @@
     return {
       captain: text(form, 'captain'),
       captain_roll: text(form, 'captain_roll'),
+      captain_class: text(form, 'captain_class'),
+      captain_year: number(form, 'captain_year'),
       batch_group: text(form, 'batch_group'),
       phone: text(form, 'phone'),
       participants: participantsFrom(form),
@@ -507,10 +509,10 @@
       }
 
       var incomplete = batch.participants.some(function (p) {
-        return !p.name || !p.class || !p.roll || !p.event;
+        return !p.name || !p.year || !p.roll || !p.event;
       });
       if (incomplete) {
-        showError(form, 'Fill in name, class, roll number and event for every participant.');
+        showError(form, 'Fill in name, year, roll number and event for every participant.');
         return;
       }
 

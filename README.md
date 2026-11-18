@@ -111,15 +111,17 @@ No `package.json`, no lockfile, no build output. The repository is the site.
 | --- | --- | --- | --- | --- |
 | Full name | `captain` | text, autocomplete name | yes | the batch captain |
 | Roll number | `captain_roll` | text | yes | checked at the desk on the day |
+| Class | `captain_class` | text | yes | typed in words, e.g. `B.Com Tax A` |
+| Year | `captain_year` | select | yes | 1, 2, 3 |
 
 | Group | `batch_group` | select, eleven groups | yes | replaces specialisation; one group per batch |
 | Contact number | `phone` | tel, autocomplete tel | yes | one number per batch; WhatsApp accepted |
-| Participants | `participants` | generated rows, added and removed in the page | at least one | each row is name, class, roll, event |
+| Participants | `participants` | generated rows, added and removed in the page | at least one | each row is name, year, roll, event |
 | Notes | `notes` | textarea | no | |
 | Rules | `agree_rules` | checkbox | yes | |
 | hidden | `_gotcha` | | | traps bots |
 
-The class select offers 1st, 2nd and 3rd year; the event select offers only the active individual events. Rows are numbered as they are added, a live count sits beside the Add button, and submitting an incomplete or empty list is refused in the browser and again by the database.
+The year select offers 1st, 2nd and 3rd year; the event select offers only the active individual events. Rows are numbered as they are added, a live count sits beside the Add button, and submitting an incomplete or empty list is refused in the browser and again by the database.
 
 ## The eleven groups
 
@@ -199,7 +201,7 @@ Supabase project `rbmmhasdshbgxhjmshdk`. `supabase/schema.sql` creates:
 | `admin_sessions` | token, username, created_at, expires_at (12 hours) |
 | `login_attempts` | username, failures, locked_until (5 failures, 15 minute lockout) |
 
-`participants` is an array of `{name, class, roll, event}`. `members` is an array of `{name, course, year, roll}`. `batch_participants_valid()` checks every participant object; `team_entries_min_players` checks the squad size against the event.
+`participants` is an array of `{name, year, roll, event}`, where `year` is 1, 2 or 3. Rows written before 18 Nov 2026 carry `class` instead; the validator and the console read either key. `members` is an array of `{name, course, year, roll}`. `batch_participants_valid()` checks every participant object; `team_entries_min_players` checks the squad size against the event.
 
 Both forms post straight to Supabase's REST API. There is no server of our own: the browser sends JSON to `/rest/v1/batch_entries` or `/rest/v1/team_entries` with the publishable key. anon has INSERT but not SELECT, so the request must not ask for the row back: a `Prefer: return=representation` header would need SELECT and fail with 42501. `js/register.js` sends no Prefer header and treats 201 as success.
 
@@ -233,6 +235,7 @@ If a page looks stale it is a cache, not a failed build; check the Pages build s
 
 ## History
 
+- **2026-11-18, captain class and year.** The batch form now asks the captain for a class, typed in words, and a year. Participant rows call the column Year, which is what the select always stored, and send `year`; older rows keep `class`, which is still read everywhere.
 - **2026-11-18, points table.** The index rows came off `index.html` and `events.html`; both pages now print the fest's points distribution for all nine events, disabled ones included. Entry is through the two form buttons.
 - **2026-11-18, batch entry and light only.** Individual self-registration replaced by one form per batch: captain details, group, then a row per participant with name, class, roll and event. New `batch_entries` table with a jsonb participants array and a validator function; specialisation dropped. The admin console reads batch entries, counts participants per sport and prints one participant per line in the table and the CSV. The dark theme, its masthead switch, its token block and the pre-paint script were deleted; `color-scheme` is light.
 - **2026-11-18, squads as member rows.** `team_entries.squad` replaced by a `members` jsonb array of `{name, course, year, roll}`; height and weight dropped everywhere; minimums changed to captain plus members.
