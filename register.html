@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Individual entry, Heartian Hustle 3.0</title>
-<meta name="description" content="Individual entry for Heartian Hustle 3.0.">
-<meta property="og:title" content="Individual entry, Heartian Hustle 3.0">
-<meta property="og:description" content="Individual entry for Heartian Hustle 3.0.">
+<title>Individual events entry, Heartian Hustle 3.0</title>
+<meta name="description" content="Batch captains enter every participant for the individual events at Heartian Hustle 3.0.">
+<meta property="og:title" content="Individual events entry, Heartian Hustle 3.0">
+<meta property="og:description" content="Batch captains enter every participant for the individual events at Heartian Hustle 3.0.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#f7f8fa">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230d1220'/%3E%3Ctext x='16' y='24' font-family='Arial Narrow,Helvetica,Arial' font-size='20' font-weight='700' fill='%23f7f8fa' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
@@ -15,16 +15,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500&family=JetBrains+Mono:wght@500&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script>document.documentElement.className += ' js';</script>
-<script>
-/* Resolve light or dark before first paint so the page never flashes. */
-(function () {
-  try {
-    var saved = localStorage.getItem('mode');
-    var dark = saved === 'dark' || (saved !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.setAttribute('data-mode', dark ? 'dark' : 'light');
-  } catch (e) {}
-})();
-</script>
 </head>
 
 <body>
@@ -34,7 +24,6 @@
   <div class="wrap mast-inner">
     <a class="wordmark" href="index.html">Heartian Hustle</a>
     <div class="mast-tools">
-      <button class="mode-toggle" type="button" data-mode-toggle aria-label="Switch to dark mode"><span data-mode-label>Dark</span></button>
       <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav">Menu</button>
     </div>
     <nav class="nav" id="site-nav" data-nav>
@@ -50,8 +39,8 @@
 
   <section class="hero">
     <div class="wrap">
-      <h1>Individual entry</h1>
-      </dl>
+      <h1>Individual events</h1>
+      <p class="lede">One form per batch. The batch captain enters their own details, then adds every participant and the event they are playing.</p>
     </div>
   </section>
 
@@ -68,14 +57,19 @@
         <form method="post" action="#" data-register-form data-form-kind="individual">
           <div class="form-grid">
 
-            <div class="field">
-              <label for="full_name">Full name</label>
-              <input id="full_name" name="full_name" type="text" autocomplete="name" required>
+            <div class="field field-full">
+              <h2 class="form-head">Batch captain</h2>
+              <span class="hint">Your own details. We call you about your batch's entries.</span>
             </div>
 
             <div class="field">
-              <label for="roll_number">Roll number</label>
-              <input id="roll_number" name="roll_number" type="text" required>
+              <label for="captain">Full name</label>
+              <input id="captain" name="captain" type="text" autocomplete="name" required>
+            </div>
+
+            <div class="field">
+              <label for="captain_roll">Roll number</label>
+              <input id="captain_roll" name="captain_roll" type="text" required>
               <span class="hint">As printed on your college ID.</span>
             </div>
 
@@ -94,43 +88,38 @@
             </div>
 
             <div class="field">
-              <label for="specialisation">Specialisation</label>
-              <select id="specialisation" name="specialisation">
-                <option value="none">None</option>
-                <option value="ca">CA</option>
-                <option value="ba">BA</option>
-                <option value="other">Other</option>
+              <label for="batch_group">Group</label>
+              <select id="batch_group" name="batch_group" required>
+                <option value="">Choose a group</option>
+                <option value="bcom-tax-a-mcom">B.Com Tax A &amp; M.Com</option>
+                <option value="bcom-tax-b">B.Com Tax B</option>
+                <option value="bcom-ca-msw">B.Com CA &amp; MSW</option>
+                <option value="bcom-fa-msc-evs">B.Com FA &amp; M.Sc EVS</option>
+                <option value="bcom-ba">B.Com BA</option>
+                <option value="bsc-msc-psy">B.Sc &amp; M.Sc Psy</option>
+                <option value="bba-im-bsw">BBA IM &amp; BSW</option>
+                <option value="bba-ba-lsm">BBA BA &amp; LSM</option>
+                <option value="bca-msc-ai">BCA + M.Sc AI</option>
+                <option value="bsc-ca-bcom-tt-gt">B.Sc CA, B.Com TT &amp; GT</option>
+                <option value="ba-ma-eng-bsc-eco">BA, MA Eng &amp; B.Sc Eco</option>
               </select>
-              <span class="hint">None if your course has no specialisation.</span>
+              <span class="hint">The combined group your batch is under.</span>
             </div>
 
-            <div class="field">
-              <label for="year">Year</label>
-              <select id="year" name="year" required>
-                <option value="">Choose a year</option>
-                <option value="1">1st year</option>
-                <option value="2">2nd year</option>
-                <option value="3">3rd year</option>
-              </select>
-            </div>
-
-            <div class="field">
+            <div class="field field-full">
               <label for="phone">Contact number</label>
               <input id="phone" name="phone" type="tel" autocomplete="tel" required>
-              <span class="hint">Where we confirm your slot. WhatsApp is fine.</span>
+              <span class="hint">One number per batch, the captain's. WhatsApp is fine.</span>
             </div>
 
-            <div class="field field-full" role="group" aria-labelledby="events-label">
-              <span id="events-label" class="field-label">Events you are entering</span>
-              <div class="checks">
-          <label class="check"><input type="checkbox" name="events" value="table-tennis" data-event-box> Table Tennis</label>
-          <label class="check"><input type="checkbox" name="events" value="chess" data-event-box> Chess</label>
-          <label class="check" hidden><input type="checkbox" name="events" value="arm-wrestling" data-event-box> Arm Wrestling</label>
-          <label class="check"><input type="checkbox" name="events" value="penalty-shootout" data-event-box> Penalty Shootout</label>
-          <label class="check" hidden><input type="checkbox" name="events" value="throw-in-girls" data-event-box> Throw In (Girls)</label>
+            <div class="field field-full">
+              <h2 class="form-head">Participants</h2>
+              <span class="hint">One row per participant per event. If someone is playing two events, add them twice.</span>
+              <div class="members" data-participants></div>
+              <div class="members-actions">
+                <button class="btn btn-line" type="button" data-participant-add>+ Add participant</button>
+                <span class="members-count" data-participants-count></span>
               </div>
-              <span class="field-error" data-events-error hidden>Pick at least one event.</span>
-              <span class="hint">Tick everything you want to play. One entry per event.</span>
             </div>
 
             <div class="field field-full">
@@ -146,7 +135,7 @@
             </div>
 
             <div class="field field-full">
-              <button class="btn btn-volt btn-block" type="submit">Submit entry</button>
+              <button class="btn btn-volt btn-block" type="submit">Submit batch entry</button>
             </div>
 
           </div>
@@ -155,7 +144,7 @@
         </form>
 
         <div class="notice" data-form-success hidden role="status">
-          <strong>Entry received.</strong> <span data-form-success-detail></span>
+          <strong>Batch entry received.</strong> <span data-form-success-detail></span>
           <p>Nothing else is needed. There is no confirmation email, so take a screenshot of this page if you want a record of what you sent.</p>
         </div>
       </div>

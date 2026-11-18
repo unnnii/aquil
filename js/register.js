@@ -1,13 +1,15 @@
 /* Heartian Hustle 3.0 — registration submission.
  *
- * Both forms post straight to Supabase's REST API with the publishable key.
- * The database grants anon INSERT only, so this file cannot read anything
- * back, and a tampered request can only write an entry that passes the
- * table's CHECK constraints.
+ * Two forms, two tables:
+ *   individual events -> batch_entries, one row per batch, with every
+ *                        participant and the event they are playing
+ *   team events       -> team_entries, one row per team, with the rest of
+ *                        the squad
  *
- * Team events send a members array: everyone except the captain, each with
- * name, course, year and roll. The captain counts as the extra player, and
- * minPlayers in js/config.js is the minimum total.
+ * Both post straight to Supabase's REST API with the publishable key. The
+ * database grants anon INSERT only, so this file cannot read anything back,
+ * and a tampered request can only write a row that passes the CHECK
+ * constraints.
  */
 (function () {
   'use strict';
@@ -16,11 +18,26 @@
   var events = window.AQUIL_EVENTS || [];
   var bySlug = window.AQUIL_EVENT_BY_SLUG || {};
   var courses = window.AQUIL_COURSES || [];
+  var groups = window.AQUIL_GROUPS || [];
   var years = window.AQUIL_YEARS || [];
+  var individualEvents = window.AQUIL_INDIVIDUAL_EVENTS || [];
   if (!cfg) { return; }
 
   var LABELS = {};
   events.forEach(function (e) { LABELS[e.slug] = e.label; });
+  groups.forEach(function (g) { LABELS[g.value] = g.label; });
+
+  var eventOptions = individualEvents.map(function (e) {
+    return { value: e.slug, label: e.label };
+  });
+
+  var preset = null;
+  try {
+    preset = new URLSearchParams(window.location.search).get('event');
+  } catch (e) {
+    preset = null;
+  }
+  if (preset && !bySlug[preset]) { preset = null; }
 
   function api(path) { return cfg.url + '/rest/v1/' + path; }
 
@@ -54,7 +71,7 @@
       return 'Registration is not set up yet. Tell an organiser the database tables are missing.';
     }
     if (code === '23514' || response.status === 400) {
-      return 'Some details were rejected. Check the phone number, roll number and your team size.';
+      return 'Some details were rejected. Check the phone number, roll number, group and events.';
     }
     if (response.status === 429) {
       return 'Too many entries in a short time. Wait a minute and try again.';
@@ -102,11 +119,7 @@
     }
   }
 
-  function send(form, payload, summary) {
-    var table = form.getAttribute('data-form-kind') === 'team'
-      ? 'team_entries'
-      : 'individual_entries';
-
+  function send(table, form, payload, summary) {
     busy(form, true);
     clearError(form);
 
@@ -130,27 +143,7 @@
     });
   }
 
-  function individualPayload(form) {
-    var chosen = Array.prototype.slice
-      .call(form.querySelectorAll('input[name="events"]:checked'))
-      .map(function (box) { return box.value; });
-
-    return {
-      chosen: chosen,
-      payload: {
-        full_name: text(form, 'full_name'),
-        roll_number: text(form, 'roll_number'),
-        course: text(form, 'course'),
-        specialisation: text(form, 'specialisation') || null,
-        year: number(form, 'year'),
-        phone: text(form, 'phone'),
-        events: chosen,
-        notes: text(form, 'notes') || null
-      }
-    };
-  }
-
-  /* Team member rows ----------------------------------------------------- */
+  /* Shared row builders --------------------------------------------------- */
 
   function el(tag, className) {
     var node = document.createElement(tag);
@@ -158,7 +151,7 @@
     return node;
   }
 
-  function labeled(labelText, control) {
+  function field(labelText, control) {
     var wrap = el('div', 'field');
     var label = el('span', 'member-label');
     label.textContent = labelText;
@@ -195,37 +188,132 @@
     return select;
   }
 
-  function memberRow() {
+  function rowShell(title) {
     var row = el('div', 'member');
-    row.setAttribute('data-member', '');
+    row.setAttribute('data-row', '');
 
     var head = el('div', 'member-head');
 
-    var title = el('span', 'member-title');
-    title.setAttribute('data-member-title', '');
+    var label = el('span', 'member-title');
+    label.setAttribute('data-row-title', '');
+    label.textContent = title;
 
     var remove = el('button', 'member-remove');
     remove.type = 'button';
-    remove.setAttribute('data-member-remove', '');
-    remove.setAttribute('aria-label', 'Remove this member');
+    remove.setAttribute('data-row-remove', '');
+    remove.setAttribute('aria-label', 'Remove this row');
     remove.textContent = '\u2212';
 
-    head.appendChild(title);
+    head.appendChild(label);
     head.appendChild(remove);
 
     var grid = el('div', 'member-grid');
-    grid.appendChild(labeled('Name', textInput('member_name', 'Full name')));
-    grid.appendChild(labeled('Course', selectBox('member_course', courses, 'Course')));
-    grid.appendChild(labeled('Year', selectBox('member_year', years, 'Year')));
-    grid.appendChild(labeled('Roll number', textInput('member_roll', 'e.g. 21BCA045')));
 
     row.appendChild(head);
     row.appendChild(grid);
-    return row;
+
+    return { row: row, grid: grid };
+  }
+
+  /* Batch participants ---------------------------------------------------- */
+
+  function participantRow(presetEvent) {
+    var parts = rowShell('');
+    parts.grid.appendChild(field('Name', textInput('participant_name', 'Full name')));
+    parts.grid.appendChild(field('Class', selectBox('participant_class', years, 'Class')));
+    parts.grid.appendChild(field('Roll number', textInput('participant_roll', 'e.g. 21BCA045')));
+    parts.grid.appendChild(field('Event', selectBox('participant_event', eventOptions, 'Event')));
+
+    if (presetEvent) {
+      var select = parts.grid.querySelector('[name="participant_event"]');
+      if (select) { select.value = presetEvent; }
+    }
+
+    return parts.row;
+  }
+
+  function participantsFrom(form) {
+    return Array.prototype.slice.call(form.querySelectorAll('[data-row]'))
+      .map(function (row) {
+        var value = function (name) {
+          var field = row.querySelector('[name="' + name + '"]');
+          return field ? String(field.value || '').trim() : '';
+        };
+        return {
+          name: value('participant_name'),
+          class: value('participant_class'),
+          roll: value('participant_roll'),
+          event: value('participant_event')
+        };
+      })
+      .filter(function (p) {
+        return p.name || p.class || p.roll || p.event;
+      });
+  }
+
+  function initParticipants(form) {
+    var list = form.querySelector('[data-participants]');
+    var addButton = form.querySelector('[data-participant-add]');
+    var countLine = form.querySelector('[data-participants-count]');
+    if (!list || !addButton) { return; }
+
+    function rows() {
+      return Array.prototype.slice.call(list.querySelectorAll('[data-row]'));
+    }
+
+    function update() {
+      var all = rows();
+
+      all.forEach(function (row, index) {
+        var title = row.querySelector('[data-row-title]');
+        if (title) { title.textContent = 'Participant ' + (index + 1); }
+      });
+
+      if (countLine) {
+        var total = all.length;
+        countLine.textContent = total + (total === 1 ? ' participant' : ' participants') +
+          (total === 0 ? ' — add at least one' : '');
+        countLine.setAttribute('data-ok', total > 0 ? 'true' : 'false');
+      }
+    }
+
+    addButton.addEventListener('click', function () {
+      var row = participantRow(null);
+      list.appendChild(row);
+      update();
+      var input = row.querySelector('input');
+      if (input) { input.focus(); }
+    });
+
+    list.addEventListener('click', function (e) {
+      var button = e.target.closest ? e.target.closest('[data-row-remove]') : null;
+      if (!button) { return; }
+      var row = button.closest('[data-row]');
+      if (row && row.parentNode) {
+        row.parentNode.removeChild(row);
+        update();
+      }
+    });
+
+    /* Start with one row, pre-filled when the visitor arrived from an event. */
+    var fromEvent = individualEvents.some(function (e) { return e.slug === preset; });
+    list.appendChild(participantRow(fromEvent ? preset : null));
+    update();
+  }
+
+  /* Team members ---------------------------------------------------------- */
+
+  function memberRow() {
+    var parts = rowShell('');
+    parts.grid.appendChild(field('Name', textInput('member_name', 'Full name')));
+    parts.grid.appendChild(field('Course', selectBox('member_course', courses, 'Course')));
+    parts.grid.appendChild(field('Year', selectBox('member_year', years, 'Year')));
+    parts.grid.appendChild(field('Roll number', textInput('member_roll', 'e.g. 21BCA045')));
+    return parts.row;
   }
 
   function membersFrom(form) {
-    return Array.prototype.slice.call(form.querySelectorAll('[data-member]'))
+    return Array.prototype.slice.call(form.querySelectorAll('[data-row]'))
       .map(function (row) {
         var value = function (name) {
           var field = row.querySelector('[name="' + name + '"]');
@@ -248,22 +336,6 @@
     return (event && event.minPlayers) || 2;
   }
 
-  function teamPayload(form) {
-    return {
-      payload: {
-        event: text(form, 'event'),
-        team: text(form, 'team'),
-        captain: text(form, 'captain'),
-        captain_roll: text(form, 'captain_roll'),
-        captain_course: text(form, 'captain_course'),
-        captain_year: number(form, 'captain_year'),
-        phone: text(form, 'phone'),
-        members: membersFrom(form),
-        notes: text(form, 'notes') || null
-      }
-    };
-  }
-
   function initMembers(form) {
     var list = form.querySelector('[data-members]');
     var addButton = form.querySelector('[data-member-add]');
@@ -273,14 +345,14 @@
     if (!list || !addButton || !eventSelect) { return; }
 
     function rows() {
-      return Array.prototype.slice.call(list.querySelectorAll('[data-member]'));
+      return Array.prototype.slice.call(list.querySelectorAll('[data-row]'));
     }
 
     function update() {
       var all = rows();
 
       all.forEach(function (row, index) {
-        var title = row.querySelector('[data-member-title]');
+        var title = row.querySelector('[data-row-title]');
         if (title) { title.textContent = 'Member ' + (index + 1); }
       });
 
@@ -293,7 +365,7 @@
       }
       if (countLine) {
         countLine.textContent = total + (total === 1 ? ' player' : ' players') +
-          (total < min ? ' \u2014 add ' + (min - total) + ' more' : '');
+          (total < min ? ' — add ' + (min - total) + ' more' : '');
         countLine.setAttribute('data-ok', total >= min ? 'true' : 'false');
       }
     }
@@ -307,9 +379,9 @@
     });
 
     list.addEventListener('click', function (e) {
-      var button = e.target.closest ? e.target.closest('[data-member-remove]') : null;
+      var button = e.target.closest ? e.target.closest('[data-row-remove]') : null;
       if (!button) { return; }
-      var row = button.closest('[data-member]');
+      var row = button.closest('[data-row]');
       if (row && row.parentNode) {
         row.parentNode.removeChild(row);
         update();
@@ -323,7 +395,6 @@
       update();
     });
 
-    /* Start with enough rows for an event already chosen by ?event= */
     if (eventSelect.value) {
       var start = minimumFor(form) - 1;
       for (var i = 0; i < start; i++) { list.appendChild(memberRow()); }
@@ -332,16 +403,48 @@
     update();
   }
 
+  /* Payloads -------------------------------------------------------------- */
+
+  function batchPayload(form) {
+    return {
+      captain: text(form, 'captain'),
+      captain_roll: text(form, 'captain_roll'),
+      course: text(form, 'course'),
+      batch_group: text(form, 'batch_group'),
+      phone: text(form, 'phone'),
+      participants: participantsFrom(form),
+      notes: text(form, 'notes') || null
+    };
+  }
+
+  function teamPayload(form) {
+    return {
+      event: text(form, 'event'),
+      team: text(form, 'team'),
+      captain: text(form, 'captain'),
+      captain_roll: text(form, 'captain_roll'),
+      captain_course: text(form, 'captain_course'),
+      captain_year: number(form, 'captain_year'),
+      phone: text(form, 'phone'),
+      members: membersFrom(form),
+      notes: text(form, 'notes') || null
+    };
+  }
+
+  /* Submit ---------------------------------------------------------------- */
+
   var forms = document.querySelectorAll('[data-register-form]');
 
   Array.prototype.forEach.call(forms, function (form) {
-    if (form.getAttribute('data-form-kind') === 'team') { initMembers(form); }
+    var kind = form.getAttribute('data-form-kind');
+
+    if (kind === 'team') { initMembers(form); }
+    if (kind === 'individual') { initParticipants(form); }
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       e.stopImmediatePropagation();
 
-      var kind = form.getAttribute('data-form-kind');
       clearError(form);
 
       /* Honeypot: a person never fills this in. Pretend it worked. */
@@ -360,14 +463,14 @@
 
       if (kind === 'team') {
         var team = teamPayload(form);
-        if (!team.payload.event) {
+        if (!team.event) {
           showError(form, 'Choose an event.');
           form.elements['event'].focus();
           return;
         }
 
         var min = minimumFor(form);
-        var total = team.payload.members.length + 1;
+        var total = team.members.length + 1;
         if (total < min) {
           showError(form, 'This event needs at least ' + min +
             ' players including the captain. Add ' + (min - total) + ' more.');
@@ -376,35 +479,44 @@
           return;
         }
 
-        var incomplete = team.payload.members.some(function (member) {
+        var incompleteTeam = team.members.some(function (member) {
           return !member.name || !member.roll || !member.course || !member.year;
         });
-        if (incomplete) {
+        if (incompleteTeam) {
           showError(form, 'Fill in name, course, year and roll number for every member.');
           return;
         }
 
-        var teamLabel = LABELS[team.payload.event] || team.payload.event;
-        send(form, team.payload, teamLabel + ' · ' + team.payload.team);
+        var teamLabel = LABELS[team.event] || team.event;
+        send('team_entries', form, team, teamLabel + ' · ' + team.team);
         return;
       }
 
-      var individual = individualPayload(form);
-      var eventsError = form.querySelector('[data-events-error]');
-
-      if (!individual.chosen.length) {
-        if (eventsError) { eventsError.hidden = false; }
-        var firstBox = form.querySelector('input[name="events"]');
-        if (firstBox) { firstBox.focus(); }
+      var batch = batchPayload(form);
+      if (!batch.batch_group) {
+        showError(form, 'Choose your group.');
+        form.elements['batch_group'].focus();
         return;
       }
-      if (eventsError) { eventsError.hidden = true; }
+      if (!batch.participants.length) {
+        showError(form, 'Add at least one participant.');
+        var addParticipant = form.querySelector('[data-participant-add]');
+        if (addParticipant) { addParticipant.focus(); }
+        return;
+      }
 
-      var summary = individual.payload.full_name + ' · ' + individual.chosen
-        .map(function (slug) { return LABELS[slug] || slug; })
-        .join(', ');
+      var incomplete = batch.participants.some(function (p) {
+        return !p.name || !p.class || !p.roll || !p.event;
+      });
+      if (incomplete) {
+        showError(form, 'Fill in name, class, roll number and event for every participant.');
+        return;
+      }
 
-      send(form, individual.payload, summary);
+      var groupLabel = LABELS[batch.batch_group] || batch.batch_group;
+      var count = batch.participants.length;
+      send('batch_entries', form, batch,
+        groupLabel + ' · ' + count + (count === 1 ? ' participant' : ' participants'));
     });
   });
 })();

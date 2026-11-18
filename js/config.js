@@ -42,8 +42,14 @@ window.AQUIL_ACTIVE_EVENTS = window.AQUIL_EVENTS.filter(function (event) {
   return !event.disabled;
 });
 
+/* Individual events are entered by batch captains, so the participant rows
+ * offer only these. Team events live on the team form. */
+window.AQUIL_INDIVIDUAL_EVENTS = window.AQUIL_ACTIVE_EVENTS.filter(function (event) {
+  return event.kind === 'individual';
+});
+
 /* Courses and years, in form order. js/register.js builds the member rows
- * from these, so the team form does not repeat the lists a third time. */
+ * from these, so the forms do not repeat the lists. */
 window.AQUIL_COURSES = [
   { value: 'bcom',       label: 'B.Com' },
   { value: 'bca',        label: 'BCA' },
@@ -52,6 +58,23 @@ window.AQUIL_COURSES = [
   { value: 'bsc',        label: 'B.Sc' },
   { value: 'psychology', label: 'Psychology' },
   { value: 'other',      label: 'Other' }
+];
+
+/* The combined groups a batch can belong to. These replace specialisation:
+ * a captain picks the one group their batch is under. The value is what the
+ * database stores and checks; the label is what people read. */
+window.AQUIL_GROUPS = [
+  { value: 'bcom-tax-a-mcom',   label: 'B.Com Tax A & M.Com' },
+  { value: 'bcom-tax-b',        label: 'B.Com Tax B' },
+  { value: 'bcom-ca-msw',       label: 'B.Com CA & MSW' },
+  { value: 'bcom-fa-msc-evs',   label: 'B.Com FA & M.Sc EVS' },
+  { value: 'bcom-ba',           label: 'B.Com BA' },
+  { value: 'bsc-msc-psy',       label: 'B.Sc & M.Sc Psy' },
+  { value: 'bba-im-bsw',        label: 'BBA IM & BSW' },
+  { value: 'bba-ba-lsm',        label: 'BBA BA & LSM' },
+  { value: 'bca-msc-ai',        label: 'BCA + M.Sc AI' },
+  { value: 'bsc-ca-bcom-tt-gt', label: 'B.Sc CA, B.Com TT & GT' },
+  { value: 'ba-ma-eng-bsc-eco', label: 'BA, MA Eng & B.Sc Eco' }
 ];
 
 window.AQUIL_YEARS = [
@@ -66,6 +89,10 @@ window.AQUIL_LABELS = {
     bcom: 'B.Com', bca: 'BCA', bba: 'BBA', ba: 'BA', bsc: 'B.Sc',
     psychology: 'Psychology', other: 'Other'
   },
-  specialisation: { none: 'None', ca: 'CA', ba: 'BA', other: 'Other' },
-  year: { '1': '1st year', '2': '2nd year', '3': '3rd year' }
+  year: { '1': '1st year', '2': '2nd year', '3': '3rd year' },
+  group: {}
 };
+
+window.AQUIL_GROUPS.forEach(function (group) {
+  window.AQUIL_LABELS.group[group.value] = group.label;
+});
