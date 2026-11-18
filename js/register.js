@@ -411,7 +411,6 @@
     return {
       captain: text(form, 'captain'),
       captain_roll: text(form, 'captain_roll'),
-      course: text(form, 'course'),
       batch_group: text(form, 'batch_group'),
       phone: text(form, 'phone'),
       participants: participantsFrom(form),

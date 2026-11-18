@@ -109,7 +109,7 @@ No `package.json`, no lockfile, no build output. The repository is the site.
 | --- | --- | --- | --- | --- |
 | Full name | `captain` | text, autocomplete name | yes | the batch captain |
 | Roll number | `captain_roll` | text | yes | checked at the desk on the day |
-| Course | `course` | select | yes | B.Com, BCA, BBA, BA, B.Sc, Psychology, Other |
+
 | Group | `batch_group` | select, eleven groups | yes | replaces specialisation; one group per batch |
 | Contact number | `phone` | tel, autocomplete tel | yes | one number per batch; WhatsApp accepted |
 | Participants | `participants` | generated rows, added and removed in the page | at least one | each row is name, class, roll, event |
@@ -191,7 +191,7 @@ Supabase project `rbmmhasdshbgxhjmshdk`. `supabase/schema.sql` creates:
 
 | Table | Holds |
 | --- | --- |
-| `batch_entries` | id, created_at, captain, captain_roll, course, batch_group, phone, participants jsonb, notes |
+| `batch_entries` | id, created_at, captain, captain_roll, batch_group, phone, participants jsonb, notes |
 | `team_entries` | id, created_at, event, team, captain, captain_roll, captain_course, captain_year, phone, members jsonb, notes |
 | `admins` | username, password_hash (bcrypt via pgcrypto) |
 | `admin_sessions` | token, username, created_at, expires_at (12 hours) |

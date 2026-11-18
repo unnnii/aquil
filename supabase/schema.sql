@@ -84,7 +84,6 @@ create table if not exists public.batch_entries (
   created_at   timestamptz not null default now(),
   captain      text not null check (char_length(captain) between 2 and 80),
   captain_roll text not null check (captain_roll ~ '^[A-Za-z0-9 ./_-]{1,20}$'),
-  course       text not null check (char_length(course) between 2 and 40),
   -- The eleven combined groups a batch can be under. These replace
   -- specialisation: one group per batch, chosen by the captain.
   batch_group  text not null check (batch_group in (
