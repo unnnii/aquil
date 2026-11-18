@@ -4,7 +4,7 @@
 > It is the single source of truth for what exists, what was decided and what is left to do.
 > Do not redesign from scratch and do not introduce a framework.
 
-A static, multi-page website for **Heartian Hustle 3.0**, an intra-college multi-sport tournament running **23 – 30 November 2026** across eight competitions.
+A static, multi-page website for **Heartian Hustle 3.0**, an intra-college multi-sport tournament running **23 – 30 November 2026** across nine competitions: five individual, one double and four group.
 
 | | |
 | --- | --- |
@@ -22,7 +22,7 @@ A static, multi-page website for **Heartian Hustle 3.0**, an intra-college multi
 | Area | State | Notes |
 | --- | --- | --- |
 | Page structure | Done | 7 pages plus a 404 and an unlisted admin console |
-| Event list | Done | 8 active competitions, 3 individual and 5 team. Arm wrestling and throw-in are disabled in `js/config.js` with their code kept |
+| Event list | Done | nine events in the rulebook, eight entry routes because badminton enters as boys and girls. Arm wrestling and throw-in are disabled in `js/config.js` with their code kept; both register on the spot |
 | Points table | Done | all nine events on `index.html` and `events.html`, disabled ones included, as the fest's table does |
 | Design system | Done | Hallmark Sport theme, token-driven, responsive to 360px |
 | Colour modes | Done | **light only.** The dark theme, its switch and the pre-paint script were removed |
@@ -32,7 +32,7 @@ A static, multi-page website for **Heartian Hustle 3.0**, an intra-college multi
 | Team form | Done | `register-team.html`, posts to Supabase `team_entries` |
 | Entry storage | Live | Supabase project `rbmmhasdshbgxhjmshdk`; schema in `supabase/schema.sql` |
 | Admin console | Done, **unlisted** | `admin.html`, username and password, per-sport views, search, CSV |
-| Event content | **Placeholder** | every `TBC` and TODO comment must be replaced |
+| Event content | Done | the 2026 rulebook is on `events.html`: general instructions, then each event's rules, date, time and venue |
 | Eligibility | Intra-college | students of the host college only, checked by roll number and ID |
 | Analytics | None | deliberately. No cookies, nothing loaded from third parties except the font files |
 
@@ -86,7 +86,7 @@ Links of the shape `register.html?event=chess` preselect the event on the first 
 
     aquil/
     |-- index.html          Hero, points table, entry
-    |-- events.html         Points table, and the note that captains enter players
+    |-- events.html         The rulebook: points table, general instructions, rules by event, contacts
     |-- schedule.html       Day one and day two sheets, on-the-day facts
     |-- register.html       Batch form: captain details, then one row per participant
     |-- register-team.html  Team form: event, captain, one row per member
@@ -234,6 +234,7 @@ If a page looks stale it is a cache, not a failed build; check the Pages build s
 
 ## History
 
+- **2026-11-18, the rulebook.** `events.html` now carries the fest's 2026 rulebook: the fourteen general instructions, the points table with the participation and no-show points, and a facts panel for each event with its rules, date, time and venue. Two faculty contacts close the page. The hero facts read nine events, five individual, four team. New CSS: `.rules`, `.rule-list`, `.event-meta`, `.points-note`.
 - **2026-11-18, team class and group.** The team form dropped the captain course select for a class typed in words, and now asks for the eleven-group picker the batch form uses. New column `team_group`; `captain_course` is kept but no longer required, so earlier entries keep their value.
 - **2026-11-18, the team captain is a contact.** The team form stopped counting the captain as a player: the member list tops up to `minPlayers` on its own and the error asks for that many players. `team_entries_min_players` now requires the same. The captain adds themselves as a member when they play. Existing entries are left alone by the `NOT VALID` constraint.
 - **2026-11-18, no notes field.** The Anything else textarea came off both forms and out of both payloads. The `notes` column stays in the database so entries collected earlier keep their text, and the console still prints it.
