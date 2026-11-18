@@ -15,16 +15,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500&family=JetBrains+Mono:wght@500&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script>document.documentElement.className += ' js';</script>
-<script>
-/* Resolve light or dark before first paint so the page never flashes. */
-(function () {
-  try {
-    var saved = localStorage.getItem('mode');
-    var dark = saved === 'dark' || (saved !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.setAttribute('data-mode', dark ? 'dark' : 'light');
-  } catch (e) {}
-})();
-</script>
 </head>
 
 <body>
@@ -34,7 +24,6 @@
   <div class="wrap mast-inner">
     <a class="wordmark" href="index.html">Heartian Hustle</a>
     <div class="mast-tools">
-      <button class="mode-toggle" type="button" data-mode-toggle aria-label="Switch to dark mode"><span data-mode-label>Dark</span></button>
       <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav">Menu</button>
     </div>
     <nav class="nav" id="site-nav" data-nav>

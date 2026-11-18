@@ -54,57 +54,7 @@
   --pad-control-x: 12px;
   --col-gap: var(--space-xl);
 
-  color-scheme: light dark;
-}
-
-/* Dark mode ---------------------------------------------------------------
-   A second rendering of the same tokens, re-derived per the Hallmark
-   dark-mode recipe, never inverted: paper L 15% (never #000), elevation
-   steps lighter, ink 94% (never #fff), accent chroma down and L up, and
-   every hue held fixed at 250 (neutral) and 120 (accent). */
-[data-mode="dark"] {
-  color-scheme: dark;
-
-  --color-paper: oklch(15% 0.012 250);
-  --color-paper-2: oklch(18% 0.012 250);
-  --color-paper-3: oklch(21% 0.012 250);
-  --color-ink: oklch(94% 0.02 260);
-  --color-ink-2: oklch(85% 0.02 258);
-  --color-muted: oklch(70% 0.02 250);
-  --color-rule: oklch(32% 0.012 250);
-  --color-rule-2: oklch(62% 0.04 255);
-  --color-accent: oklch(93% 0.17 120);
-  --color-accent-ink: oklch(18% 0.08 260);
-  --color-accent-deep: oklch(74% 0.13 125);
-  --color-focus: oklch(74% 0.13 125);
-  --color-slot: oklch(42% 0.05 258);
-}
-
-[data-mode="light"] { color-scheme: light; }
-
-/* Light-on-dark reads optically heavier, so body text drops 50 units. */
-[data-mode="dark"] body { font-weight: 350; }
-
-/* Auto mode for scripting-off visitors: only when no mode was ever set. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-mode]) {
-    color-scheme: dark;
-
-    --color-paper: oklch(15% 0.012 250);
-    --color-paper-2: oklch(18% 0.012 250);
-    --color-paper-3: oklch(21% 0.012 250);
-    --color-ink: oklch(94% 0.02 260);
-    --color-ink-2: oklch(85% 0.02 258);
-    --color-muted: oklch(70% 0.02 250);
-    --color-rule: oklch(32% 0.012 250);
-    --color-rule-2: oklch(62% 0.04 255);
-    --color-accent: oklch(93% 0.17 120);
-    --color-accent-ink: oklch(18% 0.08 260);
-    --color-accent-deep: oklch(74% 0.13 125);
-    --color-focus: oklch(74% 0.13 125);
-    --color-slot: oklch(42% 0.05 258);
-  }
-  :root:not([data-mode]) body { font-weight: 350; }
+  color-scheme: light;
 }
 
 /* Base ------------------------------------------------------------------- */
@@ -155,26 +105,9 @@ code { font-family: var(--font-outlier); font-size: 0.92em; }
 .mast-inner { position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-md); padding-top: var(--space-md); padding-bottom: var(--space-md); }
 .wordmark { font-family: var(--font-display); font-weight: var(--display-weight); font-size: var(--text-xl); letter-spacing: var(--tracking-display); text-transform: uppercase; text-decoration: none; margin-right: auto; }
 
-/* Mode switch ------------------------------------------------------------- */
+/* Masthead tools ----------------------------------------------------------- */
 .mast-tools { display: flex; align-items: center; gap: var(--space-sm); }
-.mode-toggle {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--space-xs) var(--pad-control-x);
-  border: var(--rule-hair) solid var(--color-rule-2);
-  border-radius: var(--radius-card);
-  background: transparent;
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  line-height: 1.55;
-  cursor: pointer;
-  transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
-}
-.mode-toggle:hover { background: var(--color-paper-2); border-color: var(--color-ink); }
-.mode-toggle:active { background: var(--color-paper-3); }
-
-/* Above the mobile breakpoint the switch sits at the far edge, past the nav. */
+/* Above the mobile breakpoint the tools sit at the far edge, past the nav. */
 @media (min-width: 781px) { .mast-tools { order: 1; } }
 .nav { display: flex; align-items: center; gap: var(--space-lg); }
 .nav a { font-size: var(--text-sm); font-weight: 500; color: var(--color-ink-2); text-decoration: none; }
@@ -391,3 +324,6 @@ summary:active { background: var(--color-paper-2); }
 @media (max-width: 720px) {
   .member-grid { grid-template-columns: 1fr; }
 }
+
+/* Section headings inside a form -------------------------------------------- */
+.form-head { margin: 0; font-family: var(--font-body); font-size: var(--text-md); font-weight: 500; color: var(--color-ink); }

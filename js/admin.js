@@ -31,8 +31,8 @@
 
   var state = {
     token: null,
-    data: { individual: [], team: [] },
-    kind: 'individual',
+    data: { batch: [], team: [] },
+    kind: 'batch',
     event: '',
     q: '',
     sortKey: 'created_at',
@@ -40,14 +40,14 @@
   };
 
   var COLUMNS = {
-    individual: [
+    batch: [
       { key: 'created_at', label: 'Received' },
-      { key: 'full_name', label: 'Name' },
-      { key: 'roll_number', label: 'Roll' },
+      { key: 'captain', label: 'Captain' },
+      { key: 'captain_roll', label: 'Roll' },
       { key: 'course', label: 'Course' },
-      { key: 'year', label: 'Year' },
+      { key: 'batch_group', label: 'Group' },
       { key: 'phone', label: 'Contact' },
-      { key: 'events', label: 'Events' },
+      { key: 'participants', label: 'Participants' },
       { key: 'notes', label: 'Notes' }
     ],
     team: [
@@ -70,6 +70,20 @@
       if (m && m.year) { bits.push((LABELS.year && LABELS.year[String(m.year)]) || m.year); }
       return bits.filter(Boolean).join(' · ');
     });
+  }
+
+  function participantText(list) {
+    return (list || []).map(function (p) {
+      var bits = [p && p.name];
+      if (p && p.roll) { bits.push(p.roll); }
+      if (p && p.class) { bits.push((LABELS.year && LABELS.year[String(p.class)]) || ('Class ' + p.class)); }
+      if (p && p.event) { bits.push(label(p.event)); }
+      return bits.filter(Boolean).join(' · ');
+    });
+  }
+
+  function groupLabel(slug) {
+    return (LABELS.group && LABELS.group[slug]) || slug;
   }
 
   function label(slug) {
@@ -182,7 +196,7 @@
     return rpc('admin_entries', { p_token: state.token })
       .then(function (data) {
         state.data = {
-          individual: (data && data.individual) || [],
+          batch: (data && data.batch) || [],
           team: (data && data.team) || []
         };
         showApp();
@@ -221,7 +235,7 @@
     if (state.event) {
       for (var i = 0; i < EVENTS.length; i++) {
         if (EVENTS[i].slug === state.event) {
-          state.kind = EVENTS[i].kind;
+          state.kind = EVENTS[i].kind === 'team' ? 'team' : 'batch';
           kindSelect.value = state.kind;
         }
       }
@@ -251,6 +265,7 @@
     var parts = Object.keys(row).map(function (key) {
       var value = row[key];
       if (key === 'members') { return memberText(value).join(' '); }
+      if (key === 'participants') { return participantText(value).join(' '); }
       if (Array.isArray(value)) { return value.map(label).join(' '); }
       if (key === 'event') { return label(value); }
       return String(value == null ? '' : value);
@@ -258,7 +273,7 @@
 
     /* Also index what the table actually shows, so "Table Tennis", "BCA"
        and "2nd year" match a row that stores a slug or a code. */
-    ['course', 'captain_course', 'specialisation', 'year', 'captain_year']
+    ['course', 'captain_course', 'batch_group', 'year', 'captain_year']
       .forEach(function (key) {
         if (row[key] !== undefined) { parts.push(cellValue(row, key)); }
       });
@@ -270,6 +285,11 @@
     var dir = state.sortDir === 'asc' ? 1 : -1;
     var av = a[state.sortKey];
     var bv = b[state.sortKey];
+
+    if (state.sortKey === 'participants') {
+      av = participantText(a.participants).join(' ');
+      bv = participantText(b.participants).join(' ');
+    }
 
     if (Array.isArray(av)) { av = av.join(', '); }
     if (Array.isArray(bv)) { bv = bv.join(', '); }
@@ -291,8 +311,11 @@
 
     return source.filter(function (row) {
       if (state.event) {
-        if (state.kind === 'individual') {
-          if ((row.events || []).indexOf(state.event) === -1) { return false; }
+        if (state.kind === 'batch') {
+          var playing = (row.participants || []).some(function (p) {
+            return p && p.event === state.event;
+          });
+          if (!playing) { return false; }
         } else if (row.event !== state.event) {
           return false;
         }
@@ -312,13 +335,14 @@
 
   function cellValue(row, key) {
     if (key === 'created_at') { return formatDate(row.created_at); }
-    if (key === 'events') {
-      return (row.events || []).map(label).join(', ') || '—';
-    }
     if (key === 'event') { return label(row.event); }
     if (key === 'members') {
       return memberText(row.members).join('\n') || '—';
     }
+    if (key === 'participants') {
+      return participantText(row.participants).join('\n') || '—';
+    }
+    if (key === 'batch_group') { return groupLabel(row.batch_group); }
     var value = row[key];
     if (value === null || value === undefined || value === '') { return '—'; }
 
@@ -335,20 +359,22 @@
   }
 
   function renderStats() {
-    var individual = state.data.individual.length;
+    var batch = state.data.batch.length;
     var team = state.data.team.length;
 
     var entries = [
-      { label: 'Individual entries', value: individual },
+      { label: 'Batch entries', value: batch },
       { label: 'Team entries', value: team },
-      { label: 'Total', value: individual + team }
+      { label: 'Total', value: batch + team }
     ];
 
     EVENTS.forEach(function (event) {
       var count;
       if (event.kind === 'individual') {
-        count = state.data.individual.filter(function (row) {
-          return (row.events || []).indexOf(event.slug) !== -1;
+        count = state.data.batch.filter(function (row) {
+          return (row.participants || []).some(function (p) {
+            return p && p.event === event.slug;
+          });
         }).length;
       } else {
         count = state.data.team.filter(function (row) {
@@ -429,7 +455,7 @@
             link.href = 'tel:' + String(value).replace(/[^\d+]/g, '');
             link.textContent = value;
             td.appendChild(link);
-          } else if (column.key === 'members') {
+          } else if (column.key === 'members' || column.key === 'participants') {
             var squad = document.createElement('span');
             squad.className = 'label';
             squad.style.whiteSpace = 'pre-line';
@@ -459,8 +485,8 @@
 
     rows.forEach(function (row) {
       lines.push(columns.map(function (column) {
-        if (column.key === 'events') {
-          return quote((row.events || []).map(label).join(', '));
+        if (column.key === 'participants') {
+          return quote(participantText(row.participants).join(' | '));
         }
         if (column.key === 'event') { return quote(label(row.event)); }
         if (column.key === 'created_at') { return quote(row.created_at); }
@@ -491,7 +517,7 @@
 
     if (countLine) {
       var bits = [rows.length + (rows.length === 1 ? ' entry' : ' entries')];
-      bits.push(state.kind === 'team' ? 'team' : 'individual');
+      bits.push(state.kind === 'team' ? 'team' : 'batch');
       if (state.event) { bits.push(label(state.event)); }
       if (state.q) { bits.push('matching “' + state.q + '”'); }
       countLine.textContent = bits.join(' · ');
