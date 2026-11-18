@@ -39,51 +39,9 @@
     }
   }
 
-  /* Both forms: guard the dead endpoint, require an event ---------------- */
-  var forms = document.querySelectorAll('[data-register-form]');
-
-  for (var f = 0; f < forms.length; f++) {
-    (function (form) {
-      var notice = form.parentNode.querySelector('[data-form-notice]');
-      var unconnected = (form.getAttribute('action') || '').indexOf('REPLACE_ME') !== -1;
-
-      if (unconnected) {
-        if (notice) { notice.hidden = false; }
-        var submit = form.querySelector('button[type="submit"]');
-        if (submit) {
-          submit.disabled = true;
-          submit.textContent = 'Registration opens soon';
-        }
-      }
-
-      var eventBoxes = form.querySelectorAll('input[data-event-box]');
-      var eventError = form.querySelector('[data-events-error]');
-
-      form.addEventListener('submit', function (e) {
-        if (unconnected) {
-          e.preventDefault();
-          if (notice) {
-            notice.hidden = false;
-            try { notice.scrollIntoView({ block: 'center' }); } catch (err) {}
-          }
-          return;
-        }
-
-        var chosen = false;
-        for (var j = 0; j < eventBoxes.length; j++) {
-          if (eventBoxes[j].checked) { chosen = true; break; }
-        }
-
-        if (eventBoxes.length && !chosen) {
-          e.preventDefault();
-          if (eventError) { eventError.hidden = false; }
-          eventBoxes[0].focus();
-        } else if (eventError) {
-          eventError.hidden = true;
-        }
-      });
-    })(forms[f]);
-  }
+  /* Form submission lives in js/register.js ----------------------------- */
+  /* It posts to Supabase and owns the validation messages, so there is no
+     endpoint guard here any more. */
 
   /* Height and weight: only for physical events --------------------------- */
   /* Chess alone carries no bracket or class, so the two fields stop being

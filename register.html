@@ -61,11 +61,13 @@
     <div class="wrap entry entry-single">
 
       <div>
-        <div class="notice" data-form-notice hidden>
-          <strong>This form is not connected yet.</strong> The action still reads <code>REPLACE_ME</code>. Create a form at formspree.io and swap the ID in the page. The README has the steps.
-        </div>
+        <div class="notice" data-form-status hidden role="alert"></div>
 
-        <form method="POST" action="https://formspree.io/f/REPLACE_ME" data-register-form>
+        <noscript>
+          <div class="notice">This form needs JavaScript to send your entry. Turn it on in your browser, or ask an organiser to take your details.</div>
+        </noscript>
+
+        <form method="post" action="#" data-register-form data-form-kind="individual">
           <div class="form-grid">
 
             <div class="field">
@@ -162,9 +164,13 @@
 
           </div>
 
-          <input type="hidden" name="_subject" value="Heartian Hustle 3.0 individual entry">
-          <input type="hidden" name="_gotcha" value="">
+          <input type="text" name="_gotcha" value="" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
         </form>
+
+        <div class="notice" data-form-success hidden role="status">
+          <strong>Entry received.</strong> <span data-form-success-detail></span>
+          <p>Nothing else is needed. There is no confirmation email, so take a screenshot of this page if you want a record of what you sent.</p>
+        </div>
       </div>
 
       <!-- TODO: add a "what happens next" panel here once the process is decided. Deliberately left blank. -->
@@ -196,6 +202,8 @@
   </div>
 </footer>
 
+<script src="js/config.js" defer></script>
 <script src="js/site.js" defer></script>
+<script src="js/register.js" defer></script>
 </body>
 </html>

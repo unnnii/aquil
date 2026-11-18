@@ -22,15 +22,16 @@ A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event 
 
 | Area | State | Notes |
 | --- | --- | --- |
-| Page structure | Done | 7 pages plus a 404 |
+| Page structure | Done | 7 pages plus a 404 and an unlisted admin console |
 | Event list | Done | 9 competitions, 5 individual and 4 team |
 | Design system | Done | Hallmark Sport theme, token-driven, responsive to 360px |
 | Colour modes | Done | light and dark from one token system; switch in the masthead, follows the OS until someone chooses |
 | Mobile nav | Done | JS enhanced; falls back to a wrapped row without JS |
 | Questions page | **Disabled** | still linked from the nav and footer, but shows a not-available notice and carries `noindex` |
-| Individual form | Built, **not connected** | `register.html`, needs the Apps Script URL |
-| Team form | Built, **not connected** | `register-team.html`, needs the Apps Script URL |
-| Entry storage | Script written, **not deployed** | `apps-script/Code.gs`, appends to a Google Sheet |
+| Individual form | Done | `register.html`, posts to Supabase `individual_entries` |
+| Team form | Done | `register-team.html`, posts to Supabase `team_entries` |
+| Entry storage | **Schema to run once** | `supabase/schema.sql`, two tables plus admin accounts and sessions |
+| Admin console | Done, **unlisted** | `admin.html`, username and password, per-sport views, search, CSV |
 | Form fields | Done | see the two field tables below |
 | Event content | **Placeholder** | every `TBC` and TODO comment must be replaced |
 | Eligibility | Intra-college | students of the host college only, checked by roll number and ID |
@@ -83,11 +84,16 @@ aquil/
 |-- schedule.html     Day one and day two sheets, on-the-day facts
 |-- register.html     Individual form, with the chooser above it
 |-- register-team.html Team form: event, captain, squad list
+|-- admin.html        Unlisted organiser console: sign in, filter, CSV
 |-- faq.html          Disabled placeholder; 15 questions kept in git history
 |-- 404.html          Not-found page
 |-- css/style.css     The whole design system. Hallmark stamp on line 1, tokens next
-|-- js/site.js        Mobile nav, ?event= preselect on both forms, form guards, footer year
-|-- apps-script/Code.gs  Registration receiver: form POST in, Sheet row out
+|-- js/config.js      Supabase URL, publishable key, the nine events
+|-- js/site.js        Mobile nav, ?event= preselect, body-data rule, mode, footer year
+|-- js/register.js    Validates and posts both forms to Supabase
+|-- js/admin.js       Sign in, per-sport filters, sortable table, CSV export
+|-- supabase/schema.sql  Tables, constraints, RLS, admin login functions
+|-- apps-script/Code.gs  Superseded Google Sheets receiver, kept as a fallback
 |-- .nojekyll         Stops GitHub Pages running Jekyll
 |-- README.md         This file
 ```
@@ -192,13 +198,71 @@ grep -rn "TBC" *.html
 | Arm wrestling weight classes | `events.html`, `schedule.html`, `faq.html` | not stated |
 | Refunds, weather | `faq.html` | written, TBC where unresolved |
 | What happens next panel | `register.html`, deliberately blank | TODO comment, nothing promises a timeline |
-| Registration endpoint | both forms, action URLs | `REPLACE_ME` |
+| Registration endpoint | `js/config.js` and `supabase/schema.sql` | connected; rerun the SQL if the project changes |
 
-## Registration endpoint
+## Registration endpoint (Supabase)
+
+Both forms post straight to Supabase's REST API. There is no server of our own: the browser sends JSON to `/rest/v1/individual_entries` or `/rest/v1/team_entries` with the publishable key, and Postgres enforces every rule.
+
+| | |
+| --- | --- |
+| Project | `https://rbmmhasdshbgxhjmshdk.supabase.co` |
+| Key in the page | publishable key, in `js/config.js`. Public by design |
+| Tables | `individual_entries`, `team_entries` |
+| Admin | `admin.html`, username and password, server-side session token |
+| Schema | `supabase/schema.sql` |
+
+### One-time setup
+
+1. Open the project's **SQL Editor**, paste all of `supabase/schema.sql`, change the seeded password (`CHANGE-ME-BEFORE-RUNNING`), and run it.
+2. Check that the three verify queries at the bottom of the file return rows.
+3. Open `https://unnnii.github.io/aquil/admin.html`, sign in as `admin` with the password you set.
+4. Submit one individual and one team entry on the site, confirm they appear under the right sport, then delete the test rows in the Supabase table editor.
+
+Re-running the SQL is safe. To change the password later:
+
+```sql
+update public.admins
+   set password_hash = extensions.crypt('new-password', extensions.gen_salt('bf', 12))
+ where username = 'admin';
+```
+
+### Security model
+
+- The publishable key can **insert** entries and nothing else. `select`, `update` and `delete` are revoked and RLS carries an insert-only policy.
+- Reading is only possible through `admin_entries(token)`, and a token only exists after `admin_login(username, password)` succeeds.
+- Passwords are bcrypt hashes (`pgcrypto`), never stored or sent in clear text.
+- Five wrong passwords lock that username for 15 minutes.
+- Sessions last 12 hours and live in `admin_sessions`; signing out deletes the row.
+- The `service_role` key is not used by the site at all. Do not put it in `js/config.js`.
+
+### Why not Supabase Auth
+
+Auth is email-based and the organisers wanted a username and a password. `admin_login()` gives exactly that with the same properties: a random server-side token, an expiry and a lockout.
+
+### Spam
+
+The honeypot (`_gotcha`) now traps bots in `js/register.js`, and the CHECK constraints reject malformed rows. There is no CAPTCHA: verifying one needs a server, which this stack does not have. If junk arrives, add Cloudflare Turnstile and verify it in an Edge Function.
+
+### What is stored
+
+| Individual | Team |
+| --- | --- |
+| received, full name, roll number, course, specialisation, year, contact, height, weight, events, anything else | received, event, team name, captain, captain roll, captain course, captain year, contact, squad, anything else |
+
+`events` is a Postgres `text[]`: one entrant ticking three events is one row with three values, not three rows. The console expands slugs to labels and shows the row under every sport it belongs to.
+
+### Exporting
+
+`admin.html` → choose Individual or Team, filter by sport if needed, **Download CSV**. The file is UTF-8 with a BOM so Excel opens it cleanly.
+
+## Registration endpoint, fallback (Google Apps Script)
+
+`apps-script/Code.gs` stays in the repository but is no longer wired to anything. It still appends to a Google Sheet if Supabase becomes a problem. The notes below describe it.
 
 Both forms post to a **Google Apps Script web app** (`apps-script/Code.gs`). It appends each submission as a row in a Google Sheet and returns a small confirmation page. No third party sits in the middle, there is no monthly cap, and the entries land somewhere organisers can filter and sort when seeding draws and weight brackets.
 
-The `REPLACE_ME` guard in `js/site.js` is the switch: while the action contains it, the notice shows and the submit button is disabled. Put a real `/exec` URL in place and the form turns itself on.
+The old `REPLACE_ME` guard has been removed: `js/site.js` no longer touches submission, `js/register.js` owns it.
 
 ### One-time setup
 
@@ -369,15 +433,26 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 - The script is committed here but **not deployed**, so both forms still carry `REPLACE_ME` and stay switched off. The `/exec` URL is the last missing piece.
 - The Formspree notes in this file were replaced rather than deleted: Formspree is still the fallback if Apps Script turns out to be a problem.
 
+### 2026-11-18, registration moved to Supabase, admin console rebuilt
+
+- **The endpoint is Supabase now.** Both forms write straight to Postgres through PostgREST with the publishable key. `apps-script/Code.gs` is kept as a fallback but is no longer referenced by any page.
+- `supabase/schema.sql` creates `individual_entries`, `team_entries`, `admins`, `admin_sessions` and `login_attempts`, with CHECK constraints on every field, a GIN index on the events array, insert-only RLS for `anon`, and `admin_entries()` for reads.
+- **Username and password, no email.** `admin_login()` verifies a bcrypt hash with `pgcrypto`, returns a random 32-byte session token, and locks a username for 15 minutes after five failures. Sessions expire after 12 hours and can be revoked by `admin_logout()`.
+- **The admin console is rebuilt** at `admin.html` against the `.admin-*` classes that were already in `style.css` but had no markup: sign-in, totals per sport, search, per-sport filter, sortable table, CSV export. The page is `noindex` and unlinked.
+- `js/config.js` holds the project URL, the publishable key and the nine events in one place. `js/register.js` replaced the `REPLACE_ME` guard in `js/site.js`: it validates the phone number and events, posts JSON, and shows an inline confirmation instead of navigating.
+- The honeypot moved from `type="hidden"` to a positioned text input, since bots parse hidden fields.
+- Known limit: submission now requires JavaScript. Without it the form shows a `noscript` notice telling the entrant to find an organiser.
+
 ## Next steps
 
-1. **Deploy the registration receiver** and paste its `/exec` URL into both forms, replacing `REPLACE_ME`. Steps are under "Registration endpoint" above.
-2. **Confirm the split**: five individual events, four team events, and the squad sizes on the team form.
-3. **Replace the placeholders**: dates, venue, deadline, contact email, social link, organiser name.
-4. **Extend the course and year lists** on **both** forms if the college has more.
-5. **Write the "what happens next" panel** on `register.html`; only a TODO comment remains.
-6. **Settle the fee question privately**, if there is one, and decide whether it ever appears on the site.
-7. **Publish the draw** in `schedule.html` once entries close.
+1. **Run `supabase/schema.sql`** in the SQL editor and replace the seeded password. Registration is dead until that is done; the forms will show "not set up yet".
+2. **Change the admin password** from `CHANGE-ME-BEFORE-RUNNING` and keep it off the site.
+3. **Confirm the split**: five individual events, four team events, and the squad sizes on the team form.
+4. **Replace the placeholders**: dates, venue, deadline, social link, organiser name.
+5. **Extend the course and year lists** on **both** forms and in `supabase/schema.sql` if the database ever constrains them.
+6. **Write the "what happens next" panel** on `register.html`; only a TODO comment remains.
+7. **Settle the fee question privately**, if there is one, and decide whether it ever appears on the site.
+8. **Publish the draw** in `schedule.html` once entries close.
 
 **Done since this list was written:** `sloplint` has been run and is clean; the site ships light and dark; height and weight are conditional. See the session log above.
 
