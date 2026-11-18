@@ -23,7 +23,10 @@
   }
 
   /* Individual form: tick the matching box ------------------------------- */
-  if (slug) {
+  var chosen = (window.AQUIL_EVENT_BY_SLUG || {})[slug];
+  var usable = slug && (!chosen || !chosen.disabled);
+
+  if (usable) {
     var boxes = document.querySelectorAll('input[data-event-box]');
     for (var i = 0; i < boxes.length; i++) {
       if (boxes[i].value === slug) { boxes[i].checked = true; break; }

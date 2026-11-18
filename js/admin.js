@@ -9,7 +9,8 @@
   'use strict';
 
   var cfg = window.AQUIL_SUPABASE;
-  var EVENTS = window.AQUIL_EVENTS || [];
+  var EVENTS = window.AQUIL_ACTIVE_EVENTS || window.AQUIL_EVENTS || [];
+  var ALL_EVENTS = window.AQUIL_EVENTS || [];
   var LABELS = window.AQUIL_LABELS || {};
   if (!cfg) { return; }
 
@@ -47,7 +48,6 @@
       { key: 'year', label: 'Year' },
       { key: 'phone', label: 'Contact' },
       { key: 'events', label: 'Events' },
-      { key: 'body', label: 'H / W', sortable: false },
       { key: 'notes', label: 'Notes' }
     ],
     team: [
@@ -57,14 +57,24 @@
       { key: 'captain', label: 'Captain' },
       { key: 'captain_roll', label: 'Roll' },
       { key: 'phone', label: 'Contact' },
-      { key: 'squad', label: 'Squad' },
+      { key: 'members', label: 'Members' },
       { key: 'notes', label: 'Notes' }
     ]
   };
 
+  function memberText(list) {
+    return (list || []).map(function (m) {
+      var bits = [m && m.name];
+      if (m && m.roll) { bits.push(m.roll); }
+      if (m && m.course) { bits.push((LABELS.course && LABELS.course[m.course]) || m.course); }
+      if (m && m.year) { bits.push((LABELS.year && LABELS.year[String(m.year)]) || m.year); }
+      return bits.filter(Boolean).join(' · ');
+    });
+  }
+
   function label(slug) {
-    for (var i = 0; i < EVENTS.length; i++) {
-      if (EVENTS[i].slug === slug) { return EVENTS[i].label; }
+    for (var i = 0; i < ALL_EVENTS.length; i++) {
+      if (ALL_EVENTS[i].slug === slug) { return ALL_EVENTS[i].label; }
     }
     return slug;
   }
@@ -240,6 +250,7 @@
   function haystack(row) {
     var parts = Object.keys(row).map(function (key) {
       var value = row[key];
+      if (key === 'members') { return memberText(value).join(' '); }
       if (Array.isArray(value)) { return value.map(label).join(' '); }
       if (key === 'event') { return label(value); }
       return String(value == null ? '' : value);
@@ -305,11 +316,11 @@
       return (row.events || []).map(label).join(', ') || '—';
     }
     if (key === 'event') { return label(row.event); }
-    if (key === 'body') {
-      var h = row.height_cm ? row.height_cm + ' cm' : '—';
-      var w = row.weight_kg ? row.weight_kg + ' kg' : '—';
-      return h + ' / ' + w;
+    if (key === 'members') {
+      return memberText(row.members).join('\n') || '—';
     }
+    if (false) {
+      }
 
     var value = row[key];
     if (value === null || value === undefined || value === '') { return '—'; }
@@ -421,7 +432,7 @@
             link.href = 'tel:' + String(value).replace(/[^\d+]/g, '');
             link.textContent = value;
             td.appendChild(link);
-          } else if (column.key === 'squad') {
+          } else if (column.key === 'members') {
             var squad = document.createElement('span');
             squad.className = 'label';
             squad.style.whiteSpace = 'pre-line';

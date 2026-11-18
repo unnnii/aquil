@@ -11,18 +11,53 @@ window.AQUIL_SUPABASE = {
   key: 'sb_publishable_0MqgKOCfdpS2RjkFNjLWnw_gQrVZmFL'
 };
 
-/* The nine competitions, in site order. `kind` decides which table an entry
- * goes to; `slug` is what the forms send and what ?event= matches. */
+/* The competitions, in site order. kind decides which table an entry goes
+ * to; slug is what the forms send and what ?event= matches.
+ *
+ * disabled: true hides an event from every page without deleting its code.
+ * Set it back to false to bring the event back — no migration needed.
+ *
+ * minPlayers is the minimum squad size for a team event, counting the
+ * captain. js/register.js and the team_entries_min_players check constraint
+ * both enforce it. */
 window.AQUIL_EVENTS = [
   { slug: 'table-tennis',     label: 'Table Tennis',      kind: 'individual' },
-  { slug: 'carroms',          label: 'Carroms',           kind: 'team' },
+  { slug: 'carroms',          label: 'Carroms',           kind: 'team', minPlayers: 2 },
   { slug: 'chess',            label: 'Chess',             kind: 'individual' },
-  { slug: 'arm-wrestling',    label: 'Arm Wrestling',     kind: 'individual' },
+  { slug: 'arm-wrestling',    label: 'Arm Wrestling',     kind: 'individual', disabled: true },
   { slug: 'penalty-shootout', label: 'Penalty Shootout',  kind: 'individual' },
-  { slug: 'throw-in-girls',   label: 'Throw In (Girls)',  kind: 'individual' },
-  { slug: 'badminton',        label: 'Badminton',         kind: 'team' },
-  { slug: 'football-7s',      label: 'Football 7-a-side', kind: 'team' },
-  { slug: 'basketball-3s',    label: 'Basketball 3x3',    kind: 'team' }
+  { slug: 'throw-in-girls',   label: 'Throw In (Girls)',  kind: 'individual', disabled: true },
+  { slug: 'badminton-boys',   label: 'Badminton (Boys)',  kind: 'team', minPlayers: 2 },
+  { slug: 'badminton-girls',  label: 'Badminton (Girls)', kind: 'team', minPlayers: 2 },
+  { slug: 'football-7s',      label: 'Football 7-a-side', kind: 'team', minPlayers: 10 },
+  { slug: 'basketball-3s',    label: 'Basketball 3x3',    kind: 'team', minPlayers: 3 }
+];
+
+/* Lookups, so no other file has to loop over the list. */
+window.AQUIL_EVENT_BY_SLUG = {};
+window.AQUIL_EVENTS.forEach(function (event) {
+  window.AQUIL_EVENT_BY_SLUG[event.slug] = event;
+});
+window.AQUIL_ACTIVE_EVENTS = window.AQUIL_EVENTS.filter(function (event) {
+  return !event.disabled;
+});
+
+/* Courses and years, in form order. js/register.js builds the member rows
+ * from these, so the team form does not repeat the lists a third time. */
+window.AQUIL_COURSES = [
+  { value: 'bcom',       label: 'B.Com' },
+  { value: 'bca',        label: 'BCA' },
+  { value: 'bba',        label: 'BBA' },
+  { value: 'ba',         label: 'BA' },
+  { value: 'bsc',        label: 'B.Sc' },
+  { value: 'psychology', label: 'Psychology' },
+  { value: 'other',      label: 'Other' }
+];
+
+window.AQUIL_YEARS = [
+  { value: '1', label: '1st year' },
+  { value: '2', label: '2nd year' },
+  { value: '3', label: '3rd year' }
 ];
 
 /* Stored values to readable text, for the admin console and its CSV. */

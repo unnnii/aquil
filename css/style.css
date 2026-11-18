@@ -372,3 +372,22 @@ summary:active { background: var(--color-paper-2); }
   .admin-table { min-width: 40rem; }
   .admin-search-only { width: 100%; }
 }
+
+/* Team member rows ---------------------------------------------------------- */
+/* The captain is a normal field; these are the rest of the squad. Built by
+   js/register.js, so the markup for a row lives there, not here. */
+.members { display: grid; gap: var(--space-md); margin-top: var(--space-sm); }
+.member { padding: var(--space-md); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper-2); }
+.member-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); margin-bottom: var(--space-sm); }
+.member-title { font-size: var(--text-sm); font-weight: 500; color: var(--color-ink-2); }
+.member-remove { width: 2rem; height: 2rem; padding: 0; border: var(--rule-hair) solid var(--color-rule-2); border-radius: var(--radius-card); background: var(--color-paper); color: var(--color-ink); font-size: var(--text-md); line-height: 1; cursor: pointer; }
+.member-remove:hover { background: var(--color-ink); color: var(--color-paper); }
+.member-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm) var(--col-gap); }
+.member-label { font-size: var(--text-xs); font-weight: 500; color: var(--color-muted); }
+.members-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md); margin-top: var(--space-md); }
+.members-count { font-size: var(--text-xs); color: var(--color-muted); }
+.members-count[data-ok="false"] { color: var(--color-ink-2); font-weight: 500; }
+
+@media (max-width: 720px) {
+  .member-grid { grid-template-columns: 1fr; }
+}
