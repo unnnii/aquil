@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500&family=JetBrains+Mono:wght@500&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20261118d">
+<link rel="stylesheet" href="css/style.css?v=20261118e">
 <script>document.documentElement.className += ' js';</script>
 </head>
 
@@ -80,6 +80,7 @@
             <div class="field">
               <label for="captain">Captain</label>
               <input id="captain" name="captain" type="text" autocomplete="name" required>
+              <span class="hint">The team's contact. Not counted as a player.</span>
             </div>
 
             <div class="field">
@@ -119,7 +120,7 @@
 
             <div class="field field-full" role="group" aria-labelledby="members-label">
               <span id="members-label" class="field-label">Team members</span>
-              <span class="hint" data-members-hint>The captain counts as one player.</span>
+              <span class="hint" data-members-hint>List every player, including the captain if they play.</span>
               <div class="members" data-members></div>
               <div class="members-actions">
                 <button class="btn btn-line" type="button" data-member-add>+ Add member</button>
@@ -177,8 +178,8 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=20261118d" defer></script>
-<script src="js/site.js?v=20261118d" defer></script>
-<script src="js/register.js?v=20261118d" defer></script>
+<script src="js/config.js?v=20261118e" defer></script>
+<script src="js/site.js?v=20261118e" defer></script>
+<script src="js/register.js?v=20261118e" defer></script>
 </body>
 </html>

@@ -29,8 +29,9 @@
 --
 -- Team events:
 --   carroms, badminton-boys, badminton-girls, football-7s, basketball-3s.
---   members holds everyone except the captain. team_entries_min_players
---   enforces the event minimum on the captain plus those members.
+--   members holds every player, the captain included when they play.
+--   team_entries_min_players enforces the event minimum on those members
+--   alone: the captain fields are the team's contact.
 --
 -- Security model:
 --   anon (the publishable key in the browser) may INSERT entries and nothing
@@ -141,15 +142,15 @@ create table if not exists public.team_entries (
   members        jsonb not null default '[]'::jsonb
                  check (jsonb_typeof(members) = 'array'),
   notes          text check (char_length(notes) <= 1000),
-  -- Minimums count the captain plus the listed members.
+  -- Minimums count the listed players. The captain is a contact, not a player.
   constraint team_entries_min_players check (
     case event
-      when 'basketball-3s'   then jsonb_array_length(members) >= 2
-      when 'football-7s'     then jsonb_array_length(members) >= 9
-      when 'badminton-boys'  then jsonb_array_length(members) >= 1
-      when 'badminton-girls' then jsonb_array_length(members) >= 1
-      when 'badminton'       then jsonb_array_length(members) >= 1
-      when 'carroms'         then jsonb_array_length(members) >= 1
+      when 'basketball-3s'   then jsonb_array_length(members) >= 3
+      when 'football-7s'     then jsonb_array_length(members) >= 10
+      when 'badminton-boys'  then jsonb_array_length(members) >= 2
+      when 'badminton-girls' then jsonb_array_length(members) >= 2
+      when 'badminton'       then jsonb_array_length(members) >= 2
+      when 'carroms'         then jsonb_array_length(members) >= 2
       else true
     end
   )
@@ -160,6 +161,25 @@ create index if not exists team_entries_created_idx
 
 create index if not exists team_entries_event_idx
   on public.team_entries (event);
+
+-- Projects created before 18 Nov 2026 counted the captain inside the squad.
+-- Replace the check so the minimum applies to the listed members alone.
+-- NOT VALID leaves entries already collected under the old rule untouched
+-- while still enforcing the new rule on every insert.
+alter table public.team_entries
+  drop constraint if exists team_entries_min_players;
+alter table public.team_entries
+  add constraint team_entries_min_players check (
+    case event
+      when 'basketball-3s'   then jsonb_array_length(members) >= 3
+      when 'football-7s'     then jsonb_array_length(members) >= 10
+      when 'badminton-boys'  then jsonb_array_length(members) >= 2
+      when 'badminton-girls' then jsonb_array_length(members) >= 2
+      when 'badminton'       then jsonb_array_length(members) >= 2
+      when 'carroms'         then jsonb_array_length(members) >= 2
+      else true
+    end
+  ) not valid;
 
 -- ---------------------------------------------------------------------------
 -- Admin accounts

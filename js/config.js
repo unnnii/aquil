@@ -17,9 +17,10 @@ window.AQUIL_SUPABASE = {
  * disabled: true hides an event from every page without deleting its code.
  * Set it back to false to bring the event back — no migration needed.
  *
- * minPlayers is the minimum squad size for a team event, counting the
- * captain. js/register.js and the team_entries_min_players check constraint
- * both enforce it. */
+ * minPlayers is the minimum number of players a team event needs. The
+ * captain is a contact, not an automatic player: only the listed members
+ * count. js/register.js and the team_entries_min_players constraint both
+ * enforce it. */
 window.AQUIL_EVENTS = [
   { slug: 'table-tennis',     label: 'Table Tennis',      kind: 'individual' },
   { slug: 'carroms',          label: 'Carroms',           kind: 'team', minPlayers: 2 },

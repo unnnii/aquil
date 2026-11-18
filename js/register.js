@@ -358,17 +358,18 @@
         if (title) { title.textContent = 'Member ' + (index + 1); }
       });
 
+      var chosen = !!bySlug[text(form, 'event')];
       var min = minimumFor(form);
-      var total = all.length + 1;
+      var total = all.length;
 
       if (hintLine) {
-        hintLine.textContent = 'The captain counts as one player. This event needs at least ' +
-          min + '.';
+        hintLine.textContent = 'List every player, including the captain if they play.' +
+          (chosen ? ' This event needs at least ' + min + '.' : '');
       }
       if (countLine) {
         countLine.textContent = total + (total === 1 ? ' player' : ' players') +
-          (total < min ? ' — add ' + (min - total) + ' more' : '');
-        countLine.setAttribute('data-ok', total >= min ? 'true' : 'false');
+          (chosen && total < min ? ' — add ' + (min - total) + ' more' : '');
+        countLine.setAttribute('data-ok', !chosen || total >= min ? 'true' : 'false');
       }
     }
 
@@ -392,13 +393,13 @@
 
     eventSelect.addEventListener('change', function () {
       /* Top the list up to the new minimum; never remove what is typed. */
-      var want = minimumFor(form) - 1;
+      var want = minimumFor(form);
       while (rows().length < want) { list.appendChild(memberRow()); }
       update();
     });
 
     if (eventSelect.value) {
-      var start = minimumFor(form) - 1;
+      var start = minimumFor(form);
       for (var i = 0; i < start; i++) { list.appendChild(memberRow()); }
     }
 
@@ -471,10 +472,10 @@
         }
 
         var min = minimumFor(form);
-        var total = team.members.length + 1;
+        var total = team.members.length;
         if (total < min) {
           showError(form, 'This event needs at least ' + min +
-            ' players including the captain. Add ' + (min - total) + ' more.');
+            ' players. Add ' + (min - total) + ' more.');
           var add = form.querySelector('[data-member-add]');
           if (add) { add.focus(); }
           return;

@@ -53,7 +53,7 @@ A static, multi-page website for **Heartian Hustle 3.0**, an intra-college multi
 
 Disabled means `disabled: true` in `js/config.js`: the event is hidden from every entry route, but its slug and its database values stay in place. The points table prints all nine events regardless of the flag. Flip it back to `false` and the event returns with no migration.
 
-**Minimums, not maximums.** A team event states the smallest squad it will accept, counted as the captain plus the listed members: basketball 3, football 10, badminton 2, carroms 2. There is no upper limit. `minPlayers` in `js/config.js` drives the browser check and `team_entries_min_players` enforces the same rule in Postgres.
+**Minimums, not maximums.** A team event states the smallest squad it will accept, counted as the listed players. The captain is the team's contact, not an automatic player: if they play, they add themselves as a member. Basketball 3, football 10, badminton 2, carroms 2. There is no upper limit. `minPlayers` in `js/config.js` drives the browser check and `team_entries_min_players` enforces the same rule in Postgres.
 
 The entry list lives in **three** places and must stay in sync:
 
@@ -148,7 +148,7 @@ The list lives in two places: `AQUIL_GROUPS` in `js/config.js` and the `batch_gr
 | --- | --- | --- | --- | --- |
 | Event | `event` | select, five team events | yes | preset by `?event=`; changing it tops up the member rows to the new minimum |
 | Team name | `team` | text | yes | |
-| Captain | `captain` | text | yes | |
+| Captain | `captain` | text | yes | the team's contact; not counted as a player |
 | Captain roll number | `captain_roll` | text | yes | |
 | Captain course | `captain_course` | select | yes | same course list as the batch form |
 | Captain year | `captain_year` | select | yes | 1, 2, 3 |
@@ -157,7 +157,7 @@ The list lives in two places: `AQUIL_GROUPS` in `js/config.js` and the `batch_gr
 | Rules | `agree_rules` | checkbox | yes | |
 | hidden | `_gotcha` | | | traps bots |
 
-**A member row is one player.** `js/register.js` builds the rows, numbers them, and keeps a live count beside the Add button. Choosing an event tops the list up to that event's `minPlayers` minus the captain. Removing rows is always allowed, but submitting below the minimum is refused in the browser and again by `team_entries_min_players` in Postgres.
+**A member row is one player.** `js/register.js` builds the rows, numbers them, and keeps a live count beside the Add button. Choosing an event tops the list up to that event's `minPlayers`. Removing rows is always allowed, but submitting below the minimum is refused in the browser and again by `team_entries_min_players` in Postgres.
 
 **There is no email field on either form, on purpose.** Participants are contacted on the phone number, and the confirmation panel says no email is coming. Every submission is a row in Postgres, so nothing depends on an inbox.
 
@@ -233,6 +233,7 @@ If a page looks stale it is a cache, not a failed build; check the Pages build s
 
 ## History
 
+- **2026-11-18, the team captain is a contact.** The team form stopped counting the captain as a player: the member list tops up to `minPlayers` on its own and the error asks for that many players. `team_entries_min_players` now requires the same. The captain adds themselves as a member when they play. Existing entries are left alone by the `NOT VALID` constraint.
 - **2026-11-18, no notes field.** The Anything else textarea came off both forms and out of both payloads. The `notes` column stays in the database so entries collected earlier keep their text, and the console still prints it.
 - **2026-11-18, captain class and year.** The batch form now asks the captain for a class, typed in words, and a year. Participant rows call the column Year, which is what the select always stored, and send `year`; older rows keep `class`, which is still read everywhere.
 - **2026-11-18, points table.** The index rows came off `index.html` and `events.html`; both pages now print the fest's points distribution for all nine events, disabled ones included. Entry is through the two form buttons.
