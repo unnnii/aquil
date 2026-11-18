@@ -439,7 +439,7 @@
     var kind = form.getAttribute('data-form-kind');
 
     if (kind === 'team') { initMembers(form); }
-    if (kind === 'individual') { initParticipants(form); }
+    if (kind === 'batch') { initParticipants(form); }
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
