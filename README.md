@@ -23,6 +23,7 @@ A static, multi-page website for **Heartian Hustle 3.0**, an intra-college multi
 | --- | --- | --- |
 | Page structure | Done | 7 pages plus a 404 and an unlisted admin console |
 | Event list | Done | 8 active competitions, 3 individual and 5 team. Arm wrestling and throw-in are disabled in `js/config.js` with their code kept |
+| Points table | Done | all nine events on `index.html` and `events.html`, disabled ones included, as the fest's table does |
 | Design system | Done | Hallmark Sport theme, token-driven, responsive to 360px |
 | Colour modes | Done | **light only.** The dark theme, its switch and the pre-paint script were removed |
 | Mobile nav | Done | JS enhanced; falls back to a wrapped row without JS |
@@ -50,16 +51,17 @@ A static, multi-page website for **Heartian Hustle 3.0**, an intra-college multi
 | Arm Wrestling | `arm-wrestling` | Weight-category knockout, best of three pulls | Batch | **Disabled** |
 | Throw In (Girls) | `throw-in-girls` | Football throw-in for distance, girls only | Batch | **Disabled** |
 
-Disabled means `disabled: true` in `js/config.js`: the event is hidden on every page, but its slug and its database values stay in place. Flip the flag back to `false` and it returns with no migration.
+Disabled means `disabled: true` in `js/config.js`: the event is hidden from every entry route, but its slug and its database values stay in place. The points table prints all nine events regardless of the flag. Flip it back to `false` and the event returns with no migration.
 
 **Minimums, not maximums.** A team event states the smallest squad it will accept, counted as the captain plus the listed members: basketball 3, football 10, badminton 2, carroms 2. There is no upper limit. `minPlayers` in `js/config.js` drives the browser check and `team_entries_min_players` enforces the same rule in Postgres.
 
-The list lives in **four** places and must stay in sync:
+The entry list lives in **three** places and must stay in sync:
 
-1. `index.html`, the index rows
-2. `events.html`, the same rows
-3. `js/config.js`, `AQUIL_EVENTS`: slug, label, `kind`, plus `minPlayers` and `disabled`. This is the list every script reads; the forms, the admin filter and the admin stats are all built from it. `supabase/schema.sql` carries the same slugs in CHECK constraints, so a new event means editing all four.
-4. `register-team.html`, the team event select (five events)
+1. `js/config.js`, `AQUIL_EVENTS`: slug, label, `kind`, plus `minPlayers` and `disabled`. This is the list every script reads; the forms, the admin filter and the admin stats are all built from it.
+2. `register-team.html`, the team event select (five events)
+3. `supabase/schema.sql`, the same slugs in CHECK constraints
+
+The points table is a fourth copy, but it is content rather than an entry route: `index.html` and `events.html` print the same nine rows by hand, disabled events included, so an event change touches both tables too.
 
 The batch form has no event list in its markup: `js/register.js` builds each participant row's event select from `AQUIL_INDIVIDUAL_EVENTS`, which is `AQUIL_EVENTS` filtered to active individual events. That is why disabling an event needs no HTML edit.
 
@@ -83,8 +85,8 @@ Links of the shape `register.html?event=chess` preselect the event on the first 
 ## File map
 
     aquil/
-    |-- index.html          Hero, competition index, programme teaser, entry, questions
-    |-- events.html         All eight competitions, with a link into the right form for each
+    |-- index.html          Hero, points table, entry
+    |-- events.html         Points table, and the note that captains enter players
     |-- schedule.html       Day one and day two sheets, on-the-day facts
     |-- register.html       Batch form: captain details, then one row per participant
     |-- register-team.html  Team form: event, captain, one row per member
@@ -231,6 +233,7 @@ If a page looks stale it is a cache, not a failed build; check the Pages build s
 
 ## History
 
+- **2026-11-18, points table.** The index rows came off `index.html` and `events.html`; both pages now print the fest's points distribution for all nine events, disabled ones included. Entry is through the two form buttons.
 - **2026-11-18, batch entry and light only.** Individual self-registration replaced by one form per batch: captain details, group, then a row per participant with name, class, roll and event. New `batch_entries` table with a jsonb participants array and a validator function; specialisation dropped. The admin console reads batch entries, counts participants per sport and prints one participant per line in the table and the CSV. The dark theme, its masthead switch, its token block and the pre-paint script were deleted; `color-scheme` is light.
 - **2026-11-18, squads as member rows.** `team_entries.squad` replaced by a `members` jsonb array of `{name, course, year, roll}`; height and weight dropped everywhere; minimums changed to captain plus members.
 - **2026-11-17, registration split by event type.** `register.html` took the individual events, `register-team.html` the team events.

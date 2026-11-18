@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500&family=JetBrains+Mono:wght@500&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20261118">
+<link rel="stylesheet" href="css/style.css?v=20261118b">
 <script>document.documentElement.className += ' js';</script>
 </head>
 
@@ -54,49 +54,87 @@
   <section class="section">
     <div class="wrap">
       <div class="section-head">
-        <h2>Competitions</h2>
+        <h2>Points distribution</h2>
+        <p class="lede">Placings earn points for the batch: first to fourth score, and a dash means no points for that place.</p>
       </div>
-      <div class="index">
-        <a class="index-row" href="register.html?event=table-tennis">
-          <h3>Table Tennis</h3>
-          <span class="enter">Enter</span>
-        </a>
-        <a class="index-row" href="register-team.html?event=carroms">
-          <h3>Carroms</h3>
-          <span class="enter">Enter</span>
-        </a>
-        <a class="index-row" href="register.html?event=chess">
-          <h3>Chess</h3>
-          <span class="enter">Enter</span>
-        </a>
-        <a class="index-row" href="register.html?event=arm-wrestling" hidden>
-          <h3>Arm Wrestling</h3>
-          <span class="enter">Enter</span>
-        </a>
-        <a class="index-row" href="register.html?event=penalty-shootout">
-          <h3>Penalty Shootout</h3>
-          <span class="enter">Enter</span>
-        </a>
-        <a class="index-row" href="register.html?event=throw-in-girls" hidden>
-          <h3>Throw In (Girls)</h3>
-          <span class="enter">Enter</span>
-        </a>
-        <a class="index-row" href="register-team.html?event=badminton-boys">
-          <h3>Badminton (Boys)</h3>
-          <span class="enter">Enter</span>
-        </a>
-        <a class="index-row" href="register-team.html?event=badminton-girls">
-          <h3>Badminton (Girls)</h3>
-          <span class="enter">Enter</span>
-        </a>
-        <a class="index-row" href="register-team.html?event=football-7s">
-          <h3>Football 7-a-side</h3>
-          <span class="enter">Enter</span>
-        </a>
-        <a class="index-row" href="register-team.html?event=basketball-3s">
-          <h3>Basketball 3x3</h3>
-          <span class="enter">Enter</span>
-        </a>
+      <div class="sheet-wrap">
+        <table class="points">
+          <caption>Points awarded per placing, by event.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Event</th>
+              <th scope="col">Type</th>
+              <th scope="col" class="num">1st</th>
+              <th scope="col" class="num">2nd</th>
+              <th scope="col" class="num">3rd &amp; 4th</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Chess</th>
+              <td>Individual</td>
+              <td class="num">50</td>
+              <td class="num">30</td>
+              <td class="num">20</td>
+            </tr>
+            <tr>
+              <th scope="row">Table Tennis</th>
+              <td>Individual</td>
+              <td class="num">50</td>
+              <td class="num">30</td>
+              <td class="num">20</td>
+            </tr>
+            <tr>
+              <th scope="row">Arm Wrestling</th>
+              <td>Individual</td>
+              <td class="num">20</td>
+              <td class="num">10</td>
+              <td class="num">5</td>
+            </tr>
+            <tr>
+              <th scope="row">Penalty Shootout</th>
+              <td>Individual</td>
+              <td class="num">70</td>
+              <td class="num">&ndash;</td>
+              <td class="num">&ndash;</td>
+            </tr>
+            <tr>
+              <th scope="row">Throw In (Girls)</th>
+              <td>Individual</td>
+              <td class="num">70</td>
+              <td class="num">&ndash;</td>
+              <td class="num">&ndash;</td>
+            </tr>
+            <tr>
+              <th scope="row">Carroms</th>
+              <td>Double</td>
+              <td class="num">75</td>
+              <td class="num">50</td>
+              <td class="num">30</td>
+            </tr>
+            <tr>
+              <th scope="row">Badminton</th>
+              <td>Group</td>
+              <td class="num">150</td>
+              <td class="num">100</td>
+              <td class="num">75</td>
+            </tr>
+            <tr>
+              <th scope="row">Football 7-a-side</th>
+              <td>Group</td>
+              <td class="num">150</td>
+              <td class="num">100</td>
+              <td class="num">75</td>
+            </tr>
+            <tr>
+              <th scope="row">Basketball 3x3</th>
+              <td>Group</td>
+              <td class="num">100</td>
+              <td class="num">75</td>
+              <td class="num">50</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
@@ -135,6 +173,6 @@
   </div>
 </footer>
 
-<script src="js/site.js?v=20261118" defer></script>
+<script src="js/site.js?v=20261118b" defer></script>
 </body>
 </html>

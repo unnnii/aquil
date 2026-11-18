@@ -185,6 +185,18 @@ code { font-family: var(--font-outlier); font-size: 0.92em; }
 .day-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-md); margin-bottom: var(--space-sm); }
 .day-head h2 { font-size: var(--text-3xl); }
 
+/* Points distribution ------------------------------------------------------ */
+/* Reference table on the home and competitions pages: event names in the
+   display face, points right-aligned so the columns read as numbers. */
+.points { width: 100%; border-collapse: collapse; border-top: var(--rule-bar) solid var(--color-rule-2); border-bottom: var(--rule-bar) solid var(--color-rule-2); }
+.points caption { padding-bottom: var(--space-sm); text-align: left; caption-side: top; font-size: var(--text-sm); color: var(--color-muted); }
+.points th, .points td { padding: var(--space-sm) var(--space-md) var(--space-sm) 0; text-align: left; vertical-align: baseline; border-top: var(--rule-hair) solid var(--color-rule); }
+.points thead th { border-top: 0; font-size: var(--text-sm); font-weight: 500; color: var(--color-muted); white-space: nowrap; }
+.points tbody th { font-family: var(--font-display); font-weight: var(--display-weight); font-size: var(--text-md); letter-spacing: var(--tracking-display); text-transform: uppercase; }
+.points tbody td { font-size: var(--text-sm); color: var(--color-ink-2); }
+.points .num { text-align: right; font-family: var(--font-display); font-weight: var(--display-weight); font-size: var(--text-md); font-variant-numeric: tabular-nums; letter-spacing: var(--tracking-display); }
+.points thead .num { font-family: var(--font-body); font-weight: 500; font-size: var(--text-sm); letter-spacing: 0; }
+
 /* Entry band -------------------------------------------------------------- */
 .entry { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: var(--col-gap); align-items: start; }
 .entry-single { grid-template-columns: minmax(0, 1fr); max-width: 760px; }
@@ -259,6 +271,7 @@ summary:active { background: var(--color-paper-2); }
 
 @media (max-width: 780px) {
   .sheet { min-width: 33rem; }
+  .points { min-width: 34rem; }
   .facts > div { padding: var(--space-sm) 0; }
   .nav-toggle { display: inline-flex; align-items: center; padding: var(--space-xs) var(--pad-control-x); border: var(--rule-hair) solid var(--color-rule-2); border-radius: var(--radius-card); background: transparent; color: var(--color-ink); font-family: var(--font-body); font-size: var(--text-sm); cursor: pointer; }
   .nav-toggle:active { background: var(--color-paper-3); }
