@@ -5,7 +5,7 @@
 > If your context window is nearly full, read this file to the end and continue from "Next steps".
 > Do not redesign from scratch and do not introduce a framework.
 
-A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event intra-college multi-sport tournament.
+A static, multi-page website for **Heartian Hustle 3.0**, an intra-college multi-sport tournament running **23 – 30 November 2026** across eight competitions.
 
 | | |
 | --- | --- |
@@ -23,14 +23,14 @@ A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event 
 | Area | State | Notes |
 | --- | --- | --- |
 | Page structure | Done | 7 pages plus a 404 and an unlisted admin console |
-| Event list | Done | 9 competitions, 5 individual and 4 team |
+| Event list | Done | 8 active competitions, 3 individual and 5 team. Arm wrestling and throw-in are disabled in `js/config.js` with their code kept |
 | Design system | Done | Hallmark Sport theme, token-driven, responsive to 360px |
 | Colour modes | Done | light and dark from one token system; switch in the masthead, follows the OS until someone chooses |
 | Mobile nav | Done | JS enhanced; falls back to a wrapped row without JS |
 | Questions page | **Disabled** | still linked from the nav and footer, but shows a not-available notice and carries `noindex` |
 | Individual form | Done | `register.html`, posts to Supabase `individual_entries` |
 | Team form | Done | `register-team.html`, posts to Supabase `team_entries` |
-| Entry storage | **Schema to run once** | `supabase/schema.sql`, two tables plus admin accounts and sessions |
+| Entry storage | Live | Supabase project `rbmmhasdshbgxhjmshdk`; schema in `supabase/schema.sql` |
 | Admin console | Done, **unlisted** | `admin.html`, username and password, per-sport views, search, CSV |
 | Form fields | Done | see the two field tables below |
 | Event content | **Placeholder** | every `TBC` and TODO comment must be replaced |
@@ -38,29 +38,36 @@ A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event 
 | Hosting | Done | Pages enabled on `main`, repo root |
 | Analytics | None | deliberately. No cookies, nothing loaded from third parties except the font files |
 
-## The nine competitions
+## The eight competitions
 
-| Event | Slug | Format | Form |
-| --- | --- | --- | --- |
-| Table Tennis | `table-tennis` | Singles knockout, best of five games to 11 | Individual |
-| Chess | `chess` | Knockout, 10 minutes each side | Individual |
-| Arm Wrestling | `arm-wrestling` | Weight-category knockout, best of three pulls | Individual |
-| Penalty Shootout | `penalty-shootout` | Five kicks each, sudden death if level | Individual |
-| Throw In (Girls) | `throw-in-girls` | Football throw-in for distance, girls only | Individual |
-| Carroms | `carroms` | Knockout, two boards side by side | Team, pairs |
-| Badminton | `badminton` | Doubles knockout, best of three | Team, pairs |
-| Football 7-a-side | `football-7s` | Groups then knockout, squads of 7 to 10 | Team |
-| Basketball 3x3 | `basketball-3s` | Groups then knockout, squads of 3 to 4 | Team |
+| Event | Slug | Format | Form | Status |
+| --- | --- | --- | --- | --- |
+| Table Tennis | `table-tennis` | Singles knockout, best of five games to 11 | Individual | Open |
+| Chess | `chess` | Knockout, 10 minutes each side | Individual | Open |
+| Penalty Shootout | `penalty-shootout` | Five kicks each, sudden death if level | Individual | Open |
+| Carroms | `carroms` | Knockout, two boards side by side, 2 or more | Team | Open |
+| Badminton (Boys) | `badminton-boys` | Doubles knockout, best of three, 2 or more | Team | Open |
+| Badminton (Girls) | `badminton-girls` | Doubles knockout, best of three, 2 or more | Team | Open |
+| Football 7-a-side | `football-7s` | Groups then knockout, 10 or more | Team | Open |
+| Basketball 3x3 | `basketball-3s` | Groups then knockout, 3 or more | Team | Open |
+| Arm Wrestling | `arm-wrestling` | Weight-category knockout, best of three pulls | Individual | **Disabled** |
+| Throw In (Girls) | `throw-in-girls` | Football throw-in for distance, girls only | Individual | **Disabled** |
+
+Disabled means `disabled: true` in `js/config.js`: the event is hidden on every page, but its tick-box, its slug and its database constraint stay in place. Flip the flag back to `false` and it returns with no migration.
+
+**Minimums, not maximums.** A team event states the smallest squad it will accept, counted as the captain plus the listed members: basketball 3, football 10, badminton 2, carroms 2. There is no upper limit. `minPlayers` in `js/config.js` drives the browser check and `team_entries_min_players` enforces the same rule in Postgres.
 
 **Open question, recorded here so it is not lost:** the original brief listed "carroms" **twice**. It was treated as a typo and listed once. If carroms is really two events, split it into two rows, two slugs and two tick-boxes.
 
 The list lives in **five** places and must stay in sync:
 
-1. `index.html`, the nine index rows
-2. `events.html`, the same nine rows
-3. `register.html`, the individual tick-boxes (five events)
-4. `register-team.html`, the team event `<select>` (four events)
-5. `js/config.js`, `AQUIL_EVENTS`: slug, label and `kind` for all nine. The admin console builds its filter and its stats from this, so a slug that is not here disappears from the console even if rows exist for it. `supabase/schema.sql` carries the same slugs in CHECK constraints; adding an event means editing all six places.
+1. `index.html`, the index rows
+2. `events.html`, the same rows
+3. `register.html`, the individual tick-boxes (three active, five in the markup)
+4. `register-team.html`, the team event `<select>` (five events)
+5. `js/config.js`, `AQUIL_EVENTS`: slug, label, `kind`, plus `minPlayers` and `disabled`. This is the list every script reads. The admin console builds its filter and its stats from it, so a slug that is not here disappears from the console even if rows exist for it. `supabase/schema.sql` carries the same slugs in CHECK constraints; adding an event means editing all six places.
+
+Disabled events are the exception: they stay in the markup with `hidden` and in `js/config.js` with `disabled: true`, so switching one back on is a one-word edit.
 
 Links of the shape `register.html?event=chess` tick the box, and `register-team.html?event=football-7s` picks the event in the select (see `js/site.js`).
 
@@ -69,10 +76,10 @@ Links of the shape `register.html?event=chess` tick the box, and `register-team.
 | | Individual | Team |
 | --- | --- | --- |
 | Page | `register.html` | `register-team.html` |
-| Covers | Chess, table tennis, arm wrestling, penalty shootout, throw in | Carroms, badminton, football 7-a-side, basketball 3x3 |
+| Covers | Table tennis, chess, penalty shootout (arm wrestling and throw-in hidden) | Carroms, badminton boys, badminton girls, football 7-a-side, basketball 3x3 |
 | Submissions | one per person, several events per submission | one per team |
 | Reached by | the nav "Register" button, and any individual row | the chooser at the top of `register.html`, and any team row |
-| Extra data | height and weight | captain's roll, course, year; squad list |
+| Extra data | nothing beyond the shared fields | captain's roll, course and year, plus one row per team member |
 
 `register.html` opens with a two-row chooser ("Individual events — this page" / "Team events — team form") before the form, so anyone who lands on Register can pick the right one. The nav deliberately does not have two buttons; the chooser does the routing.
 
@@ -80,17 +87,17 @@ Links of the shape `register.html?event=chess` tick the box, and `register-team.
 
 ```
 aquil/
-|-- index.html        Hero, nine-competition index, programme teaser, entry, questions
-|-- events.html       All nine competitions, entry rules, height and weight
+|-- index.html        Hero, competition index, programme teaser, entry, questions
+|-- events.html       All eight competitions, entry rules and minimum squad sizes
 |-- schedule.html     Day one and day two sheets, on-the-day facts
 |-- register.html     Individual form, with the chooser above it
-|-- register-team.html Team form: event, captain, squad list
+|-- register-team.html Team form: event, captain, one row per member
 |-- admin.html        Unlisted organiser console: sign in, filter, CSV
 |-- faq.html          Disabled placeholder; 15 questions kept in git history
 |-- 404.html          Not-found page
 |-- css/style.css     The whole design system. Hallmark stamp on line 1, tokens next
-|-- js/config.js      Supabase URL, publishable key, the nine events
-|-- js/site.js        Mobile nav, ?event= preselect, body-data rule, mode, footer year
+|-- js/config.js      Supabase URL, publishable key, events with minimums and disabled flags
+|-- js/site.js        Mobile nav, ?event= preselect, mode, footer year
 |-- js/register.js    Validates and posts both forms to Supabase
 |-- js/admin.js       Sign in, per-sport filters, sortable table, CSV export
 |-- supabase/schema.sql  Tables, constraints, RLS, admin login functions
@@ -111,9 +118,7 @@ No `package.json`, no lockfile, no build output. The repository is the site.
 | Specialisation | `specialisation` | select | no | None, CA, BA, Other |
 | Year | `year` | select | yes | 1, 2, 3 |
 | Contact number | `phone` | tel, autocomplete tel | yes | WhatsApp accepted; this replaces email |
-| Height | `height_cm` | number, 100 to 250 | physical events | arm wrestling brackets |
-| Weight | `weight_kg` | number, 25 to 200, 0.5 steps | physical events | arm wrestling brackets |
-| Events | `events` | checkbox group, five individual events | at least one | enforced by `js/site.js` |
+| Events | `events` | checkbox group, five in the markup, three visible | at least one | arm wrestling and throw-in are `hidden`; `js/register.js` checks the count |
 | Rules | `agree_rules` | checkbox | yes | |
 | hidden | `_subject`, `_gotcha` | | | routes the entry, and traps bots |
 
@@ -121,23 +126,23 @@ No `package.json`, no lockfile, no build output. The repository is the site.
 
 | Field | `name` | Control | Required | Notes |
 | --- | --- | --- | --- | --- |
-| Event | `event` | select, four team events | yes | preset by `?event=` |
+| Event | `event` | select, five team events | yes | preset by `?event=`; changing it tops up the member rows to the new minimum |
 | Team name | `team` | text | yes | |
 | Captain | `captain` | text | yes | |
 | Captain roll number | `captain_roll` | text | yes | |
 | Captain course | `captain_course` | select | yes | same course list as the individual form |
 | Captain year | `captain_year` | select | yes | 1, 2, 3 |
-| Contact number | `phone` | tel | yes | |
-| Squad | `squad` | textarea | yes | one player per line: full name, roll number |
+| Captain's contact number | `phone` | tel | yes | one number per team, the captain's |
+| Members | `members` | generated rows, added and removed in the page | yes | each row is name, course, year, roll; sent as a jsonb array |
 | Notes | `notes` | textarea | no | |
 | Rules | `agree_rules` | checkbox | yes | |
 | hidden | `_subject`, `_gotcha` | | | routes the entry, and traps bots |
 
-**"Physical events" means every individual event except chess:** table tennis, arm wrestling, penalty shootout and throw in. Tick chess alone and height and weight stop being required, and the hint says why. `js/site.js` moves the `required` attribute as the boxes change; without JavaScript both fields are simply optional.
+**A member row is one player.** `js/register.js` builds the rows, numbers them, and keeps a live count beside the Add button. Choosing an event tops the list up to that event's `minPlayers` minus the captain. Removing rows is always allowed, but submitting below the minimum is refused in the browser and again by `team_entries_min_players` in Postgres, and every row must carry a name, course, year and roll.
 
-**There is no email field on either form, on purpose.** Participants are contacted on the phone number, and the confirmation page tells them no email is coming. Every submission is a row in a Google Sheet, so nothing depends on an inbox.
+**There is no email field on either form, on purpose.** Participants are contacted on the phone number, and the confirmation page tells them no email is coming. Every submission is a row in Postgres, so nothing depends on an inbox.
 
-The course and year option lists now exist **twice**, once per form. Anything added to one must be added to the other.
+The course and year lists live once, in `js/config.js` as `AQUIL_COURSES` and `AQUIL_YEARS`. The captain's selects are written out in `register-team.html`, so an addition belongs in both places.
 
 ## The design system
 
@@ -175,7 +180,7 @@ Result: **0 FAIL, 0 REFLEX, 0 WARN.** The render tier needs `puppeteer-core`, wh
 
 11. **Two modes from one token system.** Dark is a second rendering, not an inversion: every colour is re-derived per the Hallmark recipe and every pairing was checked numerically in both modes (ink on paper 16.50:1, muted on paper-2 7.05:1, accent ink on volt 15.88:1). The switch is one button in the masthead, the choice is remembered, and the OS preference is honoured until someone overrides it. There is no flash: an inline script in the head sets the mode before first paint.
 
-12. **Height and weight only where they are used.** They exist for arm wrestling brackets, so chess alone no longer asks for them. The rule is data-driven: a tick-box carries `data-body="required"` when it is a physical event, and `js/site.js` moves the `required` attribute to match. Adding a physical event later is one attribute, not a code change.
+12. **One row per player instead of a squad textarea.** A textarea of "name, roll" per line could not say which course or year a player was in, and could not be counted. The team form now builds a row per member and sends `members` as jsonb, so the minimum and the completeness check are both cheap. Height and weight are gone from every form: arm wrestling, the only event that used them, is disabled.
 
 13. **Supabase, not a form service and not a server of our own.** Formspree's free tier is 50 submissions a month per form, which individual entries alone would pass, and a rejected submission is silent. Apps Script works but needs a Google account deploying and redeploying it. Supabase gives a Postgres table per form, constraints that reject malformed rows at the database, and a REST endpoint the browser can call directly, so there is still no framework, no build step and no server to run.
 
@@ -194,15 +199,14 @@ grep -rn "TBC" *.html
 
 | What | Where | Currently |
 | --- | --- | --- |
-| Dates | hero facts on index and schedule, footer | TBC |
+| Dates | hero facts on index and schedule, footer | 23 – 30 Nov 2026 |
 | Venue and city | hero facts, schedule venue columns | TBC |
-| Entry deadline | hero facts on index, both forms, FAQ | TBC |
 | Match times and draw | `schedule.html` sheets | provisional |
 | Social link | footer | `href="#"` |
 | Organiser name | footer | Organiser TBC |
 | Course list | both forms, `<select id="course">` | B.Com, BCA, BBA, BA, B.Sc, Psychology, Other |
 | Specialisation list | `register.html` | None, CA, BA, Other |
-| Arm wrestling weight classes | `events.html`, `schedule.html`, `faq.html` | not stated |
+| Arm wrestling weight classes | `events.html`, `schedule.html`, `faq.html` | not stated; the event is disabled |
 | Refunds, weather | `faq.html` | written, TBC where unresolved |
 | What happens next panel | `register.html`, deliberately blank | TODO comment, nothing promises a timeline |
 | Registration endpoint | `js/config.js` and `supabase/schema.sql` | connected; rerun the SQL if the project changes |
@@ -255,9 +259,11 @@ The honeypot (`_gotcha`) now traps bots in `js/register.js`, and the CHECK const
 
 | Individual | Team |
 | --- | --- |
-| received, full name, roll number, course, specialisation, year, contact, height, weight, events, anything else | received, event, team name, captain, captain roll, captain course, captain year, contact, squad, anything else |
+| received, full name, roll number, course, specialisation, year, contact, events, anything else | received, event, team name, captain, captain roll, captain course, captain year, contact, `members`, anything else |
 
 `events` is a Postgres `text[]`: one entrant ticking three events is one row with three values, not three rows. The console expands slugs to labels and shows the row under every sport it belongs to.
+
+`members` is a jsonb array with one object per player, everyone except the captain. The captain is a column, so squad size is `jsonb_array_length(members) + 1`.
 
 ### Exporting
 
@@ -278,7 +284,7 @@ The honeypot (`_gotcha`) now traps bots in `js/register.js`, and the CHECK const
 
 What it does:
 
-- **Totals** across the top: individual, team, total, and a count for each of the nine sports. "Table Tennis 6" counts rows where `events` contains `table-tennis`, so a person in three sports is counted in each and once in the individual total.
+- **Totals** across the top: individual, team, total, and a count for each of the eight active sports. Disabled events never appear in the dropdown, but their rows would still render if any existed. "Table Tennis 6" counts rows where `events` contains `table-tennis`, so a person in three sports is counted in each and once in the individual total.
 - **Two tables**, Individual and Team, newest first. Pick a sport and the entry kind switches with it, since a sport only belongs to one kind.
 - **Search** runs across every column at once, including the readable form the table shows, so "Ananya", "Table Tennis", "BCA" and "2nd year" all match a row that stores a name, a slug or a code.
 - **Sortable headers**. Click once for ascending, again for descending; the timestamp column defaults to newest first.
@@ -293,6 +299,8 @@ The token is readable by any script on the page. That is why the site loads no a
 ## Registration endpoint, fallback (Google Apps Script)
 
 `apps-script/Code.gs` stays in the repository but is no longer wired to anything. It still appends to a Google Sheet if Supabase becomes a problem. The notes below describe it.
+
+Those notes predate the member-row schema: `Code.gs` still expects `height_cm`, `weight_kg` and a `squad` string, so it would need updating before it could be switched back on.
 
 Both forms post to a **Google Apps Script web app** (`apps-script/Code.gs`). It appends each submission as a row in a Google Sheet and returns a small confirmation page. No third party sits in the middle, there is no monthly cap, and the entries land somewhere organisers can filter and sort when seeding draws and weight brackets.
 
@@ -492,18 +500,27 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
   - No console errors on `admin.html`, `register.html` or `register-team.html`.
 - **Not tested, because it cannot be:** a real insert or a real sign-in. Running `supabase/schema.sql` needs the dashboard SQL editor, which is the one step left for an organiser.
 
+### 2026-11-18, member rows, split badminton, two events disabled
+
+- **Team squads are structured now.** Migration `team_members_and_event_rules` dropped `team_entries.squad` and added `members`, a jsonb array of `{name, course, year, roll}`. The table was empty, so nothing was lost. `team_entries_min_players` enforces each event's minimum on the captain plus those members.
+- **The team form builds rows.** `js/register.js` renders one row per player with add and remove, tops the list up to the chosen event's minimum, shows a live count, and refuses an incomplete row or a short squad. `css/style.css` gained a `.member` block; `register-team.html` keeps only the container and the Add button.
+- **One phone number per team**, labelled as the captain's.
+- **Height and weight are gone** from every form and from the table (`height_cm`, `weight_kg` dropped). They only existed for arm wrestling brackets.
+- **Badminton split into `badminton-boys` and `badminton-girls`**, in `js/config.js`, both index pages and the team `<select>`. The old `badminton` slug is still accepted by the CHECK constraint so nothing stored earlier breaks.
+- **Arm wrestling and throw-in are disabled, not deleted**, through `disabled: true` in `js/config.js` plus `hidden` on their markup. `AQUIL_ACTIVE_EVENTS` drives the admin dropdown and stats, and `?event=` no longer preselects a disabled event.
+- **Dates are 23 – 30 Nov 2026**, and the entries-close date was removed rather than replaced, on both forms and on the home page.
+- Verified on the deployed site: a basketball entry with two member rows landed in Postgres with the expected JSON, a chess entry landed with the right slug, and both test rows were deleted. Pages rebuilt to `2ae342d2`.
+
 ## Next steps
 
-1. **Run `supabase/schema.sql`** in the SQL editor and replace the seeded password. Registration is dead until that is done; the forms will show "not set up yet".
-2. **Change the admin password** from `CHANGE-ME-BEFORE-RUNNING` and keep it off the site.
-3. **Confirm the split**: five individual events, four team events, and the squad sizes on the team form.
-4. **Replace the placeholders**: dates, venue, deadline, social link, organiser name.
-5. **Extend the course and year lists** on **both** forms and in `supabase/schema.sql` if the database ever constrains them.
-6. **Write the "what happens next" panel** on `register.html`; only a TODO comment remains.
-7. **Settle the fee question privately**, if there is one, and decide whether it ever appears on the site.
-8. **Publish the draw** in `schedule.html` once entries close.
+The database is live, the admin console works, and both forms have written real rows. What is left is content and decisions.
 
-**Done since this list was written:** `sloplint` has been run and is clean; the site ships light and dark; height and weight are conditional. See the session log above.
+1. **Replace the remaining placeholders**: venue, city, social link, organiser name, match times.
+2. **Write the "what happens next" panel** on `register.html`; only a TODO comment remains.
+3. **Settle the fee question privately**, if there is one, and decide whether it ever appears on the site.
+4. **Publish the draw** in `schedule.html` when the draws are made.
+5. **Decide on arm wrestling and throw-in.** Both are disabled, not deleted. To bring one back, set `disabled: false` in `js/config.js` and drop `hidden` from its rows in `register.html`, `index.html` and `events.html`.
+6. **`faq.html` is still a stub.** It carries `noindex` and a not-available notice; fifteen questions sit in git history if they are wanted back.
 
 ## Cleanup checklist, build machine
 
@@ -518,18 +535,20 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 I am continuing work on the Heartian Hustle 3.0 event site: https://github.com/unnnii/aquil
 
 Read README.md first. It covers the structure, the Hallmark design system in use,
-the nine events and their slugs, the two registration forms, the placeholders and
+the eight active events and their slugs, the two registration forms, the placeholders and
 the next steps. Do not redesign from scratch.
 
 Stack: plain HTML, CSS and JS. No framework, no build step, GitHub Pages from main.
 Design system: Hallmark v2.0.0, theme "sport". Keep the stamp on line 1 of css/style.css
 and keep every colour and font behind a token.
 
-Registration is two forms: register.html for the five individual events (per person,
-several ticks) and register-team.html for carroms, badminton, football and basketball
-(one submission per team). Neither form has an email field and the site never mentions
-a fee. The event list lives in five files: index.html, events.html, register.html,
-register-team.html and js/config.js, plus the CHECK constraints in supabase/schema.sql.
+Registration is two forms: register.html for the individual events (per person,
+several ticks) and register-team.html for the team events (one submission per team,
+one row per member with name, course, year and roll). Arm wrestling and throw-in are
+disabled in js/config.js with their code kept; badminton is split into boys and girls.
+Neither form has an email field and the site never mentions a fee. The event list lives
+in five files: index.html, events.html, register.html, register-team.html and
+js/config.js, plus the CHECK constraints in supabase/schema.sql.
 
 Entries go to Supabase (project rbmmhasdshbgxhjmshdk), not Apps Script and not Formspree.
 Both forms post JSON with the publishable key in js/config.js; anon may INSERT only.
