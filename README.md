@@ -84,7 +84,7 @@ Links of the shape `register.html?event=chess` preselect the event on the first 
 
     aquil/
     |-- index.html          Hero, competition index, programme teaser, entry, questions
-    |-- events.html         All eight competitions, entry rules and minimum squad sizes
+    |-- events.html         All eight competitions, with a link into the right form for each
     |-- schedule.html       Day one and day two sheets, on-the-day facts
     |-- register.html       Batch form: captain details, then one row per participant
     |-- register-team.html  Team form: event, captain, one row per member
