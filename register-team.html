@@ -51,8 +51,6 @@
   <section class="hero">
     <div class="wrap">
       <h1>Team entry</h1>
-      <dl class="facts">
-        <div><dt>Entries close</dt><dd>23 Nov 2026</dd></div>
       </dl>
     </div>
   </section>
@@ -121,15 +119,20 @@
             </div>
 
             <div class="field field-full">
-              <label for="phone">Contact number</label>
+              <label for="phone">Captain's contact number</label>
               <input id="phone" name="phone" type="tel" autocomplete="tel" required>
-              <span class="hint">Where we confirm your slot. WhatsApp is fine.</span>
+              <span class="hint">One number per team. We call the captain, so make sure it reaches them.</span>
             </div>
 
-            <div class="field field-full">
-              <label for="squad">Squad</label>
-              <textarea id="squad" name="squad" required placeholder="One player per line: full name, roll number.&#10;Ananya Rao, 21BCA045&#10;Vikram Shetty, 21BCA112"></textarea>
-              <span class="hint">Include the captain. Carroms and badminton need one partner, football 7 to 10, basketball 3 to 4.</span>
+            <div class="field field-full" role="group" aria-labelledby="members-label">
+              <span id="members-label" class="field-label">Team members</span>
+              <span class="hint" data-members-hint>The captain counts as one player.</span>
+              <div class="members" data-members></div>
+              <div class="members-actions">
+                <button class="btn btn-line" type="button" data-member-add>+ Add member</button>
+                <span class="members-count" data-members-count></span>
+              </div>
+              <span class="field-error" data-members-error hidden>Add every player before submitting.</span>
             </div>
 
             <div class="field field-full">

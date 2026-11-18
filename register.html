@@ -51,8 +51,6 @@
   <section class="hero">
     <div class="wrap">
       <h1>Individual entry</h1>
-      <dl class="facts">
-        <div><dt>Entries close</dt><dd>23 Nov 2026</dd></div>
       </dl>
     </div>
   </section>
@@ -122,25 +120,14 @@
               <span class="hint">Where we confirm your slot. WhatsApp is fine.</span>
             </div>
 
-            <div class="field">
-              <label for="height">Height (cm)</label>
-              <input id="height" name="height_cm" type="number" inputmode="numeric" min="100" max="250" step="1" data-body-field>
-            </div>
-
-            <div class="field">
-              <label for="weight">Weight (kg)</label>
-              <input id="weight" name="weight_kg" type="number" inputmode="decimal" min="25" max="200" step="0.5" data-body-field>
-              <span class="hint" data-body-hint>Needed for arm wrestling and the other physical events.</span>
-            </div>
-
             <div class="field field-full" role="group" aria-labelledby="events-label">
               <span id="events-label" class="field-label">Events you are entering</span>
               <div class="checks">
-          <label class="check"><input type="checkbox" name="events" value="table-tennis" data-event-box data-body="required"> Table Tennis</label>
+          <label class="check"><input type="checkbox" name="events" value="table-tennis" data-event-box> Table Tennis</label>
           <label class="check"><input type="checkbox" name="events" value="chess" data-event-box> Chess</label>
-          <label class="check"><input type="checkbox" name="events" value="arm-wrestling" data-event-box data-body="required"> Arm Wrestling</label>
-          <label class="check"><input type="checkbox" name="events" value="penalty-shootout" data-event-box data-body="required"> Penalty Shootout</label>
-          <label class="check"><input type="checkbox" name="events" value="throw-in-girls" data-event-box data-body="required"> Throw In (Girls)</label>
+          <label class="check" hidden><input type="checkbox" name="events" value="arm-wrestling" data-event-box> Arm Wrestling</label>
+          <label class="check"><input type="checkbox" name="events" value="penalty-shootout" data-event-box> Penalty Shootout</label>
+          <label class="check" hidden><input type="checkbox" name="events" value="throw-in-girls" data-event-box> Throw In (Girls)</label>
               </div>
               <span class="field-error" data-events-error hidden>Pick at least one event.</span>
               <span class="hint">Tick everything you want to play. One entry per event.</span>

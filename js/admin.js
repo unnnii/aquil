@@ -319,9 +319,6 @@
     if (key === 'members') {
       return memberText(row.members).join('\n') || '—';
     }
-    if (false) {
-      }
-
     var value = row[key];
     if (value === null || value === undefined || value === '') { return '—'; }
 
