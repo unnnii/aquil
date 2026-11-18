@@ -54,12 +54,13 @@ A static, multi-page website for **Heartian Hustle 3.0**, a two-day, nine-event 
 
 **Open question, recorded here so it is not lost:** the original brief listed "carroms" **twice**. It was treated as a typo and listed once. If carroms is really two events, split it into two rows, two slugs and two tick-boxes.
 
-The list lives in **four** places and must stay in sync:
+The list lives in **five** places and must stay in sync:
 
 1. `index.html`, the nine index rows
 2. `events.html`, the same nine rows
 3. `register.html`, the individual tick-boxes (five events)
 4. `register-team.html`, the team event `<select>` (four events)
+5. `js/config.js`, `AQUIL_EVENTS`: slug, label and `kind` for all nine. The admin console builds its filter and its stats from this, so a slug that is not here disappears from the console even if rows exist for it. `supabase/schema.sql` carries the same slugs in CHECK constraints; adding an event means editing all six places.
 
 Links of the shape `register.html?event=chess` tick the box, and `register-team.html?event=football-7s` picks the event in the select (see `js/site.js`).
 
@@ -176,6 +177,12 @@ Result: **0 FAIL, 0 REFLEX, 0 WARN.** The render tier needs `puppeteer-core`, wh
 
 12. **Height and weight only where they are used.** They exist for arm wrestling brackets, so chess alone no longer asks for them. The rule is data-driven: a tick-box carries `data-body="required"` when it is a physical event, and `js/site.js` moves the `required` attribute to match. Adding a physical event later is one attribute, not a code change.
 
+13. **Supabase, not a form service and not a server of our own.** Formspree's free tier is 50 submissions a month per form, which individual entries alone would pass, and a rejected submission is silent. Apps Script works but needs a Google account deploying and redeploying it. Supabase gives a Postgres table per form, constraints that reject malformed rows at the database, and a REST endpoint the browser can call directly, so there is still no framework, no build step and no server to run.
+
+14. **Username and password for organisers, not email.** Supabase Auth is email-based and the organisers asked for a username. Instead of bending Auth, `admin_login()` checks a bcrypt hash inside Postgres and returns a random session token, which is what Auth would have done underneath anyway. It also means there is no email deliverability to debug at 11pm before an event.
+
+15. **The publishable key in the page, the service key nowhere.** The key in `js/config.js` is meant to be public: RLS lets it INSERT entries and nothing else. All reads go through a `security definer` function that first proves the caller holds a live token. Anyone can read the JavaScript; nobody can read the entries from it.
+
 ## Placeholders to replace
 
 Every placeholder is either visible text (`TBC`) or an HTML comment (`<!-- TODO: ... -->`) beside it.
@@ -254,7 +261,34 @@ The honeypot (`_gotcha`) now traps bots in `js/register.js`, and the CHECK const
 
 ### Exporting
 
-`admin.html` → choose Individual or Team, filter by sport if needed, **Download CSV**. The file is UTF-8 with a BOM so Excel opens it cleanly.
+`admin.html` → choose Individual or Team, filter by sport if needed, **Download CSV**. The file is UTF-8 with a BOM so Excel opens it cleanly, and dates are left as ISO 8601 rather than formatted, so sorting the column in Excel works.
+
+## Admin console
+
+`admin.html`. Unlisted and `noindex`: not in the nav, not in the footer, not linked from any page. Knowing the URL is not enough, because the page renders only a sign-in card until `admin_login()` returns a token.
+
+| | |
+| --- | --- |
+| Username | `admin`, unless you changed it in the seed `INSERT` |
+| Password | the one you put in `supabase/schema.sql` before running it |
+| Sign-in | `admin_login(username, password)`, checked in Postgres, not Supabase Auth |
+| Session | a random 32-byte token in `sessionStorage`, 12 hours, gone when the tab closes |
+| Read | `admin_entries(token)` returns both tables as one JSON object |
+| Sign-out | `admin_logout(token)` deletes the session row server-side |
+
+What it does:
+
+- **Totals** across the top: individual, team, total, and a count for each of the nine sports. "Table Tennis 6" counts rows where `events` contains `table-tennis`, so a person in three sports is counted in each and once in the individual total.
+- **Two tables**, Individual and Team, newest first. Pick a sport and the entry kind switches with it, since a sport only belongs to one kind.
+- **Search** runs across every column at once, including the label form of slugs, so "chess" and "Ananya" both work.
+- **Sortable headers**. Click once for ascending, again for descending; the timestamp column defaults to newest first.
+- **Download CSV** exports what is currently filtered, not everything, with readable labels (`BCA`, `2nd year`, `Table Tennis`) rather than stored values.
+
+It fetches every row in one request and filters in the browser. That is instant at a few hundred entries, which is the scale here. If it ever gets slow, add `?select=` and server-side filters to `admin_entries()`.
+
+**Whoever has the password is an organiser.** There are no per-person accounts and no audit trail beyond `created_at`. Two people signing in from two laptops both get valid independent sessions. The lockout is per username, so five wrong guesses block everyone for 15 minutes; that is the intended trade for having one shared account.
+
+The token is readable by any script on the page. That is why the site loads no analytics, no CDN and no third-party JavaScript, and why the console is `noindex`. If a third-party script is ever added to `admin.html`, it can read the token and the entry sheet.
 
 ## Registration endpoint, fallback (Google Apps Script)
 
@@ -275,9 +309,9 @@ The old `REPLACE_ME` guard has been removed: `js/site.js` no longer touches subm
    - Who has access: **Anyone** — not "Anyone with a Google account", entrants do not sign in.
 5. Authorise it. Google warns that the app is unverified because you are the developer; **Advanced → Go to … (unsafe)** is expected here, the script is your own.
 6. Copy the **Web app URL**, which ends in `/exec`.
-7. Put it in the `action` of **both** forms, replacing `https://formspree.io/f/REPLACE_ME`.
+7. Switching back now means editing `js/register.js`, not the markup. The forms are `action="#"` and `data-register-form`; the script intercepts submission and calls Supabase. To use Apps Script instead, either add a `fetch` to the `/exec` URL inside `send()` in `js/register.js` (a `FormData` POST, no CORS preflight), or delete the intercept and set `action` on both forms to the `/exec` URL. Restore a `_subject` input in each form in the second case: the script still reads it to choose the tab.
 
-One URL serves both forms. The script tells them apart by the hidden `_subject` field, so the two tabs stay separate without a second deployment.
+One deployment serves both forms. In the `FormData` path the script tells them apart by `_subject`, so the two tabs stay separate without a second deployment.
 
 ### What the sheet looks like
 
@@ -443,6 +477,21 @@ Type scale is 1.25 from a 16px body. Display heads are clamped and capped so the
 - The honeypot moved from `type="hidden"` to a positioned text input, since bots parse hidden fields.
 - Known limit: submission now requires JavaScript. Without it the form shows a `noscript` notice telling the entrant to find an organiser.
 
+### 2026-11-18, Supabase commit published, console verified in a browser
+
+- Pushed as [`cd6589a`](https://github.com/unnnii/aquil/commit/cd6589ae4e163fa53b625aeb61f70130744253d2) through the Git Data API: nine files in one commit, parent `5abc4fce` with tree `7504883e`, new tree `965b0080`. No clone, no local git.
+- Pages rebuilt from that commit (`built`, 2026-11-18T03:14:51Z). `admin.html`, `js/config.js`, `js/admin.js`, `js/register.js`, `register.html`, `register-team.html` and `supabase/schema.sql` all return 200 on `unnnii.github.io/aquil/`. The first check inside the first minute after the build returned 404s on every new path; they came up shortly after, which is the propagation delay, not a bad commit.
+- **The project had no tables.** PostgREST answered every table with `PGRST205` before this work, so there was nothing to migrate and no data to lose. That is also why the forms and the console both say "database not set up" until the SQL is run.
+- **`supabase/schema.sql` is publicly readable**, because Pages serves the repository root and there is no way to exclude one file. It holds no key and no real password: the seed only has the placeholder. When the real SQL is run, do not commit a version with the real password in it, and keep the actual password in a password manager rather than in this repo. The same goes for `apps-script/Code.gs`, which already sits at a public path.
+- Tested against a local server with the real pages and the real key, then checked again against the deployed site:
+  - Both forms produce the exact column set the tables expect. Team payload verified field by field, including `squad` with embedded newlines.
+  - Success panels render: "Probe Person · Table Tennis, Chess" and "Badminton · Probe Pair".
+  - A missing table surfaces the friendly "not set up yet" sentence, not a raw PostgREST error.
+  - CORS and preflight to `rbmmhasdshbgxhjmshdk.supabase.co` succeed from a browser origin, so the live site will not be blocked.
+  - Admin console exercised against mocked rows: per-sport stats, the kind switch when a sport is picked, search, reset, both sort directions, the empty state, and the CSV (BOM, ISO dates, labels).
+  - No console errors on `admin.html`, `register.html` or `register-team.html`.
+- **Not tested, because it cannot be:** a real insert or a real sign-in. Running `supabase/schema.sql` needs the dashboard SQL editor, which is the one step left for an organiser.
+
 ## Next steps
 
 1. **Run `supabase/schema.sql`** in the SQL editor and replace the seeded password. Registration is dead until that is done; the forms will show "not set up yet".
@@ -479,8 +528,14 @@ and keep every colour and font behind a token.
 Registration is two forms: register.html for the five individual events (per person,
 several ticks) and register-team.html for carroms, badminton, football and basketball
 (one submission per team). Neither form has an email field and the site never mentions
-a fee. The event list lives in four files: index.html, events.html, register.html,
-register-team.html.
+a fee. The event list lives in five files: index.html, events.html, register.html,
+register-team.html and js/config.js, plus the CHECK constraints in supabase/schema.sql.
+
+Entries go to Supabase (project rbmmhasdshbgxhjmshdk), not Apps Script and not Formspree.
+Both forms post JSON with the publishable key in js/config.js; anon may INSERT only.
+Organisers read through admin.html, which signs in with a username and password via
+admin_login() and reads through admin_entries(token). Do not put the service_role key
+in the page. The schema in supabase/schema.sql has to be run once in the SQL editor.
 
 Before editing: grep -rn "TODO" *.html
 
