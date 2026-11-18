@@ -2,69 +2,115 @@
 -- Heartian Hustle 3.0 — Supabase schema
 -- ===========================================================================
 --
--- Run this once: Supabase dashboard → SQL Editor → New query → paste → Run.
--- Re-running it is safe: tables and indexes use IF NOT EXISTS, functions use
--- CREATE OR REPLACE, and the admin seed does nothing if the user exists.
+-- This file reflects the live project (rbmmhasdshbgxhjmshdk). It is a
+-- first-install script: run it once from the Supabase dashboard, SQL Editor,
+-- New query, paste, Run. Re-running is safe — tables and indexes use IF NOT
+-- EXISTS, functions use CREATE OR REPLACE, and the admin seed does nothing if
+-- the user already exists.
 --
 -- BEFORE RUNNING: change the password in the seed INSERT near the bottom of
--- the "Admin accounts" section. It is hashed by pgcrypto, never stored in
+-- the "Admin accounts" section. It is hashed by pgcrypto and never stored in
 -- clear text, but the SQL editor keeps a history of what you ran.
 --
 -- What this creates:
---   individual_entries  one row per person, several events allowed
---   team_entries        one row per team, squad kept as jsonb
---   admins              username + bcrypt password hash
---   admin_sessions      server-side session tokens, 12 hour expiry
---   login_attempts      lockout after 5 failures for 15 minutes
+--   batch_entries   one row per batch: captain details plus a jsonb array of
+--                   participants, each with name, class, roll and event
+--   team_entries    one row per team: captain details plus a jsonb array of
+--                   the rest of the squad, each with name, course, year, roll
+--   admins          username + bcrypt password hash
+--   admin_sessions  server-side session tokens, 12 hour expiry
+--   login_attempts  lockout after 5 failures for 15 minutes
+--
+-- Individual events are entered by batch captains, not by each person:
+--   table-tennis, chess, penalty-shootout (arm-wrestling and throw-in-girls
+--   are disabled in js/config.js but remain valid values here).
+--   batch_participants_valid() checks every participant object, so a tampered
+--   request cannot store an unknown event, a blank name or a bad class.
 --
 -- Team events:
 --   carroms, badminton-boys, badminton-girls, football-7s, basketball-3s.
---   members is a jsonb array of objects with name, course, year and roll for
---   everyone except the captain. team_entries_min_players enforces the event
---   minimum on the captain plus those members.
---
--- Disabled events:
---   arm-wrestling and throw-in-girls remain valid values in
---   individual_entries.events. They are hidden by the disabled flag in
---   js/config.js, not removed here, so switching them back on needs no
---   migration.
+--   members holds everyone except the captain. team_entries_min_players
+--   enforces the event minimum on the captain plus those members.
 --
 -- Security model:
 --   anon (the publishable key in the browser) may INSERT entries and nothing
 --   else. It cannot select, update or delete. Reading is only possible through
 --   admin_entries(), which requires a live session token obtained by
 --   admin_login(). No service_role key is used anywhere on the site.
+--
+--   Because anon has INSERT but not SELECT, an insert must not ask for the row
+--   back: PostgREST's Prefer: return=representation needs SELECT and will fail
+--   with 42501. js/register.js sends no Prefer header, which is correct.
 -- ===========================================================================
 
 create extension if not exists pgcrypto with schema extensions;
 
 -- ---------------------------------------------------------------------------
+-- Entry validation helpers
+-- ---------------------------------------------------------------------------
+
+-- One participant is {name, class, roll, event}. class is the year of study,
+-- stored as text to match the form values.
+create or replace function public.batch_participants_valid(p jsonb)
+returns boolean
+language sql
+immutable
+set search_path = public
+as $$
+  select case
+    when jsonb_typeof(p) is distinct from 'array' then false
+    when jsonb_array_length(p) not between 1 and 300 then false
+    else not exists (
+      select 1
+        from jsonb_array_elements(p) as e
+       where jsonb_typeof(e) is distinct from 'object'
+          or coalesce(btrim(e->>'name'), '') = ''
+          or coalesce(btrim(e->>'roll'), '') = ''
+          or coalesce(e->>'class', '') not in ('1', '2', '3')
+          or coalesce(e->>'event', '') not in (
+               'table-tennis', 'chess', 'arm-wrestling',
+               'penalty-shootout', 'throw-in-girls'
+             )
+    )
+  end;
+$$;
+
+-- ---------------------------------------------------------------------------
 -- Entries
 -- ---------------------------------------------------------------------------
 
-create table if not exists public.individual_entries (
-  id             uuid primary key default gen_random_uuid(),
-  created_at     timestamptz not null default now(),
-  full_name      text not null check (char_length(full_name) between 2 and 80),
-  roll_number    text not null check (roll_number ~ '^[A-Za-z0-9 ./_-]{1,20}$'),
-  course         text not null check (char_length(course) between 2 and 40),
-  specialisation text check (char_length(specialisation) <= 40),
-  year           smallint not null check (year between 1 and 5),
-  phone          text not null check (phone ~ '^\+?[0-9][0-9 -]{6,17}$'),
-  events         text[] not null
-                 check (cardinality(events) between 1 and 5)
-                 check (events <@ array[
-                   'table-tennis', 'chess', 'arm-wrestling',
-                   'penalty-shootout', 'throw-in-girls'
-                 ]::text[]),
-  notes          text check (char_length(notes) <= 1000)
+create table if not exists public.batch_entries (
+  id           uuid primary key default gen_random_uuid(),
+  created_at   timestamptz not null default now(),
+  captain      text not null check (char_length(captain) between 2 and 80),
+  captain_roll text not null check (captain_roll ~ '^[A-Za-z0-9 ./_-]{1,20}$'),
+  course       text not null check (char_length(course) between 2 and 40),
+  -- The eleven combined groups a batch can be under. These replace
+  -- specialisation: one group per batch, chosen by the captain.
+  batch_group  text not null check (batch_group in (
+                 'bcom-tax-a-mcom',    -- B.Com Tax A & M.Com
+                 'bcom-tax-b',         -- B.Com Tax B
+                 'bcom-ca-msw',        -- B.Com CA & MSW
+                 'bcom-fa-msc-evs',    -- B.Com FA & M.Sc EVS
+                 'bcom-ba',            -- B.Com BA
+                 'bsc-msc-psy',        -- B.Sc & M.Sc Psy
+                 'bba-im-bsw',         -- BBA IM & BSW
+                 'bba-ba-lsm',         -- BBA BA & LSM
+                 'bca-msc-ai',         -- BCA + M.Sc AI
+                 'bsc-ca-bcom-tt-gt',  -- B.Sc CA, B.Com TT & GT
+                 'ba-ma-eng-bsc-eco'   -- BA, MA Eng & B.Sc Eco
+               )),
+  phone        text not null check (phone ~ '^\+?[0-9][0-9 -]{6,17}$'),
+  participants jsonb not null default '[]'::jsonb
+               check (public.batch_participants_valid(participants)),
+  notes        text check (char_length(notes) <= 1000)
 );
 
-create index if not exists individual_entries_created_idx
-  on public.individual_entries (created_at desc);
+create index if not exists batch_entries_created_idx
+  on public.batch_entries (created_at desc);
 
-create index if not exists individual_entries_events_idx
-  on public.individual_entries using gin (events);
+create index if not exists batch_entries_group_idx
+  on public.batch_entries (batch_group);
 
 create table if not exists public.team_entries (
   id             uuid primary key default gen_random_uuid(),
@@ -195,6 +241,8 @@ begin
 end;
 $$;
 
+-- Returns every entry as {batch: [...], team: [...]}. The admin console reads
+-- nothing else, so the tables themselves stay closed to anon.
 create or replace function public.admin_entries(p_token text)
 returns jsonb
 language plpgsql
@@ -212,9 +260,9 @@ begin
   end if;
 
   select jsonb_build_object(
-    'individual', coalesce((
-      select jsonb_agg(to_jsonb(i) order by i.created_at desc)
-        from public.individual_entries i
+    'batch', coalesce((
+      select jsonb_agg(to_jsonb(b) order by b.created_at desc)
+        from public.batch_entries b
     ), '[]'::jsonb),
     'team', coalesce((
       select jsonb_agg(to_jsonb(t) order by t.created_at desc)
@@ -239,24 +287,24 @@ $$;
 -- Row level security and grants
 -- ---------------------------------------------------------------------------
 
-alter table public.individual_entries enable row level security;
-alter table public.team_entries       enable row level security;
-alter table public.admins             enable row level security;
-alter table public.admin_sessions     enable row level security;
-alter table public.login_attempts     enable row level security;
+alter table public.batch_entries  enable row level security;
+alter table public.team_entries   enable row level security;
+alter table public.admins         enable row level security;
+alter table public.admin_sessions enable row level security;
+alter table public.login_attempts enable row level security;
 
 -- Supabase grants anon and authenticated broad access to public tables by
 -- default. Take it back, then hand anon exactly one thing: INSERT.
-revoke all on public.individual_entries, public.team_entries
+revoke all on public.batch_entries, public.team_entries
   from anon, authenticated;
 revoke all on public.admins, public.admin_sessions, public.login_attempts
   from anon, authenticated;
 
-grant insert on public.individual_entries to anon;
-grant insert on public.team_entries to anon;
+grant insert on public.batch_entries to anon;
+grant insert on public.team_entries  to anon;
 
-drop policy if exists "anyone may enter" on public.individual_entries;
-create policy "anyone may enter" on public.individual_entries
+drop policy if exists "anyone may enter" on public.batch_entries;
+create policy "anyone may enter" on public.batch_entries
   for insert to anon with check (true);
 
 drop policy if exists "anyone may enter" on public.team_entries;
@@ -276,7 +324,7 @@ grant execute on function public.admin_logout(text)      to anon;
 -- ---------------------------------------------------------------------------
 -- After running, these should return one row each and no errors:
 --
---   select count(*) from public.individual_entries;
+--   select count(*) from public.batch_entries;
 --   select count(*) from public.team_entries;
 --   select username from public.admins;
 --
