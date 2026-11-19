@@ -235,6 +235,7 @@ If a page looks stale it is a cache, not a failed build; check the Pages build s
 
 ## History
 
+- **2026-11-19, display type follows the body.** Playfair Display read badly at phone sizes, so Albert Sans 800 carries the headings too, and the masthead Register button got its dark text back. Both themes, with the tag and the revert command, are written down in `THEMES.md`.
 - **2026-11-19, the deck palette.** The site took its colours from the 2026 sponsorship deck: indigo night `#080d29` with a fixed magenta-cyan-orange glow, gold `#c9a65c` hairlines, cream `#fff4da` text, lime `#9ccb3b` for buttons and marks, and Playfair Display in place of Saira Condensed. Layout and components are unchanged; the whole theme is the `:root` token block plus one background rule. Reverting is `git revert` of `0319009`, `e214d43` and `cb36823`.
 - **2026-11-19, the notes column left the console.** Notes is no longer a column in the batch or team table, and no longer in the CSV. The `notes` column stays in the database, so text collected earlier is not lost.
 - **2026-11-19, stats wording.** The console counts batch entries per individual sport, not participants as this file claimed, so the line was corrected rather than the behaviour changed.

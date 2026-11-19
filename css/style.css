@@ -17,7 +17,7 @@
   --color-focus: #ffc46b;
   --color-slot: rgba(255, 240, 183, 0.35);
 
-  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-display: "Albert Sans", ui-sans-serif, system-ui, sans-serif;
   --font-body: "Albert Sans", ui-sans-serif, system-ui, sans-serif;
   --font-outlier: "JetBrains Mono", ui-monospace, monospace;
 
@@ -139,6 +139,10 @@ select option { background: var(--color-paper); color: var(--color-ink); }
 .nav a:hover { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-accent-deep); text-underline-offset: 4px; }
 .nav a[aria-current="page"] { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-accent-deep); text-underline-offset: 4px; }
 .nav a:active { color: var(--color-accent-deep); }
+.nav a.btn-volt,
+.nav a.btn-volt:hover,
+.nav a.btn-volt[aria-current="page"] { color: var(--color-accent-ink); text-decoration: none; }
+.nav a.btn-volt:active { color: var(--color-paper); }
 .nav-toggle { display: none; }
 
 /* Controls ---------------------------------------------------------------- */
