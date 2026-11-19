@@ -58,30 +58,6 @@
   color-scheme: dark;
 }
 
-/* Theme ------------------------------------------------------------------- */
-/* From the 2026 sponsorship deck: indigo night with nebula light, gold
- * hairlines, lime for anything you can press, cream serif headings. */
-html { background: #05091f; }
-body { background: transparent; }
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(58% 42% at 10% 0%, rgba(186, 52, 160, 0.72), transparent 66%),
-    radial-gradient(50% 36% at 92% 4%, rgba(0, 132, 214, 0.55), transparent 68%),
-    radial-gradient(64% 40% at 50% 104%, rgba(255, 140, 60, 0.55), transparent 64%),
-    radial-gradient(40% 32% at 84% 62%, rgba(132, 52, 178, 0.48), transparent 72%),
-    radial-gradient(36% 26% at 18% 78%, rgba(163, 40, 145, 0.35), transparent 74%),
-    #080d29;
-}
-h1, h2 { color: #ffedbc; }
-::placeholder { color: var(--color-muted); opacity: 1; }
-input[type="checkbox"] { accent-color: var(--color-accent); }
-select option { background: var(--color-paper); color: var(--color-ink); }
-
 /* Base ------------------------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { overflow-x: clip; }
@@ -118,6 +94,30 @@ code { font-family: var(--font-outlier); font-size: 0.92em; }
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
+
+/* Theme ------------------------------------------------------------------- */
+/* From the 2026 sponsorship deck: indigo night with nebula light, gold
+ * hairlines, lime for anything you can press, cream serif headings. */
+html { background: #05091f; }
+body { background: transparent; }
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(58% 42% at 10% 0%, rgba(186, 52, 160, 0.72), transparent 66%),
+    radial-gradient(50% 36% at 92% 4%, rgba(0, 132, 214, 0.55), transparent 68%),
+    radial-gradient(64% 40% at 50% 104%, rgba(255, 140, 60, 0.55), transparent 64%),
+    radial-gradient(40% 32% at 84% 62%, rgba(132, 52, 178, 0.48), transparent 72%),
+    radial-gradient(36% 26% at 18% 78%, rgba(163, 40, 145, 0.35), transparent 74%),
+    #080d29;
+}
+h1, h2 { color: #ffedbc; }
+::placeholder { color: var(--color-muted); opacity: 1; }
+input[type="checkbox"] { accent-color: var(--color-accent); }
+select option { background: var(--color-paper); color: var(--color-ink); }
 
 /* Layout ------------------------------------------------------------------ */
 .wrap { width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 var(--pad); }
