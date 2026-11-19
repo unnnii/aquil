@@ -532,13 +532,16 @@
     });
 
     var blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
     var link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
+    link.href = url;
     link.download = 'heartian-hustle-' + state.kind + '.csv';
+    link.rel = 'noopener';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
+    // Revoking straight away cancels the download in WebKit, so let it land first.
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
   }
 
   function quote(value) {
