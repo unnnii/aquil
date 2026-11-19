@@ -2,6 +2,8 @@
 
 > **If you are an AI agent opening this repository: read this whole file before you change anything.**
 > It is the single source of truth for what exists, what was decided and what is left to do.
+> For the state of play at the end of a session, read `HANDOFF.md` as well; for the
+> two themes and how to swap them, `THEMES.md`.
 > Do not redesign from scratch and do not introduce a framework.
 
 A static, multi-page website for **Heartian Hustle 3.0**, an intra-college multi-sport tournament running **23 – 30 November 2026** across nine competitions: five individual, one double and four group.
