@@ -262,6 +262,41 @@ select option { background: var(--color-paper); color: var(--color-ink); }
 .asks a:hover { text-decoration: underline; text-decoration-color: var(--color-accent-deep); text-underline-offset: 4px; }
 .asks a:active { background: var(--color-paper-2); }
 
+/* Cross-link between the two forms ---------------------------------------- */
+.crosslink {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm) var(--space-md);
+  margin-top: var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
+  border: var(--rule-hair) solid var(--color-accent);
+  border-left: var(--rule-bar) solid var(--color-accent);
+  border-radius: var(--radius-card);
+  background: rgba(156, 203, 59, 0.12);
+  color: var(--color-ink);
+  text-decoration: none;
+  transition: background-color var(--dur-micro) var(--ease-out);
+}
+.crosslink:hover { background: rgba(156, 203, 59, 0.22); }
+.crosslink-ask { font-size: var(--text-md); }
+.crosslink-go {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px var(--space-md);
+  border-radius: var(--radius-card);
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-size: var(--text-sm);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.crosslink:hover .crosslink-go { background: var(--color-accent-deep); }
+
 /* Forms ------------------------------------------------------------------- */
 .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-md) var(--col-gap); }
 .field { display: flex; flex-direction: column; gap: var(--space-xs); }
