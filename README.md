@@ -235,6 +235,7 @@ If a page looks stale it is a cache, not a failed build; check the Pages build s
 
 ## History
 
+- **2026-11-19, the notes column left the console.** Notes is no longer a column in the batch or team table, and no longer in the CSV. The `notes` column stays in the database, so text collected earlier is not lost.
 - **2026-11-19, stats wording.** The console counts batch entries per individual sport, not participants as this file claimed, so the line was corrected rather than the behaviour changed.
 - **2026-11-19, spam, duplicates and delete.** The public form refuses a second entry for the same captain roll (batch) and a second entry for the same captain and event (team), both enforced by unique indexes. A trigger caps inserts at 120 per five minutes across both tables, adjustable in `public.entry_limits`, and raises code `P0004` so the form can say "too many entries" instead of "details were rejected". The console gained a Delete button on every row behind `admin_delete_entry()`, which is the supported way to fix a wrong entry: delete it, then the captain enters again. The rulebook no longer states closing dates.
 - **2026-11-19, questions page removed.** The placeholder questions page is deleted and its link is gone from the nav and footer of every page; the nav is now Competitions, Rules, Programme, Register. The `.asks` styles it was built for were never used by the shipped placeholder, so they stay in the stylesheet with `.index`, both dead.

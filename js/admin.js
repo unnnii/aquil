@@ -48,8 +48,7 @@
       { key: 'captain_year', label: 'Year' },
       { key: 'batch_group', label: 'Group' },
       { key: 'phone', label: 'Contact' },
-      { key: 'participants', label: 'Participants' },
-      { key: 'notes', label: 'Notes' }
+      { key: 'participants', label: 'Participants' }
     ],
     team: [
       { key: 'created_at', label: 'Received' },
@@ -61,8 +60,7 @@
       { key: 'captain_year', label: 'Year' },
       { key: 'team_group', label: 'Group' },
       { key: 'phone', label: 'Contact' },
-      { key: 'members', label: 'Members' },
-      { key: 'notes', label: 'Notes' }
+      { key: 'members', label: 'Members' }
     ]
   };
 
