@@ -30,6 +30,7 @@ A static, multi-page website for **Heartian Hustle 3.0**, an intra-college multi
 | Batch form | Done | `register.html`, posts to Supabase `batch_entries` |
 | Team form | Done | `register-team.html`, posts to Supabase `team_entries` |
 | Entry storage | Live | Supabase project `rbmmhasdshbgxhjmshdk`; schema in `supabase/schema.sql` |
+| Spam and duplicates | Done | one entry per captain roll, one per captain per team event, a 120-per-5-minute insert ceiling in `entry_limits`, and delete on every console row |
 | Admin console | Done, **unlisted** | `admin.html`, username and password, per-sport views, search, CSV |
 | Event content | Done | the 2026 rulebook is on `rules.html`: general instructions, then each event's rules, date, time and venue |
 | Eligibility | Intra-college | students of the host college only, checked by roll number and ID |
@@ -207,10 +208,11 @@ Both forms post straight to Supabase's REST API. There is no server of our own: 
 
 `admin.html` is unlisted: no page links to it and it is not in the sitemap. It is not security by obscurity either; the sign-in is checked in Postgres.
 
-- **Sign in** with the username and password stored in `admins`. Five wrong attempts lock that username for 15 minutes. The session token lives in localStorage and expires after 12 hours.
+- **Sign in** with the username and password stored in `admins`. Five wrong attempts lock that username for 15 minutes. The session token lives in `sessionStorage` and expires after 12 hours.
 - **Stats** across the top: batch entries, team entries, total, and a count for each of the eight active sports. The per-sport counts are counted in participants, not rows: a batch of four with two chess players counts two for chess.
 - **Filters:** free-text search over names, rolls, phones, group and participant text; a sport picker; and an entry-kind switch (Batch or Team). Picking a sport that only one kind can enter switches the kind for you.
 - **Table:** sortable columns, newest first. The Participants column prints one participant per line as name, roll, class, event. The Group column prints the group label, not the slug.
+- **Delete:** every row has a Delete button. It asks for confirmation, then calls `admin_delete_entry()`, which checks the session token before deleting. Deleting is how a mistake gets fixed now, because the public form refuses a roll number that already has an entry.
 - **Download CSV** exports the current filter, UTF-8 with a BOM so Excel opens the en dashes and accents correctly. Participants are joined with a pipe so one row stays one row.
 
 To seed or rotate the password, run the update statement at the bottom of `supabase/schema.sql`.
@@ -233,6 +235,7 @@ If a page looks stale it is a cache, not a failed build; check the Pages build s
 
 ## History
 
+- **2026-11-19, spam, duplicates and delete.** The public form refuses a second entry for the same captain roll (batch) and a second entry for the same captain and event (team), both enforced by unique indexes. A trigger caps inserts at 120 per five minutes across both tables, adjustable in `public.entry_limits`, and raises code `P0004` so the form can say "too many entries" instead of "details were rejected". The console gained a Delete button on every row behind `admin_delete_entry()`, which is the supported way to fix a wrong entry: delete it, then the captain enters again. The rulebook no longer states closing dates.
 - **2026-11-19, questions page removed.** The placeholder questions page is deleted and its link is gone from the nav and footer of every page; the nav is now Competitions, Rules, Programme, Register. The `.asks` styles it was built for were never used by the shipped placeholder, so they stay in the stylesheet with `.index`, both dead.
 - **2026-11-18, the rulebook.** A new `rules.html` carries the fest's 2026 rulebook: the points table with the participation and no-show points, the fourteen general instructions, and a facts panel for each event with its rules, date, time and venue. Two faculty contacts close the page. It sits in the nav and footer of every page, the forms' "I have read the rules" link points at it, and `events.html` keeps just the points table. New CSS: `.rules`, `.rule-list`, `.event-meta`, `.points-note`.
 - **2026-11-18, team class and group.** The team form dropped the captain course select for a class typed in words, and now asks for the eleven-group picker the batch form uses. New column `team_group`; `captain_course` is kept but no longer required, so earlier entries keep their value.

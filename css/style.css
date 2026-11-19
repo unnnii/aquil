@@ -336,6 +336,9 @@ summary:active { background: var(--color-paper-2); }
 .admin-table .num { text-align: right; font-variant-numeric: tabular-nums; }
 .admin-table .label { display: block; }
 .admin-table input[type="checkbox"] { width: auto; }
+.admin-remove { padding: 0; border: 0; background: none; font: inherit; color: var(--color-ink-2); text-decoration: underline; text-decoration-color: var(--color-accent-deep); text-underline-offset: 4px; cursor: pointer; }
+.admin-remove:hover { color: var(--color-ink); }
+.admin-remove:active { color: var(--color-accent-deep); }
 
 @media (max-width: 780px) {
   .admin-table { min-width: 40rem; }

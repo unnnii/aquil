@@ -399,6 +399,27 @@
     });
   }
 
+  function removeEntry(row) {
+    var what = state.kind === 'team' ? 'team entry' : 'batch entry';
+    var who = row.team || row.captain || 'this entry';
+    if (!window.confirm('Delete the ' + what + ' from ' + who + '? This cannot be undone.')) {
+      return;
+    }
+    rpc('admin_delete_entry', { p_token: state.token, p_kind: state.kind, p_id: row.id })
+      .then(function () { return load(); })
+      .catch(function (err) {
+        if (err.unauthorised) {
+          signOut(true);
+          showLoginError('Your session expired. Sign in again.');
+          return;
+        }
+        if (appError) {
+          appError.textContent = 'Could not delete. ' + (err.message || '');
+          appError.hidden = false;
+        }
+      });
+  }
+
   function renderTable(rows) {
     var columns = COLUMNS[state.kind];
     table.textContent = '';
@@ -431,6 +452,11 @@
       headRow.appendChild(th);
     });
 
+    var removeHead = document.createElement('th');
+    removeHead.scope = 'col';
+    removeHead.textContent = 'Remove';
+    headRow.appendChild(removeHead);
+
     thead.appendChild(headRow);
     table.appendChild(thead);
 
@@ -439,7 +465,7 @@
     if (!rows.length) {
       var empty = document.createElement('tr');
       var cell = document.createElement('td');
-      cell.colSpan = columns.length;
+      cell.colSpan = columns.length + 1;
       cell.textContent = 'No entries yet.';
       cell.className = 'hint';
       empty.appendChild(cell);
@@ -469,6 +495,15 @@
 
           tr.appendChild(td);
         });
+
+        var removeCell = document.createElement('td');
+        var removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'admin-remove';
+        removeButton.textContent = 'Delete';
+        removeButton.addEventListener('click', function () { removeEntry(row); });
+        removeCell.appendChild(removeButton);
+        tr.appendChild(removeCell);
 
         tbody.appendChild(tr);
       });

@@ -378,6 +378,99 @@ grant execute on function public.admin_entries(text)     to anon;
 grant execute on function public.admin_logout(text)      to anon;
 
 -- ---------------------------------------------------------------------------
+-- Spam and duplicates
+-- ---------------------------------------------------------------------------
+-- One entry per batch. The captain's roll number is the batch's key, so a
+-- second submission for the same roll fails on the index instead of quietly
+-- creating a duplicate.
+create unique index if not exists batch_entries_one_per_captain
+  on public.batch_entries (lower(btrim(captain_roll)));
+
+-- One entry per captain per team event.
+create unique index if not exists team_entries_one_per_captain_event
+  on public.team_entries (lower(btrim(captain_roll)), event);
+
+-- A ceiling on how fast the public form can write. One row: change max_entries
+-- to raise or lower it, or window_interval to widen the window.
+create table if not exists public.entry_limits (
+  id              boolean primary key default true check (id),
+  max_entries     integer not null default 120 check (max_entries between 1 and 10000),
+  window_interval interval not null default '5 minutes'
+);
+
+alter table public.entry_limits enable row level security;
+insert into public.entry_limits (id) values (true) on conflict (id) do nothing;
+
+create or replace function public.enforce_entry_rate()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  lim   record;
+  taken integer;
+begin
+  select max_entries, window_interval into lim from public.entry_limits where id;
+  if lim is null then
+    return new;
+  end if;
+
+  select count(*) into taken from (
+    select 1 from public.batch_entries where created_at > now() - lim.window_interval
+    union all
+    select 1 from public.team_entries  where created_at > now() - lim.window_interval
+  ) recent;
+
+  if taken >= lim.max_entries then
+    raise exception 'too many entries' using errcode = 'P0004';
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists enforce_entry_rate on public.batch_entries;
+create trigger enforce_entry_rate
+  before insert on public.batch_entries
+  for each row execute function public.enforce_entry_rate();
+
+drop trigger if exists enforce_entry_rate on public.team_entries;
+create trigger enforce_entry_rate
+  before insert on public.team_entries
+  for each row execute function public.enforce_entry_rate();
+
+-- Deleting an entry from the console. The browser holds no key that can write
+-- these tables, so this runs as the owner after checking the session token.
+create or replace function public.admin_delete_entry(p_token text, p_kind text, p_id uuid)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (
+    select 1 from public.admin_sessions
+     where token = p_token and expires_at > now()
+  ) then
+    raise exception 'unauthorised' using errcode = 'P0001';
+  end if;
+
+  if p_kind = 'batch' then
+    delete from public.batch_entries where id = p_id;
+  elsif p_kind = 'team' then
+    delete from public.team_entries where id = p_id;
+  else
+    raise exception 'unknown entry kind' using errcode = 'P0002';
+  end if;
+
+  return found;
+end;
+$$;
+
+grant execute on function public.admin_delete_entry(text, text, uuid) to anon;
+
+-- ---------------------------------------------------------------------------
 -- Verify
 -- ---------------------------------------------------------------------------
 -- After running, these should return one row each and no errors:

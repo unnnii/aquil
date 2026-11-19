@@ -70,6 +70,12 @@
     if (code === 'PGRST205' || response.status === 404) {
       return 'Registration is not set up yet. Tell an organiser the database tables are missing.';
     }
+    if (code === '23505') {
+      return 'This roll number already has an entry. Ask an organiser to delete the old one before entering again.';
+    }
+    if (code === 'P0004') {
+      return 'Too many entries in a short time. Wait a minute and try again.';
+    }
     if (code === '23514' || response.status === 400) {
       return 'Some details were rejected. Check the phone number, roll number, group and events.';
     }
