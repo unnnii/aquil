@@ -21,14 +21,18 @@ The original light theme, live until 19 Nov 2026. Its last commit is tagged
 **`theme-light-2026`**. To bring it back:
 
 ```sh
-git reset --hard theme-light-2026     # whole site, one shot
+git revert --no-commit 0319009 e214d43 cb36823 && git commit   # keeps history and this file
 ```
 
-or, keeping history:
+A hard reset does the same in one step but also throws away every commit after
+the theme, including this file:
 
 ```sh
-git revert --no-commit 0319009 e214d43 cb36823 && git commit
+git reset --hard theme-light-2026
 ```
+
+Either way the tag keeps the code. If this file is gone, the old stylesheet is
+still readable with `git show theme-light-2026:css/style.css`.
 
 The token block of that theme, for a partial restore:
 
