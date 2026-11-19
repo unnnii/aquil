@@ -174,7 +174,7 @@ select option { background: var(--color-paper); color: var(--color-ink); }
 
 /* Hero -------------------------------------------------------------------- */
 .hero { padding: var(--space-2xl) 0 var(--space-xl); }
-.hero h1 { font-size: clamp(3rem, 8vw, 6rem); }
+.hero h1 { font-size: clamp(2.4rem, 8vw, 6rem); }
 .hero-line { max-width: 46ch; margin-top: var(--space-md); font-size: var(--text-lg); color: var(--color-ink-2); }
 .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: var(--space-xl) 0 0; border-top: var(--rule-bar) solid var(--color-rule-2); }
 .facts > div { padding: var(--space-md) var(--space-md) var(--space-md) 0; }
