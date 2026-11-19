@@ -13,7 +13,7 @@ A static, multi-page website for **Heartian Hustle 3.0**, an intra-college multi
 | Stack | plain HTML, CSS, JavaScript. No framework, no build step, no bundler |
 | Fonts | Saira Condensed 800, Albert Sans 400/500, JetBrains Mono 500, served by Google Fonts |
 | Hosting | GitHub Pages, branch `main`, folder `/` |
-| Design system | Hallmark v2.0.0, theme "sport", genre editorial, light only |
+| Design system | Hallmark v2.0.0 structure, restyled to the 2026 deck: indigo night, gold hairlines, lime action, Playfair Display |
 | Registration | **two forms**: batch entry for the individual events, and team entry |
 | Fees | **not mentioned anywhere.** The site says nothing about a price, and nothing about being free |
 
@@ -25,7 +25,7 @@ A static, multi-page website for **Heartian Hustle 3.0**, an intra-college multi
 | Event list | Done | nine events in the rulebook, eight entry routes because badminton enters as boys and girls. Arm wrestling and throw-in are disabled in `js/config.js` with their code kept; both register on the spot |
 | Points table | Done | all nine events on `index.html` and `events.html`, disabled ones included, as the fest's table does |
 | Design system | Done | Hallmark Sport theme, token-driven, responsive to 360px |
-| Colour modes | Done | **light only.** The dark theme, its switch and the pre-paint script were removed |
+| Colour modes | Done | **dark only.** No switch: the palette is the sponsorship deck's, and the glow behind every page is a fixed layer |
 | Mobile nav | Done | JS enhanced; falls back to a wrapped row without JS |
 | Batch form | Done | `register.html`, posts to Supabase `batch_entries` |
 | Team form | Done | `register-team.html`, posts to Supabase `team_entries` |
@@ -235,6 +235,7 @@ If a page looks stale it is a cache, not a failed build; check the Pages build s
 
 ## History
 
+- **2026-11-19, the deck palette.** The site took its colours from the 2026 sponsorship deck: indigo night `#080d29` with a fixed magenta-cyan-orange glow, gold `#c9a65c` hairlines, cream `#fff4da` text, lime `#9ccb3b` for buttons and marks, and Playfair Display in place of Saira Condensed. Layout and components are unchanged; the whole theme is the `:root` token block plus one background rule. Reverting is `git revert` of `0319009`, `e214d43` and `cb36823`.
 - **2026-11-19, the notes column left the console.** Notes is no longer a column in the batch or team table, and no longer in the CSV. The `notes` column stays in the database, so text collected earlier is not lost.
 - **2026-11-19, stats wording.** The console counts batch entries per individual sport, not participants as this file claimed, so the line was corrected rather than the behaviour changed.
 - **2026-11-19, spam, duplicates and delete.** The public form refuses a second entry for the same captain roll (batch) and a second entry for the same captain and event (team), both enforced by unique indexes. A trigger caps inserts at 120 per five minutes across both tables, adjustable in `public.entry_limits`, and raises code `P0004` so the form can say "too many entries" instead of "details were rejected". The console gained a Delete button on every row behind `admin_delete_entry()`, which is the supported way to fix a wrong entry: delete it, then the captain enters again. The rulebook no longer states closing dates.
