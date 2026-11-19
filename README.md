@@ -21,13 +21,12 @@ A static, multi-page website for **Heartian Hustle 3.0**, an intra-college multi
 
 | Area | State | Notes |
 | --- | --- | --- |
-| Page structure | Done | 8 pages plus a 404 and an unlisted admin console |
+| Page structure | Done | 7 pages plus a 404 and an unlisted admin console |
 | Event list | Done | nine events in the rulebook, eight entry routes because badminton enters as boys and girls. Arm wrestling and throw-in are disabled in `js/config.js` with their code kept; both register on the spot |
 | Points table | Done | all nine events on `index.html` and `events.html`, disabled ones included, as the fest's table does |
 | Design system | Done | Hallmark Sport theme, token-driven, responsive to 360px |
 | Colour modes | Done | **light only.** The dark theme, its switch and the pre-paint script were removed |
 | Mobile nav | Done | JS enhanced; falls back to a wrapped row without JS |
-| Questions page | **Disabled** | still linked from the nav and footer, but shows a not-available notice and carries `noindex` |
 | Batch form | Done | `register.html`, posts to Supabase `batch_entries` |
 | Team form | Done | `register-team.html`, posts to Supabase `team_entries` |
 | Entry storage | Live | Supabase project `rbmmhasdshbgxhjmshdk`; schema in `supabase/schema.sql` |
@@ -92,7 +91,6 @@ Links of the shape `register.html?event=chess` preselect the event on the first 
     |-- register.html       Batch form: captain details, then one row per participant
     |-- register-team.html  Team form: event, captain, one row per member
     |-- admin.html          Unlisted organiser console: sign in, filter, CSV
-    |-- faq.html            Disabled placeholder; 15 questions kept in git history
     |-- 404.html            Not-found page
     |-- css/style.css       The whole design system. Hallmark stamp on line 1, tokens next
     |-- js/config.js        Supabase URL, key, events, courses, groups, years, labels
@@ -235,6 +233,7 @@ If a page looks stale it is a cache, not a failed build; check the Pages build s
 
 ## History
 
+- **2026-11-19, questions page removed.** The placeholder questions page is deleted and its link is gone from the nav and footer of every page; the nav is now Competitions, Rules, Programme, Register. The `.asks` styles it was built for were never used by the shipped placeholder, so they stay in the stylesheet with `.index`, both dead.
 - **2026-11-18, the rulebook.** A new `rules.html` carries the fest's 2026 rulebook: the points table with the participation and no-show points, the fourteen general instructions, and a facts panel for each event with its rules, date, time and venue. Two faculty contacts close the page. It sits in the nav and footer of every page, the forms' "I have read the rules" link points at it, and `events.html` keeps just the points table. New CSS: `.rules`, `.rule-list`, `.event-meta`, `.points-note`.
 - **2026-11-18, team class and group.** The team form dropped the captain course select for a class typed in words, and now asks for the eleven-group picker the batch form uses. New column `team_group`; `captain_course` is kept but no longer required, so earlier entries keep their value.
 - **2026-11-18, the team captain is a contact.** The team form stopped counting the captain as a player: the member list tops up to `minPlayers` on its own and the error asks for that many players. `team_entries_min_players` now requires the same. The captain adds themselves as a member when they play. Existing entries are left alone by the `NOT VALID` constraint.
